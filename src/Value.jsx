@@ -12,7 +12,7 @@ const Value = ({ value, onValueChange, onValueDelete }) => {
                 onValueChange(value, newValue);
                 setIsEditing(false);
             }}>
-                <input type="number" value={newValue} onChange={(e) => setNewValue(e.target.value)} autoFocus/>
+                <input type="number" value={Number(newValue).toString()} onChange={(e) => setNewValue(e.target.value)} autoFocus/>
                 <button type="submit">Save</button>
             </form>
 
