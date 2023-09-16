@@ -4,6 +4,11 @@ const Value = ({ value, onValueChange, onValueDelete }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newValue, setNewValue] = useState(value.value);
 
+    const handleValueChange = (e) => {
+        let value = e.target.value;
+        
+        setNewValue(Number(value));
+    }
     return (
         <div>
         {isEditing ? (
@@ -12,7 +17,7 @@ const Value = ({ value, onValueChange, onValueDelete }) => {
                 onValueChange(value, newValue);
                 setIsEditing(false);
             }}>
-                <input type="number" value={Number(newValue).toString()} onChange={(e) => setNewValue(e.target.value)} autoFocus/>
+                <input type="number" step="0.01" lang="en" value={newValue} onChange={handleValueChange} autoFocus/>
                 <button type="submit">Save</button>
             </form>
 
