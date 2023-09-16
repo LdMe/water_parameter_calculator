@@ -15,6 +15,11 @@ const BrowserRouter = createBrowserRouter([
     path: "/",
     element: <Layout />,
     children: [
+
+      {
+        path: "/parameter/",
+        element: <ParameterEditor />
+      },
       {
         path: "/parameter/:parameterName",
         element: <ParameterEditor />

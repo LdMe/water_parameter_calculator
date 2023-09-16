@@ -18,8 +18,8 @@ class Parameter {
         console.log(values);
         values.forEach(value => this.addValue(new Color(value.color.r,value.color.g,value.color.b), value.value,correct));
     }
-    getValues(reverse = false) {
-        const values =  this.values.sort((a,b) => {
+    getValues() {
+        const values =  this.values.slice().sort((a,b) => {
             const indexA = this.values.indexOf(a);
             const indexB = this.values.indexOf(b);
             const value = a.value - b.value;
@@ -28,9 +28,6 @@ class Parameter {
             }
             return value;
         });
-        if (!reverse) {
-            return values.slice().reverse();
-        }
         return values;
     }
     getClosestColorValue(color) {

@@ -13,13 +13,16 @@ function ParameterEditor() {
   const [isPickingWhite, setIsPickingWhite] = useState(false);
   const [whiteColor, setWhiteColor] = useState(new Color(255, 255, 255, 255));
   const [parameter, setParameter] = useState(null);
-  const [parameterName, setParameterName] = useState(useParams().parameterName);
+  const [parameterName, setParameterName] = useState(useParams().parameterName || "");
+  
   const navigate = useNavigate();
 
   useEffect(() => {
     loadParameterFromLocalStorage();
 
   }, []);
+
+ 
 
   const loadParameterFromLocalStorage = () => {
     const localStorageParameters = localStorage.getItem("parameters");
@@ -60,6 +63,7 @@ function ParameterEditor() {
       return;
     }
     parameter.addValue(color, 0)
+    setParameter(parameter);
     console.log("--------------------")
     console.log(parameter.getValues())
     setCount(count + 1);
@@ -67,6 +71,10 @@ function ParameterEditor() {
   }
 
   const saveParameter = () => {
+    if(parameter.name === "" || parameter.name === null || parameter.name === undefined){
+      alert("Parameter name cannot be empty");
+      return;
+    }
     const parameters = JSON.parse(localStorage.getItem("parameters"));
     if (parameters) {
       if (parameters.find(p => p.name === parameter.name)) {
@@ -78,7 +86,7 @@ function ParameterEditor() {
         localStorage.setItem("parameters", JSON.stringify(parameters));
         setCount(count + 1);
 
-        alert("Parameter saved");
+        alert(`Parameter '${parameter.name}' saved`);
         return;
       }
       parameters.push(parameter);
@@ -105,6 +113,7 @@ function ParameterEditor() {
     }
   }
   const changeParameterName = (e) => {
+    const name = e.target.value ? "" : e.target.value;
     setParameter(new Parameter(e.target.value, parameter.white, parameter.values));
     setParameterName(e.target.value);
     navigate(`/parameter/${e.target.value}`);
@@ -130,7 +139,7 @@ function ParameterEditor() {
           <button onClick={() => setParameter(new Parameter(parameter.name, parameter.white, []))}>New</button>
           <button onClick={deleteParameter}>Delete</button>
 
-          {parameter.getValues(true).map((value, index) => {
+          {parameter.getValues().map((value, index) => {
             return <Value
               value={value}
               key={value.color.toString() + index}
