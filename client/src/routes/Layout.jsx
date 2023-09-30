@@ -15,6 +15,15 @@ const Layout = () => {
                         <li>
                             <Link to="/calculate">calculate</Link>
                         </li>
+                        {localStorage.getItem('token') ?
+                            <li>
+                                <Link to="/logout">logout</Link>
+                            </li>
+                            :
+                            <li>
+                                <Link to="/login">login</Link>
+                            </li>
+                        }
                         </ul>
                 </nav>
             </header>

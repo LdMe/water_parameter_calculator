@@ -8,7 +8,6 @@ const authMiddleware = async (req, res, next) => {
         if (!token) return res.status(401).json({ message: "Unauthorized" });
         const decodedData = jwt.verify(token, process.env.SECRET);
         req.user = decodedData;
-        console.log("User: " ,req.user)
         next();
     } catch (error) {
         if(error.message.includes("jwt expired")) {

@@ -1,34 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Value = ({ value, onValueChange, onValueDelete }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newValue, setNewValue] = useState(value.value);
 
     const handleValueChange = (e) => {
-        let value = e.target.value;
-        
-        setNewValue(Number(value));
+        let tempValue = Number(e.target.value);
+
+        setNewValue(tempValue);
+        onValueChange(value, tempValue);
     }
+    useEffect(() => {
+    }, [value])
+
     return (
         <div>
-        {isEditing ? (
-            <form style={{backgroundColor:value.color.toString()}} onSubmit={(e) => {
-                e.preventDefault();
-                onValueChange(value, newValue);
-                setIsEditing(false);
-            }}>
-                <input type="number" step="0.01" lang="en" value={newValue} onChange={handleValueChange} autoFocus/>
-                <button type="submit">Save</button>
-            </form>
-
-        ) : (
-            <p style={{ backgroundColor: value.color.toString() }}>
-                {value.color.toString()}: {value.value}
-            </p>
-        )
-        }
+            <span style={{ display:"inline-block",width:"25px",height:"25px",backgroundColor: value.color ? value.color.toString(): "white"}}></span>
             
-            <button onClick={() => setIsEditing(true)}>Edit</button>
+                <input type="number" step="0.01" lang="en" value={newValue} onChange={handleValueChange} autoFocus />
+                
+
+
+
             <button onClick={() => onValueDelete(value)}>Delete</button>
         </div>
     )

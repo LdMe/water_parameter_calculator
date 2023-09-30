@@ -3,6 +3,7 @@ import Parameter from '../parameter';
 import Color from '../color';
 import ColorPicker from '../ColorPicker';
 import Value from '../Value';
+import { API_URL } from '../config';
 /* 
 * ColorCalculator that takes a picture and displays it on the screen, then it shows the mean rgb value of the area clicked
 *
@@ -23,7 +24,7 @@ function ColorCalculator() {
     const imageRef = useRef(null);
 
     useEffect(() => {
-        setParameters(loadParameters());
+        loadParameters();
     }, []);
     useEffect(() => {
         setSelectedParameter(parameters[0]);
@@ -95,38 +96,45 @@ function ColorCalculator() {
     }
 
     const handleClick = (rgb) => {
-        console.log("rfsdfd")
-        console.log(rgb)
         if (isPickingWhite) {
             setWhiteColor(rgb);
             setIsPickingWhite(false);
             return;
         }
         selectedParameter.setWhite(whiteColor);
-
         setPickedColor(selectedParameter.correctWhite(rgb));
-        console.log("rgb: ", rgb)
         const calculatedValue = selectedParameter.calculateValue(rgb);
-
-
-        console.log("calculatedValue: ", calculatedValue)
-        setValue(calculatedValue);
+        setValue(Math.round(calculatedValue * 1000 + Number.EPSILON) / 1000);
     }
 
-    const loadParameters = () => {
-        console.log("loading parameters")
-        let parameters = JSON.parse(localStorage.getItem("parameters"));
-        parameters = parameters.map((parameter) => {
-            console.log("parameter: ", parameter)
-            const newParameter = new Parameter(parameter.name, new Color(parameter.white.r, parameter.white.g, parameter.white.b));
-
-            newParameter.addValues(parameter.values, false);
-
-            return newParameter;
-        })
-        console.log("parameters: ")
-        console.log(parameters)
-        return parameters;
+    const loadParameters = async() => {
+        /* load parameters from api */
+        const newParameters = [];
+        try{
+            const response = await fetch(API_URL + "parameters",{
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+            });
+            console.log("response",response)
+            const json = await response.json();
+            console.log("json",json);
+            json.forEach((parameter) => {
+                console.log(parameter)
+                const newParam  = new Parameter(parameter.name);
+                newParam.addValues(parameter.values ? parameter.values : parameter.colors);
+                newParameters.push(newParam);
+            });
+            setParameters(newParameters);
+            return newParameters;
+        }
+        catch(err){
+            console.log(err);
+            setParameters([]);
+            return [];
+        }
     }
 
 
@@ -150,7 +158,7 @@ function ColorCalculator() {
                 <span style={{ backgroundColor: whiteColor.toString(), padding: "10px 15px", marginLeft: "10px" }}></span>
                 <span style={{ backgroundColor: pickedColor.toString(), padding: "10px 15px", marginLeft: "10px" }}></span>
                 <div className="values">
-                    {value}
+                    <input type="number" value={value} onChange={(e) => setValue(e.target.value)}/>
                     </div>
             </div>
 

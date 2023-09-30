@@ -14,8 +14,6 @@ class Parameter {
         this.values.push(new Value(color, value));
     }
     addValues(values,correct=true) {
-        console.log("values: ");
-        console.log(values);
         values.forEach(value => this.addValue(new Color(value.color.r,value.color.g,value.color.b), value.value,correct));
     }
     getValues() {
@@ -31,8 +29,6 @@ class Parameter {
         return values;
     }
     getClosestColorValue(color) {
-        console.log("this values");
-        console.log(this.values);
         return this.values.reduce((prev, curr) => {
             if (curr.color.getDistance(color) < prev.color.getDistance(color)) {
                 return curr;
@@ -56,28 +52,19 @@ class Parameter {
         * value = value of closest color + (distance to closest color / distance to second closest color) * (value of second closest color - value of closest color)
         * this formula is used to make sure that the value of the color is not too far off from the value of the closest color
         */
-       if(! (color instanceof Color)) {
-              console.log(color);   
+       if(! (color instanceof Color)) { 
               color = new Color(color.color.r,color.color.g,color.color.b);
        } 
         if(correct){
             color = this.correctWhite(color);
         }
         const closestColor = this.getClosestColorValue(color);
-        console.log("closest color: ");
-        console.log(closestColor);
         const secondClosestColor = this.getSecondClosestColorValue(color);
-        console.log("second closest color: ");
-        console.log(secondClosestColor);
 
         const distanceToClosestColor = color.getDistance(closestColor.color);
-        console.log("distance to closest color: " + distanceToClosestColor);
         const distanceToSecondClosestColor = color.getDistance(secondClosestColor.color);
-        console.log("distance to second closest color: " + distanceToSecondClosestColor);
         const valueOfClosestColor = closestColor.value;
         const valueOfSecondClosestColor = secondClosestColor.value;
-        console.log("value of closest color: " + valueOfClosestColor);
-        console.log("value of second closest color: " + valueOfSecondClosestColor);
 
         const value = valueOfClosestColor + (distanceToClosestColor / distanceToSecondClosestColor) * (valueOfSecondClosestColor - valueOfClosestColor);
         return value;
@@ -109,19 +96,27 @@ class Parameter {
       return color.add(whiteDifference);
     }
 
-    getColors() {
-        return this.values.map(v => v.color);
-    }
     static loadParametersFromJSON(json) {
         /* convert array of objects to array of parameters */
 
         const parameters = [];
         for (const parameter of json) {
             const values = [];
-            for (const value of parameter.values) {
+            if(parameter === null) continue;
+            if(parameter.values == undefined) {
+                if(parameter.colors){
+                    parameter.values = parameter.colors;
+                }
+                else {
+                    parameter.values = [];
+                }
+            }
+            for (const value of parameter.colors) {
                 values.push(new Value(new Color(value.color.r,value.color.g,value.color.b), value.value));
             }
-            parameters.push(new Parameter(parameter.name, new Color(parameter.white.r,parameter.white.g,parameter.white.b), values));
+            const newParameter = new Parameter(parameter.name);
+            newParameter.addValues(values);
+            parameters.push(newParameter);
         }
         return parameters;
     }
@@ -133,7 +128,6 @@ class Value {
     constructor(color, value) {
         this.color = color;
         this.value = parseFloat(value);
-        console.log("value: " + this.value);
     }
 }
 

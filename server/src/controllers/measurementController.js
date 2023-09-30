@@ -10,9 +10,7 @@ measurementController.getMeasurementsByUser = async (req, res) => {
 }
 
 measurementController.getMeasurementsByParameter = async (req, res) => {
-    console.log("req.params.parameterName", req.params.parameterName)
     const parameter  = await Parameter.findOne({ name: req.params.parameterName, user: req.user.id });
-    console.log("parameter", parameter)
     if (!parameter) {
         return res.status(400).json({ message: "Parameter not found" });
     }

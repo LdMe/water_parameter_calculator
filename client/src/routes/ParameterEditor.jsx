@@ -4,7 +4,7 @@ import Color from '../color';
 import ColorPicker from '../ColorPicker';
 import Value from '../Value';
 import { useParams, useNavigate } from 'react-router-dom';
-
+import { API_URL } from '../config';
 
 
 function ParameterEditor() {
@@ -14,15 +14,16 @@ function ParameterEditor() {
   const [whiteColor, setWhiteColor] = useState(new Color(255, 255, 255, 255));
   const [parameter, setParameter] = useState(null);
   const [parameterName, setParameterName] = useState(useParams().parameterName || "");
-  
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    loadParameterFromLocalStorage();
-
+    getParameterApi();
   }, []);
 
- 
+  
+
+
 
   const loadParameterFromLocalStorage = () => {
     const localStorageParameters = localStorage.getItem("parameters");
@@ -30,9 +31,7 @@ function ParameterEditor() {
       localStorage.setItem("parameters", JSON.stringify([]));
     }
     const parameters = Parameter.loadParametersFromJSON(JSON.parse(localStorage.getItem("parameters")));
-    console.log(parameters)
     const newParameter = parameters.find(p => p.name === parameterName);
-    console.log(newParameter)
     if (newParameter) {
       setParameter(newParameter);
     }
@@ -45,11 +44,11 @@ function ParameterEditor() {
 
   const changeValue = (value, newValue) => {
     parameter.setValue(value.color, newValue);
-    setCount(count + 1);
+    setParameter(parameter);
   }
   const deleteValue = (value) => {
     parameter.deleteValue(value.color);
-    setCount(count + 1);
+    setParameter(parameter);
   }
 
   const handleClick = (color) => {
@@ -64,14 +63,11 @@ function ParameterEditor() {
     }
     parameter.addValue(color, 0)
     setParameter(parameter);
-    console.log("--------------------")
-    console.log(parameter.getValues())
     setCount(count + 1);
-    console.log(color)
   }
 
   const saveParameter = () => {
-    if(parameter.name === "" || parameter.name === null || parameter.name === undefined){
+    /* if (parameter.name === "" || parameter.name === null || parameter.name === undefined) {
       alert("Parameter name cannot be empty");
       return;
     }
@@ -96,8 +92,103 @@ function ParameterEditor() {
       localStorage.setItem("parameters", JSON.stringify([parameter]));
     }
     setCount(count + 1);
-    alert("Parameter saved");
+    alert("Parameter saved"); */
+    saveParameterApi();
   }
+  const getParameterApi = async (saveToState=true) => {
+    if(parameterName === ""){
+      setParameter(new Parameter("", new Color(255, 255, 255, 255), []));
+      return null;
+    }
+    try {
+      const response = await fetch(API_URL + "parameters/" + parameterName, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
+      });
+      const json = await response.json();
+      if (!response.ok) {
+        throw new Error(json.message);
+      }
+      
+      const newParameters = Parameter.loadParametersFromJSON([json]);
+      
+      const newParameter = newParameters.find(p => p.name === parameterName);
+      if(!saveToState){
+        return newParameter;
+      }
+      if (newParameter) {
+        setParameter(newParameter);
+      }
+      else {
+        setParameter(new Parameter(parameterName, new Color(255, 255, 255, 255), []));
+      }
+      return newParameter;
+    }
+    catch (err) {
+      console.log(err);
+      return null;
+    }
+  }
+  const saveParameterApi = async () => {
+    if (parameter.name === null || parameter.name === undefined) {
+      alert("Parameter name cannot be empty");
+      return;
+    }
+    try {
+      const oldParameter = await getParameterApi(false);
+      if (oldParameter) {
+        if (!confirm(`A parameter with the name '${parameter.name}' already exists, do you want to overwrite it?`)) {
+          return;
+        };
+        const data = {
+          name: parameter.name,
+          colors: parameter.getValues(),
+          isColor: true
+        }
+        const response = await fetch(API_URL + "parameters/" + parameterName, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          },
+          body: JSON.stringify(data),
+        });
+        const json = await response.json();
+        if (!response.ok) {
+          throw new Error(json.message);
+        }
+        alert(`Parameter '${parameter.name}' saved`);
+        getParameterApi();
+        return;
+      }
+      const data = {
+        name: parameter.name,
+        colors: parameter.getValues(),
+        isColor: true
+      }
+      const response = await fetch(API_URL + "parameters/", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
+        body: JSON.stringify(data),
+      });
+      const json = await response.json();
+      if (!response.ok) {
+        throw new Error(json.message);
+      }
+      alert(`Parameter '${parameter.name}' saved`);
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+
+
   const deleteParameter = () => {
     const parameters = JSON.parse(localStorage.getItem("parameters"));
     if (parameters) {
@@ -113,8 +204,8 @@ function ParameterEditor() {
     }
   }
   const changeParameterName = (e) => {
-    const name = e.target.value ? "" : e.target.value;
-    setParameter(new Parameter(e.target.value, parameter.white, parameter.values));
+    parameter.name = e.target.value.toLowerCase();
+    setParameter(parameter);
     setParameterName(e.target.value);
     navigate(`/parameter/${e.target.value}`);
   }
@@ -122,7 +213,7 @@ function ParameterEditor() {
     <>
       {parameter !== null ? (
         <>
-          <h1>Click on the image to get the mean rgb value of the area clicked</h1>
+          <p>Click on the image to get the mean rgb value of the area clicked</p>
           <ColorPicker onClick={handleClick} isPicking={true}
           />
           <input type="text" value={parameter.name} onChange={changeParameterName} />
@@ -135,7 +226,7 @@ function ParameterEditor() {
           <span style={{ backgroundColor: whiteColor.toString(), padding: "10px 15px", marginLeft: "10px", border: "1px solid black" }}></span>
 
           <button onClick={saveParameter}>Save</button>
-          <button onClick={loadParameterFromLocalStorage}>Reset</button>
+          <button onClick={getParameterApi}>Reset</button>
           <button onClick={() => setParameter(new Parameter(parameter.name, parameter.white, []))}>New</button>
           <button onClick={deleteParameter}>Delete</button>
 

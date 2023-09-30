@@ -68,7 +68,6 @@ function ColorCalculator({onClick, isPicking=false}) {
    
     const handleClick = (e) => {
         if (!isPicking) return;
-        console.log(e)
         const cellSize = 10;
         const mouseX = e.nativeEvent.offsetX;
         const mouseY = e.nativeEvent.offsetY;
@@ -78,7 +77,6 @@ function ColorCalculator({onClick, isPicking=false}) {
         const context = canvas.current.getContext('2d');
         resizeImageAndDraw(imageRef.current);
         const imgData = context.getImageData(squareX * cellSize, squareY * cellSize, cellSize, cellSize);
-        console.log(imgData)
         const rgb = getMeanColor(imgData)
         resizeImageAndDraw(imageRef.current);
         context.fillStyle = rgb.toString();

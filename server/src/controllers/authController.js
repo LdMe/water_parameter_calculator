@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
+import bcrypt from 'bcrypt';
 
 const authController = {};
 
@@ -10,7 +11,8 @@ authController.login = async (req, res) => {
         if (!user) {
             return res.status(401).json({ message: "Email not found" });
         }
-        if (!user.comparePassword(password)) {
+        const comparation = await user.comparePassword(password);
+        if (!comparation) {
             return res.status(401).json({ message: "Incorrect password" });
         }
         const token = jwt.sign({ id: user._id }, process.env.SECRET, {
@@ -28,10 +30,10 @@ authController.register = async (req, res) => {
         const { email, password } = req.body;
         const oldUser = await User.findOne({ email });
         if (oldUser) {
-            console.log("user", oldUser)
             return res.status(400).json({ message: "Email already exists" });
         }
-        const user = new User({ email, password });
+        const hash  = await bcrypt.hash(password, 10);
+        const user = new User({ email, password:hash });
         await user.save();
         const token = jwt.sign({ id: user._id }, process.env.SECRET, {
             expiresIn: 86400,

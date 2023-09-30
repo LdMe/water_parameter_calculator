@@ -13,7 +13,6 @@ router.get('/', (req, res) => {
     res.send('Hello World!');
     }
 );
-
 router.use('/users', userRouter);
 router.use('/auth', authRouter);
 router.use('/parameters',authMiddleware, parameterRouter);

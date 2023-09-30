@@ -11,12 +11,13 @@ const userSchema = new connection.Schema(
 );
 userSchema.methods.comparePassword = async function (password) {
     try {
-      return await bcrypt.compare(password, this.password);
+        const comparation = await bcrypt.compare(password, this.password);
+        return comparation;
     } catch (error) {
       throw new Error(error);
     }
   };
-  
+
 const User = connection.model("User", userSchema);
 
 export default User;

@@ -9,7 +9,11 @@ parameterController.getParameters = async (req, res) => {
 
 parameterController.createParameter = async (req, res) => {
     try{
-        const { name, isColor, colors } = req.body;
+        let { name, isColor, colors } = req.body;
+        if (!isColor) {
+            colors = [];
+        }
+        name = name.toLowerCase();
         const oldParameter = await Parameter.findOne({ name, user: req.user.id });
         if (oldParameter) {
             return res.status(400).json({ message: "Parameter already exists" });
@@ -24,13 +28,22 @@ parameterController.createParameter = async (req, res) => {
 }
 
 parameterController.getParameter = async (req, res) => {
-    const parameter = await Parameter.findById(req.params.id);
+    const  {parameterName} = req.params;
+    console.log("parameterName", parameterName.toLowerCase());
+    const parameter = await Parameter.findOne({user:req.user.id, name: parameterName.toLowerCase()});
+    console.log("parameter", parameter)
     res.json(parameter);
 }
 
 parameterController.deleteParameter = async (req, res) => {
     await Parameter.findByIdAndDelete(req.params.id);
     res.json({ message: 'Parameter deleted' });
+}
+
+parameterController.updateParameter = async (req, res) => {
+    const { name, isColor, colors } = req.body;
+    await Parameter.findOneAndUpdate({ user: req.user.id, name }, { isColor, colors });
+    res.json({ message: 'Parameter updated' });
 }
 
 export default parameterController;
