@@ -21,12 +21,20 @@ measurementController.getMeasurementsByParameter = async (req, res) => {
 
 measurementController.createMeasurement = async (req, res) => {
     try{
-        const { value, parameterName } = req.body;
+        const { value, parameterName,color } = req.body;
         const  parameter = await Parameter.findOne({ name: parameterName, user: req.user.id });
         if (!parameter) {
             return res.status(400).json({ message: "Parameter not found" });
         }
-        const measurement = new Measurement({ value, parameter, user: req.user.id });
+        const data = {
+            value,
+            parameter: parameter._id,
+            user: req.user.id,
+        }
+        if(color){
+            data.color = color;
+        }
+        const measurement = new Measurement(data);
         await measurement.save();
         res.json({ message: 'Measurement saved' });
     }

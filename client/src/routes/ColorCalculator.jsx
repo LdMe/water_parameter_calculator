@@ -107,9 +107,33 @@ function ColorCalculator() {
         setValue(Math.round(calculatedValue * 1000 + Number.EPSILON) / 1000);
     }
 
+const handleSave = async(e) => {
+    try{
+        e.preventDefault();
+        const data = {value: value,parameterName : selectedParameter.name};
+        if(selectedParameter && selectedParameter.isColor){
+            data.color = pickedColor;
+        }
+
+        const response  = await fetch(API_URL + "measurements/",{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+            body: JSON.stringify(data),
+        });
+        const json = await response.json();
+        console.log(json);
+        }
+        catch(err){
+            console.log(err);
+        }
+}
+
     const loadParameters = async() => {
         /* load parameters from api */
-        const newParameters = [];
+        
         try{
             const response = await fetch(API_URL + "parameters",{
                 method: 'GET',
@@ -121,12 +145,8 @@ function ColorCalculator() {
             console.log("response",response)
             const json = await response.json();
             console.log("json",json);
-            json.forEach((parameter) => {
-                console.log(parameter)
-                const newParam  = new Parameter(parameter.name);
-                newParam.addValues(parameter.values ? parameter.values : parameter.colors);
-                newParameters.push(newParam);
-            });
+            const newParameters = Parameter.loadParametersFromJSON(json);
+            console.log("newParameters",newParameters);
             setParameters(newParameters);
             return newParameters;
         }
@@ -159,6 +179,7 @@ function ColorCalculator() {
                 <span style={{ backgroundColor: pickedColor.toString(), padding: "10px 15px", marginLeft: "10px" }}></span>
                 <div className="values">
                     <input type="number" value={value} onChange={(e) => setValue(e.target.value)}/>
+                    <button onClick={handleSave}>Add</button>
                     </div>
             </div>
 

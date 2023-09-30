@@ -115,6 +115,7 @@ class Parameter {
                 values.push(new Value(new Color(value.color.r,value.color.g,value.color.b), value.value));
             }
             const newParameter = new Parameter(parameter.name);
+            newParameter.isColor = parameter.isColor;
             newParameter.addValues(values);
             parameters.push(newParameter);
         }

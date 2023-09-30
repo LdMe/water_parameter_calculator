@@ -14,6 +14,7 @@ function ParameterEditor() {
   const [whiteColor, setWhiteColor] = useState(new Color(255, 255, 255, 255));
   const [parameter, setParameter] = useState(null);
   const [parameterName, setParameterName] = useState(useParams().parameterName || "");
+  const [parameterHasColorScale, setParameterHasColorScale] = useState(true);
 
   const navigate = useNavigate();
 
@@ -21,7 +22,12 @@ function ParameterEditor() {
     getParameterApi();
   }, []);
 
-  
+  useEffect(() => {
+    if (parameter) {
+      console.log("parameter",parameter)
+      setParameterHasColorScale(parameter.isColor);
+    }
+  }, [parameter]);
 
 
 
@@ -95,8 +101,8 @@ function ParameterEditor() {
     alert("Parameter saved"); */
     saveParameterApi();
   }
-  const getParameterApi = async (saveToState=true) => {
-    if(parameterName === ""){
+  const getParameterApi = async (saveToState = true) => {
+    if (parameterName === "") {
       setParameter(new Parameter("", new Color(255, 255, 255, 255), []));
       return null;
     }
@@ -112,11 +118,11 @@ function ParameterEditor() {
       if (!response.ok) {
         throw new Error(json.message);
       }
-      
+
       const newParameters = Parameter.loadParametersFromJSON([json]);
-      
+
       const newParameter = newParameters.find(p => p.name === parameterName);
-      if(!saveToState){
+      if (!saveToState) {
         return newParameter;
       }
       if (newParameter) {
@@ -146,7 +152,7 @@ function ParameterEditor() {
         const data = {
           name: parameter.name,
           colors: parameter.getValues(),
-          isColor: true
+          isColor: parameterHasColorScale
         }
         const response = await fetch(API_URL + "parameters/" + parameterName, {
           method: 'PUT',
@@ -167,7 +173,7 @@ function ParameterEditor() {
       const data = {
         name: parameter.name,
         colors: parameter.getValues(),
-        isColor: true
+        isColor: parameterHasColorScale
       }
       const response = await fetch(API_URL + "parameters/", {
         method: 'POST',
@@ -224,7 +230,8 @@ function ParameterEditor() {
             }
           </button>
           <span style={{ backgroundColor: whiteColor.toString(), padding: "10px 15px", marginLeft: "10px", border: "1px solid black" }}></span>
-
+          <label htmlFor="hasColorScale">Has color scale</label>
+          <input type="checkbox" checked={parameterHasColorScale} onChange={(e) => setParameterHasColorScale(e.target.checked)} />
           <button onClick={saveParameter}>Save</button>
           <button onClick={getParameterApi}>Reset</button>
           <button onClick={() => setParameter(new Parameter(parameter.name, parameter.white, []))}>New</button>

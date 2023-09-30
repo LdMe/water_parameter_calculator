@@ -4,6 +4,7 @@ const measurementSchema = new connection.Schema(
     {
         date: { type: Date, default: Date.now },
         value: { type: Number, required: true, },
+        color: { type: Object, required: false },
         parameter: { type: connection.Schema.Types.ObjectId, ref: 'Parameter' },
         user: { type: connection.Schema.Types.ObjectId, ref: 'User' },
     }
