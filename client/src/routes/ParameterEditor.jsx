@@ -51,10 +51,12 @@ function ParameterEditor() {
   const changeValue = (value, newValue) => {
     parameter.setValue(value.color, newValue);
     setParameter(parameter);
+    setCount(count + 1);
   }
   const deleteValue = (value) => {
     parameter.deleteValue(value.color);
     setParameter(parameter);
+    setCount(count + 1);
   }
 
   const handleClick = (color) => {
@@ -240,7 +242,7 @@ function ParameterEditor() {
           {parameter.getValues().map((value, index) => {
             return <Value
               value={value}
-              key={value.color.toString() + index}
+              key={value.color.toString()}
               onValueChange={changeValue}
               onValueDelete={deleteValue}
             />

@@ -1,3 +1,4 @@
+import { ObjectId } from "mongoose";
 import Measurement from "../models/measurementModel.js";
 import Parameter from "../models/parameterModel.js";
 
@@ -5,11 +6,28 @@ import Parameter from "../models/parameterModel.js";
 const measurementController = {};
 
 measurementController.getMeasurementsByUser = async (req, res) => {
-    const measurements = await Measurement.find({ user: req.user.id });
-    res.json(measurements);
+    let measurementsList = await Measurement.find({ user: req.user.id });
+    const parameters = await Parameter.find({ user: req.user.id });
+
+    const measurementsByParameter = {};
+    for (const parameter of parameters) {
+        measurementsByParameter[parameter.name] = [];
+    }
+    for (const measurement of measurementsList) {
+        const parameter = parameters.find(p => p._id == measurement.parameter.toString());
+        if (!parameter) {
+            continue;
+        }
+        measurementsByParameter[parameter.name].push(measurement);
+        
+    }
+
+
+    res.json(measurementsByParameter);
 }
 
 measurementController.getMeasurementsByParameter = async (req, res) => {
+    console.log("req.params.parameterName", req.params.parameterName);
     const parameter  = await Parameter.findOne({ name: req.params.parameterName, user: req.user.id });
     if (!parameter) {
         return res.status(400).json({ message: "Parameter not found" });

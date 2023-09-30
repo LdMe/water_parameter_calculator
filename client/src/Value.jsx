@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const Value = ({ value, onValueChange, onValueDelete }) => {
+const Value = ({ value, onValueChange, onValueDelete ,autoFocus=false}) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newValue, setNewValue] = useState(value.value);
 
@@ -17,7 +17,9 @@ const Value = ({ value, onValueChange, onValueDelete }) => {
         <div>
             <span style={{ display:"inline-block",width:"25px",height:"25px",backgroundColor: value.color ? value.color.toString(): "white"}}></span>
             
-                <input type="number" step="0.01" lang="en" value={newValue} onChange={handleValueChange} autoFocus />
+                <input type="number" step="0.01" lang="en" value={newValue} onChange={handleValueChange} 
+                {...autoFocus && {autoFocus:true}}
+                />
                 
 
 
