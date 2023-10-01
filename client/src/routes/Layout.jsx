@@ -12,6 +12,9 @@ import { FaLocationDot, FaRulerCombined, FaCalculator, FaRightFromBracket, FaRig
 
 import "../styles/Layout.scss";
 
+const iconStyles = {
+    color:"red",
+}
 const Layout = () => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [locations, setLocations] = useState([]);
@@ -102,29 +105,29 @@ const Layout = () => {
                         <ul>
 
                             <li>
-                                <Link to="/parameter/"><FaRulerCombined title="Parameters" /></Link>
+                                <Link to="/parameter/"><FaRulerCombined className="icon" title="Parameters" /></Link>
                             </li>
                             <li>
-                                <Link to="/location"><FaLocationDot title="Locations" /></Link>
+                                <Link to="/location" className="icon" ><FaLocationDot title="Locations" /></Link>
                             </li>
                             <li>
-                                <Link to="/calculate"><FaCalculator title="calculate" /></Link>
+                                <Link to="/calculate" className="icon" ><FaCalculator title="calculate" /></Link>
                             </li>
                             <li>
-                                <Link to="/logout"><FaRightFromBracket title="logout" /></Link>
+                                <Link to="/logout" className="icon" ><FaRightFromBracket title="logout" /></Link>
                             </li>
                         </ul>
 
                         :
                         <ul>
                             <li>
-                                <Link to="/"><FaHouse title="Home" /></Link>
+                                <Link to="/"><FaHouse className="icon" title="Home" /></Link>
                             </li>
                             <li>
-                                <Link to="/login"><FaRightToBracket title="login" /></Link>
+                                <Link to="/login"><FaRightToBracket className="icon" title="login" /></Link>
                             </li>
                             <li>
-                                <Link to="/register"><FaUserPlus title="register" /></Link>
+                                <Link to="/register"><FaUserPlus className="icon" title="register" /></Link>
                             </li>
                         </ul>
                     }

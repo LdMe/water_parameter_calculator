@@ -104,7 +104,7 @@ const Locations = () => {
                                 <input type="text" name="name" defaultValue={location.name} />
                                 <input type="hidden" defaultValue={location._id} name="id" />
                                 <section className="buttonSection">
-                                    <button className="iconButton" type="submit"><FaFloppyDisk title="rename" /></button>
+                                    <button className="iconButton icon" type="submit"><FaFloppyDisk title="rename" /></button>
                                     <FaChartLine className="icon" onClick={() => { navigate("/location/" + location.name) }}>view</FaChartLine>
                                     <FaTrash className="icon" onClick={() => deleteLocation(location._id)} title="delete" ></FaTrash>
                                 </section>

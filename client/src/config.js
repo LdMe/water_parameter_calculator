@@ -1,3 +1,3 @@
 
 
-export const API_URL = 'http://192.168.1.130:3999/';
+export const API_URL = 'https://api-hydromnis.lafuentedanel.com/';

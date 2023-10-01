@@ -12,7 +12,7 @@ nav {
     left: 0;
     width: 100%;
     z-index: 100;
-    background-color: #fff;
+    background-color: #c1eef67f;
     border-top: 1px solid #ddd;
 
     & ul {
@@ -57,6 +57,7 @@ main {
 }
 .icon {
     cursor: pointer;
+    color:rgb(28, 70, 168);
 }
 
 .info {
