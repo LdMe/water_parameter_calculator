@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
+import '../styles/Locations.scss'
+import { FaTrash, FaFloppyDisk, FaChartLine, FaPlus } from 'react-icons/fa6';
 
 const Locations = () => {
     const [locations, setLocations] = useState([]);
@@ -32,6 +34,7 @@ const Locations = () => {
     }
     const createLocation = async () => {
         try {
+            if(newlocationName === "") return;
             console.log("newlocationName", newlocationName)
             const response = await fetch(API_URL + "locations", {
                 method: 'POST',
@@ -92,18 +95,20 @@ const Locations = () => {
         <div>
             <h2>My Locations</h2>
             <input type="text" placeholder="new" value={newlocationName} onChange={(e) => setNewLocationName(e.target.value)} />
-            <button onClick={createLocation}>add</button>
+            <FaPlus className="icon" onClick={createLocation}>add</FaPlus>
             {
                 locations.slice().reverse().map(location => {
                     return (
-                        <div key={location._id}>
-                            <form onSubmit={saveLocation}>
-                                <input type="text" defaultValue={location.name} />
+                        <div key={location._id} className="locationListElement">
+                            <form className="locationForm" onSubmit={saveLocation}>
+                                <input type="text" name="name" defaultValue={location.name} />
                                 <input type="hidden" defaultValue={location._id} name="id" />
-                                <button type="submit">rename</button>
-                                <button onClick={() => deleteLocation(location._id)} >delete</button>
+                                <section className="buttonSection">
+                                    <button className="iconButton" type="submit"><FaFloppyDisk title="rename" /></button>
+                                    <FaChartLine className="icon" onClick={() => { navigate("/location/" + location.name) }}>view</FaChartLine>
+                                    <FaTrash className="icon" onClick={() => deleteLocation(location._id)} title="delete" ></FaTrash>
+                                </section>
                             </form>
-                            <button onClick={()=>{navigate("/location/"+location.name)}}>view</button>
                         </div>
                     )
 

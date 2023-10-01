@@ -3,6 +3,7 @@ import {API_URL} from '../config';
 import {useParams} from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
 import {useLocation} from 'react-router-dom';
+import { FaArrowLeft } from 'react-icons/fa6';
 
 const LocationViewer = () => {
     const [location,setLocation] = useState({});
@@ -39,7 +40,7 @@ const LocationViewer = () => {
     return (
         <div>
             <h1>Location {locationName}</h1>
-            <button onClick={() => navigate("/location")}>Back</button>
+            <FaArrowLeft className="icon" onClick={() => navigate("/location")}>Back</FaArrowLeft>
             <ul>
                 { 
                 /* measurements is an object with an array for each key */
