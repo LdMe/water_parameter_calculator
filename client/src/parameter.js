@@ -5,6 +5,7 @@ class Parameter {
         this.name = name;
         this.white = white;
         this.values = values;
+        this.isColor = true;
     }
     addValue(color, value,correct=true) {
         if(correct){

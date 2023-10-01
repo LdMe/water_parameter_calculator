@@ -1,16 +1,21 @@
 import { useEffect, useState } from "react";
-import { useLocation,useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Outlet, Link } from "react-router-dom";
 
 import LoggedInContext from "../context/loggedInContext";
 import LocationContext from "../context/locationsContext";
 import ParameterContext from "../context/parametersContext";
+import ErrorContext from "../context/errorContext";
 import { API_URL } from "../config";
+import {FaLocationDot,FaRulerCombined,FaCalculator,FaRightFromBracket,FaUser,FaUserPlus} from "react-icons/fa6";
+
+import "../styles/Layout.scss";
 
 const Layout = () => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [locations, setLocations] = useState([]);
     const [parameters, setParameters] = useState([]);
+    const [error, setError] = useState(null);
     const webLocation = useLocation();
     const navigate = useNavigate();
     useEffect(() => {
@@ -18,20 +23,29 @@ const Layout = () => {
         if (token) {
             setLoggedIn(true);
         }
-        else{
-            if(webLocation.pathname !== "/login" && webLocation.pathname !== "/register"){
+        else {
+            if (webLocation.pathname !== "/login" && webLocation.pathname !== "/register") {
                 setLoggedIn(false);
                 navigate('/login');
             }
 
         }
     }, []);
+
     useEffect(() => {
         if (loggedIn) {
             getParameters();
             getLocations();
         }
     }, [loggedIn]);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setError(null);
+        }, 5000);
+    }, [error]);
+
+
 
 
     const getLocations = async () => {
@@ -65,30 +79,30 @@ const Layout = () => {
             <header>
                 <nav>
 
-                    
+
                     {loggedIn ?
                         <ul>
                             <li>
-                                <Link to="/parameter/">Edit parameter</Link>
+                                <Link to="/parameter/"><FaRulerCombined title="Parameters"/></Link>
                             </li>
                             <li>
-                                <Link to="/location">My locations</Link>
+                                <Link to="/location"><FaLocationDot title="Locations"/></Link>
                             </li>
                             <li>
-                                <Link to="/calculate">calculate</Link>
+                                <Link to="/calculate"><FaCalculator title="calculate"/></Link>
                             </li>
                             <li>
-                                <Link to="/logout">logout</Link>
+                                <Link to="/logout"><FaRightFromBracket title="logout"/></Link>
                             </li>
                         </ul>
 
                         :
                         <ul>
                             <li>
-                                <Link to="/login">login</Link>
+                                <Link to="/login"><FaUser title="login"/></Link>
                             </li>
                             <li>
-                                <Link to="/register">register</Link>
+                                <Link to="/register"><FaUserPlus title="register"/></Link>
                             </li>
                         </ul>
                     }
@@ -96,15 +110,19 @@ const Layout = () => {
                 </nav>
             </header>
 
-
-            <h1>Water parameter calculator</h1>
-            <LoggedInContext.Provider value={{ loggedIn, setLoggedIn }}>
-                <LocationContext.Provider value={{ locations, setLocations }}>
-                    <ParameterContext.Provider value={{ parameters, setParameters }}>
-                        <Outlet />
-                    </ParameterContext.Provider>
-                </LocationContext.Provider>
-            </LoggedInContext.Provider>
+            <main>
+                <h1>Water parameter calculator</h1>
+                <LoggedInContext.Provider value={{ loggedIn, setLoggedIn }}>
+                    <LocationContext.Provider value={{ locations, setLocations }}>
+                        <ParameterContext.Provider value={{ parameters, setParameters }}>
+                            <ErrorContext.Provider value={{ error, setError }}>
+                                {error && <div className="error">{error}</div>}
+                                <Outlet />
+                            </ErrorContext.Provider>
+                        </ParameterContext.Provider>
+                    </LocationContext.Provider>
+                </LoggedInContext.Provider>
+            </main>
         </div>
     )
 }

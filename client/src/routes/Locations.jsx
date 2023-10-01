@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
 
 const Locations = () => {
     const [locations, setLocations] = useState([]);
     const [newlocationName, setNewLocationName] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         loadLocations();
@@ -101,7 +103,7 @@ const Locations = () => {
                                 <button type="submit">rename</button>
                                 <button onClick={() => deleteLocation(location._id)} >delete</button>
                             </form>
-                            <a href={"/location/" + location.name}>view</a>
+                            <button onClick={()=>{navigate("/location/"+location.name)}}>view</button>
                         </div>
                     )
 

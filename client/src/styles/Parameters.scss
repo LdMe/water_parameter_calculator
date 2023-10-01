@@ -1,0 +1,16 @@
+
+
+.parameterList {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    & article {
+        min-width: 20%;
+        max-width: 50%;
+        padding: 5px;
+    }
+    & button {
+        display: block;
+        width: 100%;
+    }
+}

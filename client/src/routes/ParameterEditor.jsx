@@ -2,11 +2,12 @@ import { useState, useRef, useEffect } from 'react'
 import Parameter from '../parameter';
 import Color from '../color';
 import ColorPicker from '../ColorPicker';
-import Value from '../Value';
+import Value from '../components/Value';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { API_URL } from '../config';
 import SuggestedInput from './SuggestedInput';
-
+import ColorPickShow from '../components/colorPickShow';
+import '../styles/Parameters.scss'
 
 function ParameterEditor() {
 
@@ -17,6 +18,7 @@ function ParameterEditor() {
   const [parameters, setParameters] = useState([]);
   const [parameterName, setParameterName] = useState(useParams().parameterName || "");
   const [parameterHasColorScale, setParameterHasColorScale] = useState(true);
+  const [focusColor, setFocusColor] = useState(null);
   const webLocation = useLocation();
   const params = useParams();
   const navigate = useNavigate();
@@ -29,7 +31,9 @@ function ParameterEditor() {
   useEffect(() => {
     if (parameter) {
       console.log("parameter", parameter)
-      setParameterHasColorScale(parameter.isColor);
+      if(parameter.isColor !== undefined){
+        setParameterHasColorScale(parameter.isColor);
+      }
     }
   }, [parameter]);
 
@@ -41,6 +45,7 @@ function ParameterEditor() {
 
 
   const changeValue = (value, newValue) => {
+    setFocusColor(value.color);
     parameter.setValue(value.color, newValue);
     setParameter(parameter);
     setCount(count + 1);
@@ -253,15 +258,17 @@ function ParameterEditor() {
       {parameter !== null ? (
         <>
           <h1>Parameters</h1>
-          <ul>
+          <section className="parameterList">
             {parameters.map(p => {
-              return <li key={p.name}><span onClick={() => loadParameter(p.name)}>{p.name}</span></li>
+              return <article key={p.name}><button onClick={() => loadParameter(p.name)}>{p.name}</button></article>
             }
             )}
-          </ul>
+          </section>
           <h2>Edit parameter</h2>
+          <label htmlFor="parameterName">Parameter name</label>
           <SuggestedInput
-            suggested={parameters.filter(p => p.name.includes(parameterName)).map(p => p.name)}
+            //suggested={parameters.filter(p => p.name.includes(parameterName)).map(p => p.name)}
+            suggested={[]}
             value={parameter.name}
             onChange={changeParameterName}
           />
@@ -275,13 +282,12 @@ function ParameterEditor() {
           {parameterHasColorScale &&
             <section className="colorSelector">
               <ColorPicker onClick={handleClick} isPicking={true} />
-              <button
-                onClick={setIsPickingWhite}>
-                {
-                  isPickingWhite ? "Picking" : "Pick white color"
-                }
-              </button>
-              <span style={{ backgroundColor: whiteColor.toString(), padding: "10px 15px", marginLeft: "10px", border: "1px solid black" }}></span>
+              <ColorPickShow
+                        isPickingWhite={isPickingWhite}
+                        setIsPickingWhite={setIsPickingWhite}
+                        whiteColor={whiteColor}
+                        pickedColor={parameter.values.length !== 0 ? parameter.values[parameter.values.length -1].color : new Color(255,255,255,255)}
+                         />
             </section>
           }
 
@@ -291,9 +297,10 @@ function ParameterEditor() {
           {parameter.getValues().map((value, index) => {
             return <Value
               value={value}
-              key={value.color.toString()}
+              key={value.color.toString() + index}
               onValueChange={changeValue}
               onValueDelete={deleteValue}
+              autoFocus={focusColor === value.color}
             />
           }
           )}

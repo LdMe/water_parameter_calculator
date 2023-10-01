@@ -1,16 +1,18 @@
 import { useState, useRef, useEffect } from 'react'
 import Color from './color';
+import './styles/ColorPicker.scss';
 /* 
 * ColorCalculator that takes a picture and displays it on the screen, then it shows the mean rgb value of the area clicked
 *
 */
 
 
-function ColorCalculator({onClick, isPicking=false}) {
+function ColorCalculator({ onClick, isPicking = false }) {
 
-   
+    const [imageSet, setImageSet] = useState(false);
     const canvas = useRef(null);
     const imageRef = useRef(null);
+    const [zoom,setZoom] = useState(1);
 
 
     const resizeImageAndDraw = (img) => {
@@ -34,11 +36,12 @@ function ColorCalculator({onClick, isPicking=false}) {
             xStart = 0;
             yStart = 0;
         }
+        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.scale(zoom,zoom);
         context.clearRect(0, 0, canvas.current.width, canvas.current.height);
         context.drawImage(img, xStart, yStart, renderableWidth, renderableHeight);
     }
     const handleImageUpload = (e) => {
-        const context = canvas.current.getContext('2d');
         const img = new Image();
 
         img.onload = () => {
@@ -48,6 +51,7 @@ function ColorCalculator({onClick, isPicking=false}) {
         }
         img.src = URL.createObjectURL(e.target.files[0]);
         imageRef.current = img;
+        setImageSet(true);
     }
     const getMeanColor = (imgData) => {
         const data = imgData.data;
@@ -65,14 +69,26 @@ function ColorCalculator({onClick, isPicking=false}) {
         b = Math.floor(b / (data.length / 4));
         return new Color(r, g, b)
     }
-   
+
     const handleClick = (e) => {
         if (!isPicking) return;
         const cellSize = 10;
-        const mouseX = e.nativeEvent.offsetX;
-        const mouseY = e.nativeEvent.offsetY;
+        const originalImageWidth = canvas.current.width;
+        const originalImageHeight = canvas.current.height;
+        const canvasWidth = canvas.current.getBoundingClientRect().width;
+        const canvasHeight = canvas.current.getBoundingClientRect().height;
+
+        const offsetX = (originalImageWidth / canvasWidth) ;
+        const offsetY = (originalImageHeight / canvasHeight) ;
+        const mouseX = e.nativeEvent.offsetX * offsetX;
+        const mouseY = e.nativeEvent.offsetY * offsetY;
+        const mouseZoomX = e.nativeEvent.offsetX * offsetX / zoom;
+        const mouseZoomY = e.nativeEvent.offsetY * offsetY / zoom;
+
         const squareX = Math.floor(mouseX / cellSize);
         const squareY = Math.floor(mouseY / cellSize);
+        const squareZoomX = Math.floor(mouseZoomX / cellSize);
+        const squareZoomY = Math.floor(mouseZoomY / cellSize);
 
         const context = canvas.current.getContext('2d');
         resizeImageAndDraw(imageRef.current);
@@ -80,24 +96,29 @@ function ColorCalculator({onClick, isPicking=false}) {
         const rgb = getMeanColor(imgData)
         resizeImageAndDraw(imageRef.current);
         context.fillStyle = rgb.toString();
-        context.fillRect(squareX * cellSize, squareY * cellSize, cellSize, cellSize);
+        context.fillRect(squareZoomX * cellSize, squareZoomY * cellSize, cellSize, cellSize);
         context.strokeStyle = 'black';
-        context.strokeRect(squareX * cellSize, squareY * cellSize, cellSize, cellSize);
+        context.strokeRect(squareZoomX * cellSize, squareZoomY * cellSize, cellSize, cellSize);
         onClick(rgb);
     }
 
-    
+    const handleZoomIn = () => {
+    }
 
 
     return (
         <>
-            
+
             <div className="ColorCalculator">
-                <canvas ref={canvas} id="canvas" width="500" height="500" onClick={handleClick}> </canvas>
                 <label htmlFor="imageInput">
                     image
                 </label>
                 <input id="imageInput" type="file" accept="image/*" onChange={handleImageUpload} />
+                {imageSet &&
+                    <section className="canvas-section">
+                        <canvas ref={canvas} id="canvas" width="500" height="500" onClick={handleClick}> </canvas>
+                    </section>
+                }
 
             </div>
 
