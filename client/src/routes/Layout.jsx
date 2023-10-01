@@ -7,7 +7,8 @@ import LocationContext from "../context/locationsContext";
 import ParameterContext from "../context/parametersContext";
 import ErrorContext from "../context/errorContext";
 import { API_URL } from "../config";
-import {FaLocationDot,FaRulerCombined,FaCalculator,FaRightFromBracket,FaUser,FaUserPlus,FaHouse,FaMagnifyingGlassChart} from "react-icons/fa6";
+
+import { FaLocationDot, FaRulerCombined, FaCalculator, FaRightFromBracket, FaRightToBracket, FaUser, FaUserPlus, FaHouse, FaMagnifyingGlassChart } from "react-icons/fa6";
 
 import "../styles/Layout.scss";
 
@@ -77,44 +78,11 @@ const Layout = () => {
     return (
         <div>
             <header>
-                <nav>
-
-
-                    {loggedIn ?
-                        <ul>
-                            <li>
-                                <Link to="/"><FaHouse title="Home"/></Link>
-                            </li>
-                            <li>
-                                <Link to="/parameter/"><FaRulerCombined title="Parameters"/></Link>
-                            </li>
-                            <li>
-                                <Link to="/location"><FaLocationDot title="Locations"/></Link>
-                            </li>
-                            <li>
-                                <Link to="/calculate"><FaCalculator title="calculate"/></Link>
-                            </li>
-                            <li>
-                                <Link to="/logout"><FaRightFromBracket title="logout"/></Link>
-                            </li>
-                        </ul>
-
-                        :
-                        <ul>
-                            <li>
-                                <Link to="/login"><FaUser title="login"/></Link>
-                            </li>
-                            <li>
-                                <Link to="/register"><FaUserPlus title="register"/></Link>
-                            </li>
-                        </ul>
-                    }
-
-                </nav>
+                <img className="banner" src="/banner.png" alt="logo" />
             </header>
 
             <main>
-                <h1><FaMagnifyingGlassChart/> HydrOmnis</h1>
+                <h1><FaMagnifyingGlassChart /> HydrOmnis</h1>
                 <LoggedInContext.Provider value={{ loggedIn, setLoggedIn }}>
                     <LocationContext.Provider value={{ locations, setLocations }}>
                         <ParameterContext.Provider value={{ parameters, setParameters }}>
@@ -126,6 +94,43 @@ const Layout = () => {
                     </LocationContext.Provider>
                 </LoggedInContext.Provider>
             </main>
+            <footer>
+                <nav>
+
+
+                    {loggedIn ?
+                        <ul>
+
+                            <li>
+                                <Link to="/parameter/"><FaRulerCombined title="Parameters" /></Link>
+                            </li>
+                            <li>
+                                <Link to="/location"><FaLocationDot title="Locations" /></Link>
+                            </li>
+                            <li>
+                                <Link to="/calculate"><FaCalculator title="calculate" /></Link>
+                            </li>
+                            <li>
+                                <Link to="/logout"><FaRightFromBracket title="logout" /></Link>
+                            </li>
+                        </ul>
+
+                        :
+                        <ul>
+                            <li>
+                                <Link to="/"><FaHouse title="Home" /></Link>
+                            </li>
+                            <li>
+                                <Link to="/login"><FaRightToBracket title="login" /></Link>
+                            </li>
+                            <li>
+                                <Link to="/register"><FaUserPlus title="register" /></Link>
+                            </li>
+                        </ul>
+                    }
+
+                </nav>
+            </footer>
         </div>
     )
 }

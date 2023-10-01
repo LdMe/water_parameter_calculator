@@ -31,7 +31,7 @@ function ParameterEditor() {
   useEffect(() => {
     if (parameter) {
       console.log("parameter", parameter)
-      if(parameter.isColor !== undefined){
+      if (parameter.isColor !== undefined) {
         setParameterHasColorScale(parameter.isColor);
       }
     }
@@ -272,22 +272,25 @@ function ParameterEditor() {
             value={parameter.name}
             onChange={changeParameterName}
           />
-
-          <button onClick={getParameterApi}>Reset</button>
-          <button onClick={saveParameter}>Save</button>
-          <button onClick={() => setParameter(new Parameter(parameter.name, parameter.white, []))}>New</button>
-          <button onClick={deleteParameter}>Delete</button>
-          <label htmlFor="hasColorScale">Has color scale</label>
-          <input type="checkbox" checked={parameterHasColorScale} onChange={(e) => setParameterHasColorScale(e.target.checked)} />
+          <section className="buttonSection">
+            <button onClick={getParameterApi}>Reset</button>
+            <button onClick={saveParameter}>Save</button>
+            <button onClick={() => setParameter(new Parameter(parameter.name, parameter.white, []))}>New</button>
+            <button onClick={deleteParameter}>Delete</button>
+          </section>
+          <section className="colorScaleSection">
+            <label htmlFor="hasColorScale">Has color scale</label>
+            <input type="checkbox" checked={parameterHasColorScale} onChange={(e) => setParameterHasColorScale(e.target.checked)} />
+          </section>
           {parameterHasColorScale &&
             <section className="colorSelector">
               <ColorPicker onClick={handleClick} isPicking={true} />
               <ColorPickShow
-                        isPickingWhite={isPickingWhite}
-                        setIsPickingWhite={setIsPickingWhite}
-                        whiteColor={whiteColor}
-                        pickedColor={parameter.values.length !== 0 ? parameter.values[parameter.values.length -1].color : new Color(255,255,255,255)}
-                         />
+                isPickingWhite={isPickingWhite}
+                setIsPickingWhite={setIsPickingWhite}
+                whiteColor={whiteColor}
+                pickedColor={parameter.values.length !== 0 ? parameter.values[parameter.values.length - 1].color : new Color(255, 255, 255, 255)}
+              />
             </section>
           }
 
