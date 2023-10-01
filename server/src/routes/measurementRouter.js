@@ -13,7 +13,7 @@ router.post('/', measurementController.createMeasurement);
 
 router.get('/:id', measurementController.getMeasurement);
 
-router.delete('/:parameterName', measurementController.deleteMeasurement);
+router.delete('/:id', measurementController.deleteMeasurement);
 
 export default router;
 

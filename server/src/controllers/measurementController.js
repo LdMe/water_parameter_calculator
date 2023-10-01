@@ -99,6 +99,7 @@ measurementController.getMeasurement = async (req, res) => {
 }
 
 measurementController.deleteMeasurement = async (req, res) => {
+    console.log("req.params.id", req.params.id)
     await Measurement.findByIdAndDelete(req.params.id);
     res.json({ message: 'Measurement deleted' });
 }

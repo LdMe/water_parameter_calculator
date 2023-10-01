@@ -7,7 +7,7 @@ import LocationContext from "../context/locationsContext";
 import ParameterContext from "../context/parametersContext";
 import ErrorContext from "../context/errorContext";
 import { API_URL } from "../config";
-import {FaLocationDot,FaRulerCombined,FaCalculator,FaRightFromBracket,FaUser,FaUserPlus} from "react-icons/fa6";
+import {FaLocationDot,FaRulerCombined,FaCalculator,FaRightFromBracket,FaUser,FaUserPlus,FaHouse,FaMagnifyingGlassChart} from "react-icons/fa6";
 
 import "../styles/Layout.scss";
 
@@ -83,6 +83,9 @@ const Layout = () => {
                     {loggedIn ?
                         <ul>
                             <li>
+                                <Link to="/"><FaHouse title="Home"/></Link>
+                            </li>
+                            <li>
                                 <Link to="/parameter/"><FaRulerCombined title="Parameters"/></Link>
                             </li>
                             <li>
@@ -111,7 +114,7 @@ const Layout = () => {
             </header>
 
             <main>
-                <h1>Water parameter calculator</h1>
+                <h1><FaMagnifyingGlassChart/> HydrOmnis</h1>
                 <LoggedInContext.Provider value={{ loggedIn, setLoggedIn }}>
                     <LocationContext.Provider value={{ locations, setLocations }}>
                         <ParameterContext.Provider value={{ parameters, setParameters }}>

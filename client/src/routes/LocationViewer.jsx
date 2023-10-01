@@ -36,6 +36,29 @@ const LocationViewer = () => {
         }
 
     }
+    const deleteMeasurement = async (measurementId) => {
+        if(!confirm("Are you sure you want to delete this measurement?")){
+            return;
+        }
+        
+        try{
+            const response = await fetch(API_URL + "measurements/" + measurementId, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+            });
+            const json = await response.json();
+            console.log("json delete", json)
+            loadLocation();
+        }
+        catch(err){
+            console.log("err", err)
+        }
+
+    }
+
 
     return (
         <div>
@@ -56,7 +79,8 @@ const LocationViewer = () => {
                                             <span style={{backgroundColor: `rgba(${measurement.color.r},${measurement.color.g},${measurement.color.b},${measurement.color.a})`,width:"20px",height:"20px",display:"inline-block"}}></span>
                                             }
                                             {measurement.value} | 
-                                            {new Date(measurement.date).toLocaleString()}
+                                            {new Date(measurement.date).toDateString()}
+                                            <button onClick={()=>deleteMeasurement(measurement._id)}>Delete</button>
                                         </li>
                                     )
                                 })}

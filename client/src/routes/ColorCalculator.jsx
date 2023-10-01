@@ -204,7 +204,7 @@ function ColorCalculator() {
 
     return (
         <>
-            <h1>Color value calculator</h1>
+            <h2>Color value calculator</h2>
             <div className="ColorCalculator">
                 <section className="selectors">
 
