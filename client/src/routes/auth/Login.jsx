@@ -1,11 +1,16 @@
 import { useEffect } from 'react';
 import { API_URL } from '../../config';
 import { useNavigate } from 'react-router-dom';
+import LoggedInContext from '../../context/loggedInContext';
+import { useContext } from 'react';
+
 const Login = ({isRegister=false,isLogout=false}) => {
+    const {setLoggedIn} = useContext(LoggedInContext);
     const navigate = useNavigate();
     useEffect(() => {
         if(isLogout){
             localStorage.removeItem('token');
+            setLoggedIn(false);
             navigate('/');
         }
     },[]);
@@ -32,6 +37,7 @@ const Login = ({isRegister=false,isLogout=false}) => {
                 throw new Error(json.message);
             }
             localStorage.setItem('token', json.token);
+            setLoggedIn(true);
             navigate('/');
 
         }
@@ -40,8 +46,12 @@ const Login = ({isRegister=false,isLogout=false}) => {
         }
 
     }
+    if(isLogout){
+        return <div>Logging out...</div>
+    }
     return (
         <div>
+            <h2>{isRegister ? "Register" : "Login"}</h2>
             <form onSubmit={handlSubmit}>
                 <label>
                     Email:

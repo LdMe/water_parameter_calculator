@@ -1,9 +1,13 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect,useContext } from 'react'
 import Parameter from '../parameter';
 import Color from '../color';
 import ColorPicker from '../ColorPicker';
 import Value from '../Value';
 import { API_URL } from '../config';
+import { useNavigate } from 'react-router-dom';
+import locationsContext from '../context/locationsContext';
+import parametersContext from '../context/parametersContext';
+
 /* 
 * ColorCalculator that takes a picture and displays it on the screen, then it shows the mean rgb value of the area clicked
 *
@@ -15,20 +19,29 @@ function ColorCalculator() {
     const [count, setCount] = useState(0)
     const [isPickingWhite, setIsPickingWhite] = useState(false);
     const [whiteColor, setWhiteColor] = useState(new Color(255, 255, 255));
-    const [parameters, setParameters] = useState([]);
     const [selectedParameter, setSelectedParameter] = useState(null);
+    const [locations, setLocations] = useState([]); 
+    const  [selectedLocation, setSelectedLocation] = useState(null);
     const [testParameter, setTestParameter] = useState(new Parameter("nitrate", new Color(255, 255, 255)));
     const [pickedColor, setPickedColor] = useState(new Color(0,0,0,0));
     const [value, setValue] = useState(0);
     const canvas = useRef(null);
     const imageRef = useRef(null);
+    const navigate = useNavigate();
+    const locationsCtx = useContext(locationsContext);
+    const parametersCtx = useContext(parametersContext);
 
     useEffect(() => {
         loadParameters();
+        loadLocations();
     }, []);
     useEffect(() => {
-        setSelectedParameter(parameters[0]);
-    }, [parameters]);
+        setSelectedParameter(parametersCtx.parameters[0]);
+        
+    }, [parametersCtx.parameters]);
+    useEffect(() => {
+        setSelectedLocation(locations[0]);
+    }, [locations]);
     useEffect(() => {
         if (selectedParameter) {
             testParameter.name = selectedParameter.name;
@@ -110,7 +123,11 @@ function ColorCalculator() {
 const handleSave = async(e) => {
     try{
         e.preventDefault();
-        const data = {value: value,parameterName : selectedParameter.name};
+        const data = {
+            value: value,
+            parameterName : selectedParameter.name,
+            locationName : selectedLocation.name,
+        };
         if(selectedParameter && selectedParameter.isColor){
             data.color = pickedColor;
         }
@@ -147,12 +164,33 @@ const handleSave = async(e) => {
             console.log("json",json);
             const newParameters = Parameter.loadParametersFromJSON(json);
             console.log("newParameters",newParameters);
-            setParameters(newParameters);
+            parametersCtx.setParameters(newParameters);
             return newParameters;
         }
         catch(err){
             console.log(err);
-            setParameters([]);
+            parametersCtx.setParameters([]);
+            return [];
+        }
+    }
+
+    const loadLocations = async() => {
+        /* load locations from api */
+        try{
+            const response = await fetch(API_URL + "locations",{
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+            });
+            const json = await response.json();
+            
+            setLocations(json);
+        }
+        catch(err){
+            console.log(err);
+            setLocations([]);
             return [];
         }
     }
@@ -167,9 +205,17 @@ const handleSave = async(e) => {
                 <label htmlFor="selectParameter">
                     parameter
                 </label>
-                <select  id="selectParameter" onChange={(e) => setSelectedParameter(parameters.find(p => p.name === e.target.value))}>
-                    {parameters.map((parameter) => {
+                <select  id="selectParameter" onChange={(e) => setSelectedParameter(parametersCtx.parameters.find(p => p.name === e.target.value))}>
+                    {parametersCtx.parameters.map((parameter) => {
                         return <option key={parameter.name} value={parameter.name}>{parameter.name}</option>
+                    })}
+                </select>
+                <label htmlFor="selectLocation">
+                    location
+                </label>
+                <select  id="selectLocation" onChange={(e) => setSelectedLocation(locations.find(p => p.name === e.target.value))}>
+                    {locations.map((location) => {
+                        return <option key={location.name} value={location.name}>{location.name}</option>
                     })}
                 </select>
                 <button onClick={() => setIsPickingWhite(true)} >

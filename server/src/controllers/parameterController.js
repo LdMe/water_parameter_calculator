@@ -36,7 +36,16 @@ parameterController.getParameter = async (req, res) => {
 }
 
 parameterController.deleteParameter = async (req, res) => {
-    await Parameter.findByIdAndDelete(req.params.id);
+    const parameter = await Parameter.findOne({ user: req.user.id, name: req.params.parameterName });
+    console.log("parameter", parameter)
+    console.log("req.user.id", req.user.id)
+    console.log("req.params.parameterName", req.params.parameterName)
+    if (!parameter) {
+        return res.status(400).json({ message: "Parameter not found" });
+    }
+    console.log("parameter", parameter);
+    const response = await Parameter.findByIdAndDelete(parameter._id);
+    console.log("response", response);
     res.json({ message: 'Parameter deleted' });
 }
 

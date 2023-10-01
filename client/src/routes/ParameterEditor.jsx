@@ -3,8 +3,9 @@ import Parameter from '../parameter';
 import Color from '../color';
 import ColorPicker from '../ColorPicker';
 import Value from '../Value';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { API_URL } from '../config';
+import SuggestedInput from './SuggestedInput';
 
 
 function ParameterEditor() {
@@ -13,39 +14,30 @@ function ParameterEditor() {
   const [isPickingWhite, setIsPickingWhite] = useState(false);
   const [whiteColor, setWhiteColor] = useState(new Color(255, 255, 255, 255));
   const [parameter, setParameter] = useState(null);
+  const [parameters, setParameters] = useState([]);
   const [parameterName, setParameterName] = useState(useParams().parameterName || "");
   const [parameterHasColorScale, setParameterHasColorScale] = useState(true);
-
+  const webLocation = useLocation();
+  const params = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    getParameterApi();
-  }, []);
+    setParameterName(params.parameterName || "");
+
+  }, [params.parameterName]);
 
   useEffect(() => {
     if (parameter) {
-      console.log("parameter",parameter)
+      console.log("parameter", parameter)
       setParameterHasColorScale(parameter.isColor);
     }
   }, [parameter]);
 
+  useEffect(() => {
 
-
-  const loadParameterFromLocalStorage = () => {
-    const localStorageParameters = localStorage.getItem("parameters");
-    if (!localStorageParameters) {
-      localStorage.setItem("parameters", JSON.stringify([]));
-    }
-    const parameters = Parameter.loadParametersFromJSON(JSON.parse(localStorage.getItem("parameters")));
-    const newParameter = parameters.find(p => p.name === parameterName);
-    if (newParameter) {
-      setParameter(newParameter);
-    }
-    else {
-      setParameter(new Parameter(parameterName, new Color(255, 255, 255, 255), []));
-    }
-  }
-
+    getParametersApi();
+    getParameterApi();
+  }, [parameterName]);
 
 
   const changeValue = (value, newValue) => {
@@ -103,6 +95,28 @@ function ParameterEditor() {
     alert("Parameter saved"); */
     saveParameterApi();
   }
+  const getParametersApi = async () => {
+    try {
+      const response = await fetch(API_URL + "parameters", {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
+      });
+      const json = await response.json();
+      if (!response.ok) {
+        throw new Error(json.message);
+      }
+      const newParameters = Parameter.loadParametersFromJSON(json);
+      setParameters(newParameters);
+      return newParameters;
+    }
+    catch (err) {
+      console.log(err);
+      return null;
+    }
+  }
   const getParameterApi = async (saveToState = true) => {
     if (parameterName === "") {
       setParameter(new Parameter("", new Color(255, 255, 255, 255), []));
@@ -129,9 +143,6 @@ function ParameterEditor() {
       }
       if (newParameter) {
         setParameter(newParameter);
-      }
-      else {
-        setParameter(new Parameter(parameterName, new Color(255, 255, 255, 255), []));
       }
       return newParameter;
     }
@@ -198,46 +209,84 @@ function ParameterEditor() {
 
 
   const deleteParameter = () => {
-    const parameters = JSON.parse(localStorage.getItem("parameters"));
-    if (parameters) {
-      if (parameters.find(p => p.name === parameter.name)) {
-        if (!confirm(`Are you sure you want to delete the parameter '${parameter.name}'?`)) {
-          return;
-        };
-        const index = parameters.findIndex(p => p.name === parameter.name);
-        parameters.splice(index, 1);
-        localStorage.setItem("parameters", JSON.stringify(parameters));
-        return;
+    /* delete parameter from API*/
+    if (!confirm(`Are you sure you want to delete '${parameter.name}'?`)) {
+      return;
+    }
+    deleteParameterApi();
+  }
+  const deleteParameterApi = async () => {
+    try {
+      const response = await fetch(API_URL + "parameters/" + parameterName, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
+      });
+      const json = await response.json();
+      console.log(json);
+      if (!response.ok) {
+        throw new Error(json.message);
       }
+      alert(`Parameter '${parameter.name}' deleted`);
+      setParameter(new Parameter("", new Color(255, 255, 255, 255), []));
+      setParameterName("");
+      navigate(`/parameter/`);
+    }
+    catch (err) {
+      console.log(err);
     }
   }
+
   const changeParameterName = (e) => {
     parameter.name = e.target.value.toLowerCase();
     setParameter(parameter);
     setParameterName(e.target.value);
     navigate(`/parameter/${e.target.value}`);
   }
+  const loadParameter = (parameterName) => {
+    navigate(`/parameter/${parameterName}`);
+  }
   return (
     <>
       {parameter !== null ? (
         <>
-          <p>Click on the image to get the mean rgb value of the area clicked</p>
-          <ColorPicker onClick={handleClick} isPicking={true}
-          />
-          <input type="text" value={parameter.name} onChange={changeParameterName} />
-          <button
-            onClick={setIsPickingWhite}>
-            {
-              isPickingWhite ? "Picking" : "Pick white color"
+          <h1>Parameters</h1>
+          <ul>
+            {parameters.map(p => {
+              return <li key={p.name}><span onClick={() => loadParameter(p.name)}>{p.name}</span></li>
             }
-          </button>
-          <span style={{ backgroundColor: whiteColor.toString(), padding: "10px 15px", marginLeft: "10px", border: "1px solid black" }}></span>
-          <label htmlFor="hasColorScale">Has color scale</label>
-          <input type="checkbox" checked={parameterHasColorScale} onChange={(e) => setParameterHasColorScale(e.target.checked)} />
-          <button onClick={saveParameter}>Save</button>
+            )}
+          </ul>
+          <h2>Edit parameter</h2>
+          <SuggestedInput
+            suggested={parameters.filter(p => p.name.includes(parameterName)).map(p => p.name)}
+            value={parameter.name}
+            onChange={changeParameterName}
+          />
+
           <button onClick={getParameterApi}>Reset</button>
+          <button onClick={saveParameter}>Save</button>
           <button onClick={() => setParameter(new Parameter(parameter.name, parameter.white, []))}>New</button>
           <button onClick={deleteParameter}>Delete</button>
+          <label htmlFor="hasColorScale">Has color scale</label>
+          <input type="checkbox" checked={parameterHasColorScale} onChange={(e) => setParameterHasColorScale(e.target.checked)} />
+          {parameterHasColorScale &&
+            <section className="colorSelector">
+              <ColorPicker onClick={handleClick} isPicking={true} />
+              <button
+                onClick={setIsPickingWhite}>
+                {
+                  isPickingWhite ? "Picking" : "Pick white color"
+                }
+              </button>
+              <span style={{ backgroundColor: whiteColor.toString(), padding: "10px 15px", marginLeft: "10px", border: "1px solid black" }}></span>
+            </section>
+          }
+
+
+
 
           {parameter.getValues().map((value, index) => {
             return <Value
