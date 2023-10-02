@@ -227,7 +227,7 @@ function ColorCalculator() {
                             parameter
                         </label>
                         <select id="selectParameter" onChange={(e) => setSelectedParameter(parametersCtx.parameters.find(p => p.name === e.target.value))}>
-                            {parametersCtx.parameters.map((parameter) => {
+                            {parametersCtx.parameters && parametersCtx.parameters.map((parameter) => {
                                 return <option key={parameter.name} value={parameter.name}>{parameter.name}</option>
                             })}
                         </select>

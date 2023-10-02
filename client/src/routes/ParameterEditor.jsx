@@ -281,7 +281,7 @@ function ParameterEditor() {
         <>
           <h1>Parameters</h1>
           <section className="parameterList">
-            {parameters.map(p => {
+            {parameters && parameters.map(p => {
               return <article key={p.name}><button onClick={() => loadParameter(p.name)}>{p.name}</button></article>
             }
             )}
