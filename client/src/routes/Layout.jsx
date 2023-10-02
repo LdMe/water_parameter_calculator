@@ -85,11 +85,11 @@ const Layout = () => {
     return (
         <div>
             <header>
-                <img className="banner" src="/banner.png" alt="logo" />
+                <img className="banner" src="/banner.png" alt="banner" />
             </header>
 
             <main>
-                <h1><FaMagnifyingGlassChart /> HydrOmnis</h1>
+                <h1><img className="title-image" src="/hydromnis.png" alg="logo"/> HydrOmnis</h1>
                 <LoggedInContext.Provider value={{ loggedIn, setLoggedIn }}>
                     <LocationContext.Provider value={{ locations, setLocations }}>
                         <ParameterContext.Provider value={{ parameters, setParameters }}>
