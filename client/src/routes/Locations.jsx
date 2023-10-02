@@ -23,8 +23,10 @@ const Locations = () => {
                     'Authorization': 'Bearer ' + localStorage.getItem('token')
                 },
             });
+            if(response.status === 401){
+                navigate('/login');
+            }
             const json = await response.json();
-            console.log("json", json)
             setNewLocationName("");
             setLocations(json);
 
@@ -35,7 +37,6 @@ const Locations = () => {
     const createLocation = async () => {
         try {
             if(newlocationName === "") return;
-            console.log("newlocationName", newlocationName)
             const response = await fetch(API_URL + "locations", {
                 method: 'POST',
                 headers: {
@@ -45,6 +46,9 @@ const Locations = () => {
                 body: JSON.stringify({ name: newlocationName })
 
             });
+            if(response.status === 401){
+                navigate('/login');
+            }
             const json = await response.json();
             loadLocations();
         }
@@ -65,6 +69,9 @@ const Locations = () => {
                 body: JSON.stringify({ name: e.target[0].value })
 
             });
+            if(response.status === 401){
+                navigate('/login');
+            }
             const json = await response.json();
             alert("saved");
             loadLocations();
@@ -84,6 +91,9 @@ const Locations = () => {
                 },
 
             });
+            if(response.status === 401){
+                navigate('/login');
+            }
             const json = await response.json();
             loadLocations();
         } catch (error) {

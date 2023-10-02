@@ -1,5 +1,5 @@
 
-
+import {rgbToCIELab,cie2000} from "colorpare"
 class Color {
     constructor(r, g, b, a=255) {
         this.r = r;
@@ -16,10 +16,10 @@ class Color {
     correctColor(){
         if(this.isOutOfBounds() == 1) {
             const maxValue = Math.max(this.r, this.g, this.b);
-            const difference = maxValue - 255;
-            this.r -= difference;
-            this.g -= difference;
-            this.b -= difference;
+            const difference = 255 - maxValue;
+            this.r += difference;
+            this.g += difference;
+            this.b += difference;
         }
         if(this.isOutOfBounds() == -1) {
             const minValue = Math.min(this.r, this.g, this.b);
@@ -57,11 +57,16 @@ class Color {
         return new Color(255 - this.r, 255 - this.g, 255 - this.b, this.a);
     }
     getDistance(color2) {
+
+        const color1 = rgbToCIELab({r:this.r,g:this.g,b:this.b});
+        const color2CIE = rgbToCIELab({r:color2.r,g:color2.g,b:color2.b});
+        return cie2000(color1,color2CIE);
+        /*
         if( ! (color2 instanceof Color)) {
-            console.log(color2);
             throw new Error("color2 is not an instance of Color");
         }
         return Math.sqrt(Math.pow(this.r - color2.r, 2) + Math.pow(this.g - color2.g, 2) + Math.pow(this.b - color2.b, 2) + Math.pow(this.a - color2.a, 2));
+        */
     }
     getMinDistance(colors) {
         return Math.min(...colors.map(color => this.getDistance(color)));

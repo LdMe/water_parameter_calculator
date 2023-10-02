@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import locationsContext from '../context/locationsContext';
 import parametersContext from '../context/parametersContext';
 import ColorPickShow from '../components/colorPickShow';
+import ColorGradient from '../components/ColorGradient';
 
 import '../styles/ColorCalculator.scss'
 
@@ -27,6 +28,7 @@ function ColorCalculator() {
     const [selectedLocation, setSelectedLocation] = useState(null);
     const [testParameter, setTestParameter] = useState(new Parameter("nitrate", new Color(255, 255, 255)));
     const [pickedColor, setPickedColor] = useState(new Color(0, 0, 0, 0));
+    const [selectedColors, setSelectedColors] = useState(null);
     const [value, setValue] = useState(0);
     const canvas = useRef(null);
     const imageRef = useRef(null);
@@ -49,7 +51,13 @@ function ColorCalculator() {
         if (selectedParameter) {
             console.log("selectedParameter", selectedParameter)
             testParameter.name = selectedParameter.name;
+            if (selectedParameter.values) {
+                console.log(selectedParameter.values);
+                setSelectedColors(selectedParameter.values);
+
+            }
         }
+
     }, [selectedParameter]);
 
     const resizeImageAndDraw = (img) => {
@@ -144,9 +152,11 @@ function ColorCalculator() {
                 },
                 body: JSON.stringify(data),
             });
+            if(response.status === 401){
+                navigate('/login');
+            }
             const json = await response.json();
             alert("Value added");
-            console.log(json);
         }
         catch (err) {
             console.log(err);
@@ -164,11 +174,12 @@ function ColorCalculator() {
                     'Authorization': 'Bearer ' + localStorage.getItem('token')
                 },
             });
-            console.log("response", response)
+            if(response.status === 401){
+                navigate('/login');
+            }
             const json = await response.json();
-            console.log("json", json);
             const newParameters = Parameter.loadParametersFromJSON(json);
-            console.log("newParameters", newParameters);
+            console.log("newParameters", newParameters)
             parametersCtx.setParameters(newParameters);
             return newParameters;
         }
@@ -189,6 +200,9 @@ function ColorCalculator() {
                     'Authorization': 'Bearer ' + localStorage.getItem('token')
                 },
             });
+            if(response.status === 401){
+                navigate('/login');
+            }
             const json = await response.json();
 
             setLocations(json);
@@ -223,7 +237,7 @@ function ColorCalculator() {
                             location
                         </label>
                         <select id="selectLocation" onChange={(e) => setSelectedLocation(locations.find(p => p.name === e.target.value))}>
-                            {locations.map((location) => {
+                            {locations && locations.map((location) => {
                                 return <option key={location.name} value={location.name}>{location.name}</option>
                             })}
                         </select>
@@ -238,6 +252,9 @@ function ColorCalculator() {
                             whiteColor={whiteColor}
                             pickedColor={pickedColor}
                         />
+                        {selectedColors &&
+                            <ColorGradient colors={selectedColors} />
+                        }
                     </section>
                 }
                 <div className="values">

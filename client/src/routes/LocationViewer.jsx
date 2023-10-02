@@ -27,8 +27,10 @@ const LocationViewer = () => {
                     'Authorization': 'Bearer ' + localStorage.getItem('token')
                 },
             });
+            if(response.status === 401){
+                navigate('/login');
+            }
             const json = await response.json();
-            console.log("json", json)
             setMeasurements(json);
         }
         catch(err){
@@ -49,8 +51,10 @@ const LocationViewer = () => {
                     'Authorization': 'Bearer ' + localStorage.getItem('token')
                 },
             });
+            if(response.status === 401){
+                navigate('/login');
+            }
             const json = await response.json();
-            console.log("json delete", json)
             loadLocation();
         }
         catch(err){

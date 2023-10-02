@@ -68,3 +68,24 @@ main {
     width: 100%;
     margin:0;
 }
+
+.color-gradient {
+    display: flex;
+    justify-content: space-around;
+    width: 80%;
+    margin: 15px auto;
+    font-size: 0.8rem;
+    & div {
+        width: 100%;
+        display: flex;
+        
+        
+    }
+    & .color-value {
+        padding:5px;
+    }
+    .color-gradient-separator {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}

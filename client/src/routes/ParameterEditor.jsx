@@ -7,6 +7,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { API_URL } from '../config';
 import SuggestedInput from './SuggestedInput';
 import ColorPickShow from '../components/colorPickShow';
+import ColorGradient from '../components/ColorGradient';
 import '../styles/Parameters.scss'
 
 function ParameterEditor() {
@@ -15,6 +16,7 @@ function ParameterEditor() {
   const [isPickingWhite, setIsPickingWhite] = useState(false);
   const [whiteColor, setWhiteColor] = useState(new Color(255, 255, 255, 255));
   const [parameter, setParameter] = useState(null);
+  const [values,SetValues] = useState([]);
   const [parameters, setParameters] = useState([]);
   const [parameterName, setParameterName] = useState(useParams().parameterName || "");
   const [parameterHasColorScale, setParameterHasColorScale] = useState(true);
@@ -30,9 +32,10 @@ function ParameterEditor() {
 
   useEffect(() => {
     if (parameter) {
-      console.log("parameter", parameter)
       if (parameter.isColor !== undefined) {
         setParameterHasColorScale(parameter.isColor);
+        console.log("color parameter", parameter)
+        SetValues(parameter.values);
       }
     }
   }, [parameter]);
@@ -109,6 +112,9 @@ function ParameterEditor() {
           'Authorization': 'Bearer ' + localStorage.getItem('token')
         },
       });
+      if (response.status === 401) {
+        return navigate('/login');
+      }
       const json = await response.json();
       if (!response.ok) {
         throw new Error(json.message);
@@ -119,6 +125,11 @@ function ParameterEditor() {
     }
     catch (err) {
       console.log(err);
+      if (err.message === "jwt expired") {
+        alert("Your session has expired, please log in again");
+        localStorage.removeItem("token");
+        navigate("/login");
+      }
       return null;
     }
   }
@@ -135,6 +146,9 @@ function ParameterEditor() {
           'Authorization': 'Bearer ' + localStorage.getItem('token')
         },
       });
+      if (response.status === 401) {
+        return navigate('/login');
+      }
       const json = await response.json();
       if (!response.ok) {
         throw new Error(json.message);
@@ -180,6 +194,9 @@ function ParameterEditor() {
           },
           body: JSON.stringify(data),
         });
+        if (response.status === 401) {
+          navigate('/login');
+        }
         const json = await response.json();
         if (!response.ok) {
           throw new Error(json.message);
@@ -201,6 +218,9 @@ function ParameterEditor() {
         },
         body: JSON.stringify(data),
       });
+      if (response.status === 401) {
+        return navigate('/login');
+      }
       const json = await response.json();
       if (!response.ok) {
         throw new Error(json.message);
@@ -229,8 +249,10 @@ function ParameterEditor() {
           'Authorization': 'Bearer ' + localStorage.getItem('token')
         },
       });
+      if (response.status === 401) {
+        return navigate('/login');
+      }
       const json = await response.json();
-      console.log(json);
       if (!response.ok) {
         throw new Error(json.message);
       }
@@ -291,22 +313,27 @@ function ParameterEditor() {
                 whiteColor={whiteColor}
                 pickedColor={parameter.values.length !== 0 ? parameter.values[parameter.values.length - 1].color : new Color(255, 255, 255, 255)}
               />
+              {parameter.values &&
+                <ColorGradient colors={values} />
+              }
             </section>
           }
 
 
 
 
-          {parameter.getValues().map((value, index) => {
-            return <Value
-              value={value}
-              key={value.color.toString() + index}
-              onValueChange={changeValue}
-              onValueDelete={deleteValue}
-              autoFocus={focusColor === value.color}
-            />
-          }
-          )}
+          <section className="parameter-values">
+            {parameter.getValues().map((value, index) => {
+              return <Value
+                value={value}
+                key={value.color.toString() + index}
+                onValueChange={changeValue}
+                onValueDelete={deleteValue}
+                autoFocus={focusColor === value.color}
+              />
+            }
+            )}
+          </section>
 
 
 

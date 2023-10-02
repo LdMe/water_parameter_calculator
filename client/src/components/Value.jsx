@@ -14,8 +14,8 @@ const Value = ({ value, onValueChange, onValueDelete ,autoFocus=false}) => {
     }, [value])
 
     return (
-        <div>
-            <span style={{ display:"inline-block",width:"25px",height:"25px",backgroundColor: value.color ? value.color.toString(): "white"}}></span>
+        <div className="value">
+            <span style={{ display:"inline-block",width:"1.5rem",height:"1.5rem",backgroundColor: value.color ? value.color.toString(): "white"}}></span>
             
                 <input type="number" step="0.01" lang="en" value={newValue} onChange={handleValueChange} 
                 {...autoFocus && {autoFocus:true}}

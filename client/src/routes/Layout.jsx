@@ -60,8 +60,10 @@ const Layout = () => {
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
             },
         });
+        if(response.status === 401){
+            navigate('/login');
+        }
         const json = await response.json();
-        console.log("json", json)
         setLocations(json);
     }
 
@@ -73,8 +75,10 @@ const Layout = () => {
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
             },
         });
+        if(response.status === 401){
+            navigate('/login');
+        }
         const json = await response.json();
-        console.log("json", json)
         setParameters(json);
     }
 
