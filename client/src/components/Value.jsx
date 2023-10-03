@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import {FaTrash} from "react-icons/fa6";
 const Value = ({ value, onValueChange, onValueDelete ,autoFocus=false}) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newValue, setNewValue] = useState(value.value);
@@ -24,7 +24,7 @@ const Value = ({ value, onValueChange, onValueDelete ,autoFocus=false}) => {
 
 
 
-            <button onClick={() => onValueDelete(value)}>Delete</button>
+            <FaTrash className="icon" onClick={() => onValueDelete(value)} />
         </div>
     )
 }

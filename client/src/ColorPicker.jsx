@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import Color from './color';
 import './styles/ColorPicker.scss';
+import { FaImage } from 'react-icons/fa6';
 /* 
 * ColorCalculator that takes a picture and displays it on the screen, then it shows the mean rgb value of the area clicked
 *
@@ -13,6 +14,7 @@ function ColorCalculator({ onClick, isPicking = false }) {
     const canvas = useRef(null);
     const imageRef = useRef(null);
     const [zoom,setZoom] = useState(1);
+    const uploadFile = useRef(null);
 
 
     const resizeImageAndDraw = (img) => {
@@ -49,7 +51,8 @@ function ColorCalculator({ onClick, isPicking = false }) {
             resizeImageAndDraw(img)
 
         }
-        img.src = URL.createObjectURL(e.target.files[0]);
+        const file = uploadFile.current.files[0];
+        img.src = URL.createObjectURL(file);
         imageRef.current = img;
         setImageSet(true);
     }
@@ -111,9 +114,9 @@ function ColorCalculator({ onClick, isPicking = false }) {
 
             <div className="ColorCalculator">
                 <label htmlFor="imageInput">
-                    image
+                    <FaImage className="icon big" > </FaImage>
                 </label>
-                <input id="imageInput" type="file" accept="image/*" onChange={handleImageUpload} />
+                <input style={{display: "none"}} ref={uploadFile} id="imageInput" type="file" accept="image/*" onChange={handleImageUpload} />
                 {imageSet &&
                     <section className="canvas-section">
                         <canvas ref={canvas} id="canvas" width="500" height="500" onClick={handleClick}> </canvas>

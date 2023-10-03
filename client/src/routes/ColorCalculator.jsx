@@ -9,8 +9,10 @@ import locationsContext from '../context/locationsContext';
 import parametersContext from '../context/parametersContext';
 import ColorPickShow from '../components/colorPickShow';
 import ColorGradient from '../components/ColorGradient';
+import HorizontalSelector from '../components/HorizontalSelector';
 
 import '../styles/ColorCalculator.scss'
+import { FaFloppyDisk } from 'react-icons/fa6';
 
 /* 
 * ColorCalculator that takes a picture and displays it on the screen, then it shows the mean rgb value of the area clicked
@@ -221,27 +223,24 @@ function ColorCalculator() {
             <h2>Color value calculator</h2>
             <div className="ColorCalculator">
                 <section className="selectors">
-
-                    <section className="selectors__parameter">
-                        <label htmlFor="selectParameter">
-                            parameter
-                        </label>
-                        <select id="selectParameter" onChange={(e) => setSelectedParameter(parametersCtx.parameters.find(p => p.name === e.target.value))}>
-                            {parametersCtx.parameters && parametersCtx.parameters.map((parameter) => {
-                                return <option key={parameter.name} value={parameter.name}>{parameter.name}</option>
-                            })}
-                        </select>
-                    </section>
-                    <section className="selectors__location">
-                        <label htmlFor="selectLocation">
-                            location
-                        </label>
-                        <select id="selectLocation" onChange={(e) => setSelectedLocation(locations.find(p => p.name === e.target.value))}>
-                            {locations && locations.map((location) => {
-                                return <option key={location.name} value={location.name}>{location.name}</option>
-                            })}
-                        </select>
-                    </section>
+                    <h4>Location</h4>
+                    {selectedLocation &&
+                    <HorizontalSelector
+                            values={locations.map(p => p.name)}
+                            selectedValue={selectedLocation.name}
+                            onClick={(value) => setSelectedLocation(locations.find(p => p.name === value))}
+                            colorScale='grey'
+                        />
+                    }
+                    <h4>Parameter</h4>
+                    {selectedParameter &&
+                    <HorizontalSelector
+                            values={parametersCtx.parameters.map(p => p.name)}
+                            selectedValue={selectedParameter.name}
+                            onClick={(value) => setSelectedParameter(parametersCtx.parameters.find(p => p.name === value))}
+                        />
+                    }
+                    
                 </section>
                 {selectedParameter && selectedParameter.isColor &&
                     <section className="colorPicker">
@@ -259,7 +258,7 @@ function ColorCalculator() {
                 }
                 <div className="values">
                     <input type="number" value={value} onChange={(e) => setValue(e.target.value)} />
-                    <button onClick={handleSave}>Add</button>
+                    <FaFloppyDisk className="icon" onClick={handleSave} />
                 </div>
             </div>
 

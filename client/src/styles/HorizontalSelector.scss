@@ -1,0 +1,38 @@
+$base-color: #c1eef67f;
+$grey: #ddd;
+.horizontalSelectorOuter{
+    transform: rotateX(180deg);
+    overflow: auto;
+}
+.horizontalSelector {
+    transform: rotateX(180deg);
+    display: flex;
+    height:50px;
+    & article {
+        min-width: 20%;
+        max-width: 50%;
+        padding: 1px;
+    }
+    & button {
+        display: block;
+        width: 100%;
+        height: 100%;
+        background-color: darken($base-color, 20%);
+        border: none;
+        border-radius: 5px 5px 0 0;
+        &.grey {
+            background-color: darken($grey, 20%);
+        }
+        &:hover, &.selected {
+            background-color: $base-color;
+            &.grey {
+                background-color: $grey;
+            }
+        }
+    }
+    &.inner {
+        margin-left: auto;
+        margin-right: auto;
+
+    }
+}

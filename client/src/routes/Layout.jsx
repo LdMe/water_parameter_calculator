@@ -8,7 +8,7 @@ import ParameterContext from "../context/parametersContext";
 import ErrorContext from "../context/errorContext";
 import { API_URL } from "../config";
 
-import { FaLocationDot, FaRulerCombined, FaCalculator, FaRightFromBracket, FaRightToBracket, FaUser, FaUserPlus, FaHouse, FaMagnifyingGlassChart } from "react-icons/fa6";
+import { FaLocationDot, FaRulerCombined, FaMagnifyingGlass, FaRightFromBracket, FaRightToBracket, FaUser, FaUserPlus, FaHouse } from "react-icons/fa6";
 
 import "../styles/Layout.scss";
 
@@ -89,7 +89,9 @@ const Layout = () => {
             </header>
 
             <main>
-                <h1><img className="title-image" src="/hydromnis.png" alg="logo"/> HydrOmnis</h1>
+                <section className="title">
+                <img className="title-image" src="/hydromnis.png" alg="logo"/><h1> HydrOmnis</h1>
+                </section>
                 <LoggedInContext.Provider value={{ loggedIn, setLoggedIn }}>
                     <LocationContext.Provider value={{ locations, setLocations }}>
                         <ParameterContext.Provider value={{ parameters, setParameters }}>
@@ -112,13 +114,13 @@ const Layout = () => {
                                 <Link to="/parameter/"><FaRulerCombined className="icon" title="Parameters" /></Link>
                             </li>
                             <li>
-                                <Link to="/location" className="icon" ><FaLocationDot title="Locations" /></Link>
+                                <Link to="/location"  ><FaLocationDot className="icon" title="Locations" /></Link>
                             </li>
                             <li>
-                                <Link to="/calculate" className="icon" ><FaCalculator title="calculate" /></Link>
+                                <Link to="/calculate"  ><FaMagnifyingGlass className="icon" title="calculate" /></Link>
                             </li>
                             <li>
-                                <Link to="/logout" className="icon" ><FaRightFromBracket title="logout" /></Link>
+                                <Link to="/logout"  ><FaRightFromBracket className="icon" title="logout" /></Link>
                             </li>
                         </ul>
 

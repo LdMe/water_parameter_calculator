@@ -1,19 +1,6 @@
 
+$base-color: #c1eef67f;
 
-.parameterList {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    & article {
-        min-width: 20%;
-        max-width: 50%;
-        padding: 5px;
-    }
-    & button {
-        display: block;
-        width: 100%;
-    }
-}
 .colorScaleSection{
     margin-top: 15px;
 }
@@ -26,4 +13,14 @@
 .value{
     display: flex;
     margin-top:5px;
+    & span {
+        border: 1px solid black;
+    }
+}
+
+.parameterEditor {
+    background-color: $base-color;
+    margin-top:-1px;
+    padding:15px;
+    padding-bottom:100px;
 }

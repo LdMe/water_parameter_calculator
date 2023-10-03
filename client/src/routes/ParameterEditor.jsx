@@ -9,6 +9,8 @@ import SuggestedInput from './SuggestedInput';
 import ColorPickShow from '../components/colorPickShow';
 import ColorGradient from '../components/ColorGradient';
 import '../styles/Parameters.scss'
+import { FaArrowsRotate, FaFloppyDisk, FaEraser, FaTrash } from 'react-icons/fa6';
+import HorizontalSelector from '../components/HorizontalSelector';
 
 function ParameterEditor() {
 
@@ -16,7 +18,7 @@ function ParameterEditor() {
   const [isPickingWhite, setIsPickingWhite] = useState(false);
   const [whiteColor, setWhiteColor] = useState(new Color(255, 255, 255, 255));
   const [parameter, setParameter] = useState(null);
-  const [values,SetValues] = useState([]);
+  const [values, SetValues] = useState([]);
   const [parameters, setParameters] = useState([]);
   const [parameterName, setParameterName] = useState(useParams().parameterName || "");
   const [parameterHasColorScale, setParameterHasColorScale] = useState(true);
@@ -38,6 +40,9 @@ function ParameterEditor() {
         SetValues(parameter.values);
       }
     }
+    else {
+      setParameter(new Parameter(parameterName, new Color(255, 255, 255, 255), []));
+    }
   }, [parameter]);
 
   useEffect(() => {
@@ -50,11 +55,13 @@ function ParameterEditor() {
   const changeValue = (value, newValue) => {
     setFocusColor(value.color);
     parameter.setValue(value.color, newValue);
+    SetValues(parameter.values);
     setParameter(parameter);
     setCount(count + 1);
   }
   const deleteValue = (value) => {
     parameter.deleteValue(value.color);
+    SetValues(parameter.values);
     setParameter(parameter);
     setCount(count + 1);
   }
@@ -75,32 +82,6 @@ function ParameterEditor() {
   }
 
   const saveParameter = () => {
-    /* if (parameter.name === "" || parameter.name === null || parameter.name === undefined) {
-      alert("Parameter name cannot be empty");
-      return;
-    }
-    const parameters = JSON.parse(localStorage.getItem("parameters"));
-    if (parameters) {
-      if (parameters.find(p => p.name === parameter.name)) {
-        if (!confirm(`A parameter with thes name '${parameter.name}' already exists, do you want to overwrite it?`)) {
-          return;
-        };
-        const index = parameters.findIndex(p => p.name === parameter.name);
-        parameters[index] = parameter;
-        localStorage.setItem("parameters", JSON.stringify(parameters));
-        setCount(count + 1);
-
-        alert(`Parameter '${parameter.name}' saved`);
-        return;
-      }
-      parameters.push(parameter);
-
-      localStorage.setItem("parameters", JSON.stringify(parameters));
-    } else {
-      localStorage.setItem("parameters", JSON.stringify([parameter]));
-    }
-    setCount(count + 1);
-    alert("Parameter saved"); */
     saveParameterApi();
   }
   const getParametersApi = async () => {
@@ -279,61 +260,64 @@ function ParameterEditor() {
     <>
       {parameter !== null ? (
         <>
-          <h1>Parameters</h1>
-          <section className="parameterList">
-            {parameters && parameters.map(p => {
-              return <article key={p.name}><button onClick={() => loadParameter(p.name)}>{p.name}</button></article>
-            }
-            )}
-          </section>
-          <h2>Edit parameter</h2>
-          <label htmlFor="parameterName">Parameter name</label>
-          <SuggestedInput
-            //suggested={parameters.filter(p => p.name.includes(parameterName)).map(p => p.name)}
-            suggested={[]}
-            value={parameter.name}
-            onChange={changeParameterName}
+          <h2>Parameters</h2>
+          
+          <HorizontalSelector
+            values={parameters.map(p => p.name)}
+            selectedValue={parameterName}
+            onClick={loadParameter}
           />
-          <section className="buttonSection">
-            <button onClick={getParameterApi}>Reset</button>
-            <button onClick={saveParameter}>Save</button>
-            <button onClick={() => setParameter(new Parameter(parameter.name, parameter.white, []))}>New</button>
-            <button onClick={deleteParameter}>Delete</button>
-          </section>
-          <section className="colorScaleSection">
-            <label htmlFor="hasColorScale">Has color scale</label>
-            <input type="checkbox" checked={parameterHasColorScale} onChange={(e) => setParameterHasColorScale(e.target.checked)} />
-          </section>
-          {parameterHasColorScale &&
-            <section className="colorSelector">
-              <ColorPicker onClick={handleClick} isPicking={true} />
-              <ColorPickShow
-                isPickingWhite={isPickingWhite}
-                setIsPickingWhite={setIsPickingWhite}
-                whiteColor={whiteColor}
-                pickedColor={parameter.values.length !== 0 ? parameter.values[parameter.values.length - 1].color : new Color(255, 255, 255, 255)}
-              />
-              {parameter.values &&
-                <ColorGradient colors={values} />
-              }
+          <section className="parameterEditor">
+            <h2>Edit parameter</h2>
+            <label htmlFor="parameterName">Parameter name</label>
+            <SuggestedInput
+              //suggested={parameters.filter(p => p.name.includes(parameterName)).map(p => p.name)}
+              suggested={[]}
+              value={parameter.name}
+              onChange={changeParameterName}
+            />
+            <section className="colorScaleSection">
+              <label htmlFor="hasColorScale">Has color scale</label>
+              <input type="checkbox" checked={parameterHasColorScale} onChange={(e) => setParameterHasColorScale(e.target.checked)} />
             </section>
-          }
-
-
-
-
-          <section className="parameter-values">
-            {parameter.getValues().map((value, index) => {
-              return <Value
-                value={value}
-                key={value.color.toString() + index}
-                onValueChange={changeValue}
-                onValueDelete={deleteValue}
-                autoFocus={focusColor === value.color}
-              />
+            <section className="buttonSection">
+              <FaArrowsRotate className="icon" onClick={getParameterApi} />
+              <FaFloppyDisk className="icon" onClick={saveParameterApi} />
+              <FaEraser className="icon" onClick={() => setParameter(new Parameter(parameter.name, parameter.white, []))} />
+              <FaTrash className="icon" onClick={deleteParameter} />
+            </section>
+            {parameterHasColorScale &&
+              <section className="colorSelector">
+                <ColorPicker onClick={handleClick} isPicking={true} />
+                <ColorPickShow
+                  isPickingWhite={isPickingWhite}
+                  setIsPickingWhite={setIsPickingWhite}
+                  whiteColor={whiteColor}
+                  pickedColor={parameter.values.length !== 0 ? parameter.values[parameter.values.length - 1].color : new Color(255, 255, 255, 255)}
+                />
+                {values &&
+                  <ColorGradient colors={values} />
+                }
+              </section>
             }
-            )}
+            <section className="parameter-values">
+              {parameter.getValues().map((value, index) => {
+                return <Value
+                  value={value}
+                  key={value.color.toString() + index}
+                  onValueChange={changeValue}
+                  onValueDelete={deleteValue}
+                  autoFocus={focusColor === value.color}
+                />
+              }
+              )}
+            </section>
           </section>
+
+
+
+
+
 
 
 

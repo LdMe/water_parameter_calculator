@@ -1,14 +1,17 @@
 
 
-const colorPickShow = ({isPickingWhite,setIsPickingWhite,whiteColor,pickedColor}) => {
+const colorPickShow = ({ isPickingWhite, setIsPickingWhite, whiteColor, pickedColor }) => {
 
     return (
         <section className="whiteColorPicker">
-            <button onClick={() => setIsPickingWhite(true)} >
+            <button onClick={() => setIsPickingWhite(!isPickingWhite)} >
                 {isPickingWhite ? "Picking" : "Pick white color"}
             </button>
-            <span style={{ backgroundColor: whiteColor.toString() }} className="pickedColorSpan"></span>
-            <span style={{ backgroundColor: pickedColor.toString() }} className="pickedColorSpan"></span>
+            <div className="pickedColorDiv">
+                <span style={{ backgroundColor: whiteColor.toString() }} className="pickedColorSpan"></span>
+                <span style={{ backgroundColor: pickedColor.toString() }} className="pickedColorSpan"></span>
+
+            </div>
         </section>
     )
 }

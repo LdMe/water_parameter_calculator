@@ -1,3 +1,5 @@
+
+$base-color: #c1eef67f;
 .locationListElement {
     display: flex;
     margin-top: 15px;
@@ -9,7 +11,9 @@
     justify-content: space-between;
     width: 100%;
     padding: 5px;
-    border: 1px solid rgb(245, 226, 185);
+    border: 1px solid darken($base-color, 20%);
+    border-radius:5px;
+    background-color: $base-color;
     & input {
         margin-top: 15px;
     }
