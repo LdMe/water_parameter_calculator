@@ -4,7 +4,7 @@ const Home = () => {
 
     return (
         <div className="info">
-            <section className="title">
+            <section className="readme-title">
             <h2>
                 Welcome to HydrOmnis!
             </h2>

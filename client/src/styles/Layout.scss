@@ -119,7 +119,7 @@ table {
         text-align: center;
     }
 }
-input[type="text"], input[type="number"] {
+input[type="text"], input[type="number"],input[type="password"] {
     padding: 5px;
     border: 1.5px solid darken($base-color,10%);
     box-shadow: none;
@@ -131,4 +131,30 @@ input[type="text"], input[type="number"] {
 .colorSpan {
     margin-right: 5px;
     border: 1px solid black;
+}
+
+#login-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 15px;
+    border: 1px solid darken($base-color, 20%);
+    border-radius:5px;
+    background-color: $base-color;
+    text-align: left;
+    & div{
+        float: right;
+        width: 100%;
+    }
+    & input {
+        margin-top: 15px;
+        width: 100%;
+    }
+    & input[type="submit"] {
+        margin-top: 15px;
+        padding: 5px;
+        width: 100%;
+        background-color: lighten($base-color,15%);
+        border: 1px solid darken($base-color, 20%);
+    }
 }
