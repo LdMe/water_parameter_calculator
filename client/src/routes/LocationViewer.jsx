@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { FaArrowLeft, FaTrash } from 'react-icons/fa6';
 import HorizontalSelector from '../components/HorizontalSelector';
+import { getMeasurementsByLocation,deleteMeasurement as deleteMeasurementApi  } from '../utils/fetchMeasurement';
 
 const LocationViewer = () => {
     const [location, setLocation] = useState({});
@@ -26,46 +27,36 @@ const LocationViewer = () => {
 
 
     const loadLocation = async () => {
-        try {
-            const response = await fetch(API_URL + "measurements/location/" + locationName, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-            });
-            if (response.status === 401) {
+        const response = await getMeasurementsByLocation(locationName);
+
+        const { data, error, code } = response;
+        if (error !== null) {
+            console.log("error", error)
+            if (code === 401) {
                 navigate('/login');
             }
-            const json = await response.json();
-            setMeasurements(json);
         }
-        catch (err) {
-            console.log("err", err)
+        else {
+            console.log("data", data)
+            setMeasurements(data);
         }
-
     }
+
     const deleteMeasurement = async (measurementId) => {
         if (!confirm("Are you sure you want to delete this measurement?")) {
             return;
         }
-
-        try {
-            const response = await fetch(API_URL + "measurements/" + measurementId, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-            });
-            if (response.status === 401) {
+        const response = await deleteMeasurementApi(measurementId);
+        const { data, error, code } = response;
+        if (error !== null) {
+            console.log("error", error)
+            if (code === 401) {
                 navigate('/login');
             }
-            const json = await response.json();
-            loadLocation();
         }
-        catch (err) {
-            console.log("err", err)
+        else {
+            console.log("data", data)
+            loadLocation();
         }
 
     }

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
 import '../styles/Locations.scss'
 import { FaTrash, FaFloppyDisk, FaChartLine, FaPlus } from 'react-icons/fa6';
+import { getLocations, createLocation as createLocationApi,updateLocation,deleteLocation as deleteLocationApi } from "../utils/fetchLocation";
 
 const Locations = () => {
     const [locations, setLocations] = useState([]);
@@ -11,93 +12,68 @@ const Locations = () => {
 
     useEffect(() => {
         loadLocations();
-    }
-        , []);
+    }, []);
 
     const loadLocations = async () => {
-        try {
-            const response = await fetch(API_URL + "locations", {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-            });
-            if(response.status === 401){
+        const response = await getLocations();
+        const { data, error, code } = response;
+        const locations = data;
+        console.log("response", response)
+        if (error !== null) {
+            console.log("error", error)
+            if (code === 401) {
                 navigate('/login');
             }
-            const json = await response.json();
+        }
+        else {
+            console.log("locations", locations)
+            setLocations(locations);
             setNewLocationName("");
-            setLocations(json);
-
-        } catch (error) {
-
         }
     }
     const createLocation = async () => {
-        try {
-            if(newlocationName === "") return;
-            const response = await fetch(API_URL + "locations", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-                body: JSON.stringify({ name: newlocationName })
-
-            });
-            if(response.status === 401){
+        if (newlocationName === "") return;
+        const result = await createLocationApi(newlocationName);
+        const { data, error, code } = result;
+        if (error) {
+            if (code === 401) {
                 navigate('/login');
             }
-            const json = await response.json();
-            loadLocations();
         }
-        catch (err) {
-
+        else {
+            setNewLocationName("");
+            loadLocations();
         }
     }
 
     const saveLocation = async (e) => {
         e.preventDefault();
-        try {
-            const response = await fetch(API_URL + "locations/" + e.target.id.value, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-                body: JSON.stringify({ name: e.target[0].value })
-
-            });
-            if(response.status === 401){
+        const id = e.target.id.value;
+        const name = e.target[0].value;
+        if (name === "") return;
+        const response = await updateLocation(id, name);
+        const { data, error, code } = response;
+        if (error) {
+            if (code === 401) {
                 navigate('/login');
             }
-            const json = await response.json();
-            alert("saved");
+        }
+        else {
             loadLocations();
-        } catch (error) {
-            console.log("error", error)
         }
     }
 
     const deleteLocation = async (id) => {
         if (!confirm("Are you sure you want to delete this location?")) return;
-        try {
-            const response = await fetch(API_URL + "locations/" + id, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-
-            });
-            if(response.status === 401){
+        const response = await deleteLocationApi(id);
+        const { data, error, code } = response;
+        if (error) {
+            if (code === 401) {
                 navigate('/login');
             }
-            const json = await response.json();
+        }
+        else {
             loadLocations();
-        } catch (error) {
-            console.log("error", error)
         }
     }
 

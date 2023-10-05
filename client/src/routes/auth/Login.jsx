@@ -3,6 +3,8 @@ import { API_URL } from '../../config';
 import { useNavigate } from 'react-router-dom';
 import LoggedInContext from '../../context/loggedInContext';
 import { useContext } from 'react';
+import {createDefaultParameters} from '../../utils/fetchParameter';
+import { createLocation } from '../../utils/fetchLocation';
 
 const Login = ({ isRegister = false, isLogout = false }) => {
     const { setLoggedIn } = useContext(LoggedInContext);
@@ -14,7 +16,7 @@ const Login = ({ isRegister = false, isLogout = false }) => {
             navigate('/');
         }
     }, []);
-    const handlSubmit = async (e) => {
+    const handleSubmit = async (e) => {
         try {
             e.preventDefault();
             const data = {
@@ -38,6 +40,12 @@ const Login = ({ isRegister = false, isLogout = false }) => {
             }
             localStorage.setItem('token', json.token);
             setLoggedIn(true);
+            if(isRegister){
+                setTimeout(async() => {
+                await createDefaultParameters();
+                await createLocation("My Location");
+                }, 1000);
+            }
             navigate('/');
 
         }
@@ -52,7 +60,7 @@ const Login = ({ isRegister = false, isLogout = false }) => {
     return (
         <div id="login-form">
             <h2>{isRegister ? "Register" : "Login"}</h2>
-            <form onSubmit={handlSubmit}>
+            <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor='email'>Email:</label>
                     <input type="text" name="email" id="email" />

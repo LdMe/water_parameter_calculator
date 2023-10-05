@@ -7,6 +7,8 @@ import LocationContext from "../context/locationsContext";
 import ParameterContext from "../context/parametersContext";
 import ErrorContext from "../context/errorContext";
 import { API_URL } from "../config";
+import {getLocations as getLocationsApi} from "../utils/fetchLocation";
+import { getParameters as getParametersApi } from "../utils/fetchParameter";
 
 import { FaLocationDot, FaRulerCombined, FaMagnifyingGlass, FaRightFromBracket, FaRightToBracket, FaUser, FaUserPlus, FaHouse } from "react-icons/fa6";
 
@@ -53,33 +55,28 @@ const Layout = () => {
 
 
     const getLocations = async () => {
-        const response = await fetch(API_URL + "locations", {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-            },
-        });
-        if(response.status === 401){
-            navigate('/login');
+        const response = await getLocationsApi();
+        if(response.error){
+            if(response.code === 401){
+                navigate('/login');
+            }
+            console.log("error",response.error);
+            return;
         }
-        const json = await response.json();
-        setLocations(json);
+        
+        setLocations(response.data);
     }
 
     const getParameters = async () => {
-        const response = await fetch(API_URL + "parameters", {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-            },
-        });
-        if(response.status === 401){
-            navigate('/login');
+        const response = await getParametersApi();
+        if(response.error){
+            if(response.code === 401){
+                navigate('/login');
+            }
+            console.log("error",response.error);
+            return;
         }
-        const json = await response.json();
-        setParameters(json);
+        setParameters(response.data);
     }
 
     return (

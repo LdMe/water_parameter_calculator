@@ -5,7 +5,7 @@ dotenv.config();
 
 const host ="mongo-color";
 const port = 27017;
-const database = "blog";
+const database = "hydromnis";
 
 const url = `mongodb://${host}:${port}/${database}`;
 

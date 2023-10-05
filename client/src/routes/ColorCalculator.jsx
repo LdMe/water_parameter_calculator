@@ -2,23 +2,18 @@ import { useState, useRef, useEffect, useContext } from 'react'
 import Parameter from '../parameter';
 import Color from '../color';
 import ColorPicker from '../ColorPicker';
-import Value from '../components/Value';
-import { API_URL } from '../config';
 import { useNavigate } from 'react-router-dom';
 import locationsContext from '../context/locationsContext';
 import parametersContext from '../context/parametersContext';
 import ColorPickShow from '../components/colorPickShow';
 import ColorGradient from '../components/ColorGradient';
 import HorizontalSelector from '../components/HorizontalSelector';
+import { getParameters } from '../utils/fetchParameter';
+import { getLocations } from '../utils/fetchLocation';
+import { createMeasurement } from '../utils/fetchMeasurement';
 
 import '../styles/ColorCalculator.scss'
 import { FaFloppyDisk } from 'react-icons/fa6';
-
-/* 
-* ColorCalculator that takes a picture and displays it on the screen, then it shows the mean rgb value of the area clicked
-*
-*/
-
 
 function ColorCalculator() {
 
@@ -32,8 +27,6 @@ function ColorCalculator() {
     const [pickedColor, setPickedColor] = useState(new Color(0, 0, 0, 0));
     const [selectedColors, setSelectedColors] = useState(null);
     const [value, setValue] = useState(0);
-    const canvas = useRef(null);
-    const imageRef = useRef(null);
     const navigate = useNavigate();
     const locationsCtx = useContext(locationsContext);
     const parametersCtx = useContext(parametersContext);
@@ -56,72 +49,16 @@ function ColorCalculator() {
             if (selectedParameter.values) {
                 console.log(selectedParameter.values);
                 setSelectedColors(selectedParameter.values);
-
             }
         }
-
     }, [selectedParameter]);
 
-    const resizeImageAndDraw = (img) => {
-        const context = canvas.current.getContext('2d');
-        const imageAspectRatio = img.width / img.height;
-        const canvasAspectRatio = canvas.current.width / canvas.current.height;
-        let renderableHeight, renderableWidth, xStart, yStart;
-        if (imageAspectRatio < canvasAspectRatio) {
-            renderableHeight = canvas.current.height;
-            renderableWidth = img.width * (renderableHeight / img.height);
-            xStart = (canvas.current.width - renderableWidth) / 2;
-            yStart = 0;
-        } else if (imageAspectRatio > canvasAspectRatio) {
-            renderableWidth = canvas.current.width
-            renderableHeight = img.height * (renderableWidth / img.width);
-            xStart = 0;
-            yStart = (canvas.current.height - renderableHeight) / 2;
-        } else {
-            renderableHeight = canvas.current.height;
-            renderableWidth = canvas.current.width;
-            xStart = 0;
-            yStart = 0;
+    const checkAuth = (code) => {
+        if (code === 401) {
+            navigate('/login');
         }
-        context.clearRect(0, 0, canvas.current.width, canvas.current.height);
-        context.drawImage(img, xStart, yStart, renderableWidth, renderableHeight);
     }
-    const handleImageUpload = (e) => {
-        const context = canvas.current.getContext('2d');
-        const img = new Image();
-
-        img.onload = () => {
-            /* resize the image to fit the canvas */
-            resizeImageAndDraw(img)
-
-        }
-        img.src = URL.createObjectURL(e.target.files[0]);
-        imageRef.current = img;
-    }
-    const getMeanColor = (imgData) => {
-        const data = imgData.data;
-        /* get the mean color of the area clicked */
-        let r = 0;
-        let g = 0;
-        let b = 0;
-        for (let i = 0; i < data.length; i += 4) {
-            r += data[i];
-            g += data[i + 1];
-            b += data[i + 2];
-        }
-        r = Math.floor(r / (data.length / 4));
-        g = Math.floor(g / (data.length / 4));
-        b = Math.floor(b / (data.length / 4));
-        return new Color(r, g, b)
-    }
-    const changeValue = (value, newValue) => {
-        testParameter.setValue(value.color, newValue);
-    }
-    const deleteValue = (value) => {
-        testParameter.deleteValue(value.color);
-        setCount(count + 1);
-    }
-
+    
     const handleClick = (rgb) => {
         if (isPickingWhite) {
             setWhiteColor(rgb);
@@ -135,88 +72,52 @@ function ColorCalculator() {
     }
 
     const handleSave = async (e) => {
-        try {
-            e.preventDefault();
-            const data = {
-                value: value,
-                parameterName: selectedParameter.name,
-                locationName: selectedLocation.name,
-            };
-            if (selectedParameter && selectedParameter.isColor) {
-                data.color = pickedColor;
-            }
-
-            const response = await fetch(API_URL + "measurements/", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-                body: JSON.stringify(data),
-            });
-            if(response.status === 401){
-                navigate('/login');
-            }
-            const json = await response.json();
-            alert("Value added");
+        const color = selectedParameter && selectedParameter.isColor ? pickedColor : null;
+        const response = await createMeasurement(value, selectedParameter.name, selectedLocation.name, pickedColor);
+        const { data, error, code } = response;
+        if (error !== null) {
+            console.log("error", error)
+            checkAuth(code);
         }
-        catch (err) {
-            console.log(err);
+        else {
+            alert("Value added");
         }
     }
 
     const loadParameters = async () => {
         /* load parameters from api */
-
-        try {
-            const response = await fetch(API_URL + "parameters", {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-            });
-            if(response.status === 401){
-                navigate('/login');
-            }
-            const json = await response.json();
-            const newParameters = Parameter.loadParametersFromJSON(json);
+        const response = await getParameters();
+        const { data, error, code } = response;
+        if (error !== null) {
+            console.log("error", error)
+            checkAuth(code);
+        }
+        else {
+            const newParameters = Parameter.loadParametersFromJSON(data);
             console.log("newParameters", newParameters)
             parametersCtx.setParameters(newParameters);
             return newParameters;
-        }
-        catch (err) {
-            console.log(err);
-            parametersCtx.setParameters([]);
-            return [];
         }
     }
 
     const loadLocations = async () => {
         /* load locations from api */
-        try {
-            const response = await fetch(API_URL + "locations", {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-            });
-            if(response.status === 401){
-                navigate('/login');
-            }
-            const json = await response.json();
-
-            setLocations(json);
-        }
-        catch (err) {
-            console.log(err);
+        const response = await getLocations();
+        const { data, error, code } = response;
+        console.log("respuestaaa", response)
+        if (error !== null) {
+            console.log("error", error)
+            checkAuth(code);
             setLocations([]);
             return [];
         }
+        else {
+            console.log("data", data)
+            setLocations(data);
+            return data;
+        }
+
     }
-
-
 
     return (
         <>
@@ -225,7 +126,7 @@ function ColorCalculator() {
                 <section className="selectors">
                     <h4>Location</h4>
                     {selectedLocation &&
-                    <HorizontalSelector
+                        <HorizontalSelector
                             values={locations.map(p => p.name)}
                             selectedValue={selectedLocation.name}
                             onClick={(value) => setSelectedLocation(locations.find(p => p.name === value))}
@@ -234,13 +135,13 @@ function ColorCalculator() {
                     }
                     <h4>Parameter</h4>
                     {selectedParameter &&
-                    <HorizontalSelector
+                        <HorizontalSelector
                             values={parametersCtx.parameters.map(p => p.name)}
                             selectedValue={selectedParameter.name}
                             onClick={(value) => setSelectedParameter(parametersCtx.parameters.find(p => p.name === value))}
                         />
                     }
-                    
+
                 </section>
                 {selectedParameter && selectedParameter.isColor &&
                     <section className="colorPicker">
