@@ -33,6 +33,6 @@ networks:
   proxy:
     name: nginx-proxy
     external: true
-mongo_hydromnis:
+  mongo_hydromnis:
     name: mongo_hydromnis
     external: false
