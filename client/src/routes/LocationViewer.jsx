@@ -3,7 +3,7 @@ import { API_URL } from '../config';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-import { FaArrowLeft, FaTrash } from 'react-icons/fa6';
+import { FaArrowLeft, FaTrash,FaDownload } from 'react-icons/fa6';
 import HorizontalSelector from '../components/HorizontalSelector';
 import { getMeasurementsByLocation,deleteMeasurement as deleteMeasurementApi  } from '../utils/fetchMeasurement';
 
@@ -41,7 +41,31 @@ const LocationViewer = () => {
             setMeasurements(data);
         }
     }
-
+    const downloadMeasurementsAsJson = () => {
+        const element = document.createElement("a");
+        console.log("measurements",measurements)
+        const data = [];
+        for (const parameter in measurements) {
+            console.log("parameter",parameter)
+            const parameterObject = {
+                name: parameter,
+                values: []
+            }
+            parameterObject.values = measurements[parameter].map((measurement) => {
+                return {
+                    value: measurement.value,
+                    date: measurement.date,
+                    color: measurement.color
+                }
+            });
+            data.push(parameterObject);
+        }
+        const file = new Blob([JSON.stringify(data)], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = `${locationName}.json`;
+        document.body.appendChild(element); // Required for this to work in FireFox
+        element.click();
+    }
     const deleteMeasurement = async (measurementId) => {
         if (!confirm("Are you sure you want to delete this measurement?")) {
             return;
@@ -64,8 +88,9 @@ const LocationViewer = () => {
 
     return (
         <div>
-            <h1>Location {locationName}</h1>
+            <h1>Location {locationName}</h1> 
             <FaArrowLeft className="icon" onClick={() => navigate("/location")}>Back</FaArrowLeft>
+            <FaDownload className="icon" onClick={downloadMeasurementsAsJson}>Download</FaDownload>
             {parameters && <HorizontalSelector
                 values={parameters}
                 selectedValue={selectedParameter}
