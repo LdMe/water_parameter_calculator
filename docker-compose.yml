@@ -19,7 +19,6 @@ services:
       - mongo
     environment:
       - VIRTUAL_HOST=api-hydromnis.lafuentedanel.com
-      - VIRTUAL_PORT=80
       - LETSENCRYPT_HOST=api-hydromnis.lafuentedanel.com
       - LETSENCRYPT_EMAIL=admin@lafuentedanel.com
     volumes:
