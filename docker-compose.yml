@@ -8,15 +8,32 @@ services:
       - 27017:27017
     volumes:
       - ./data:/data/db
+    networks:
+      - proxy
+      - mongo-hydromnis
   server:
     build: ./server
     container_name: server-color
     restart: always
-    ports:
-      - 3999:3000
     depends_on:
       - mongo
+    environment:
+      - VIRTUAL_HOST=api-hydromnis.lafuentedanel.com
+      - VIRTUAL_PORT=80
+      - LETSENCRYPT_HOST=api-hydromnis.lafuentedanel.com
+      - LETSENCRYPT_EMAIL=admin@lafuentedanel.com
     volumes:
       - ./server:/usr/src/app
       - /usr/src/app/node_modules
+    networks:
+      - proxy
+      - mongo-hydromnis
 
+networks:
+  proxy:
+    name: nginx-proxy
+    external: true
+mongo-hydromnis:
+    name: mongo-hydromnis
+    external: false
+    
