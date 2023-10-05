@@ -3,9 +3,11 @@ import { API_URL } from '../config';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-import { FaArrowLeft, FaTrash,FaDownload } from 'react-icons/fa6';
+import { FaArrowLeft, FaTrash, FaDownload } from 'react-icons/fa6';
 import HorizontalSelector from '../components/HorizontalSelector';
-import { getMeasurementsByLocation,deleteMeasurement as deleteMeasurementApi  } from '../utils/fetchMeasurement';
+import { getMeasurementsByLocation, deleteMeasurement as deleteMeasurementApi } from '../utils/fetchMeasurement';
+
+import '../styles/Locations.scss'
 
 const LocationViewer = () => {
     const [location, setLocation] = useState({});
@@ -43,10 +45,10 @@ const LocationViewer = () => {
     }
     const downloadMeasurementsAsJson = () => {
         const element = document.createElement("a");
-        console.log("measurements",measurements)
+        console.log("measurements", measurements)
         const data = [];
         for (const parameter in measurements) {
-            console.log("parameter",parameter)
+            console.log("parameter", parameter)
             const parameterObject = {
                 name: parameter,
                 values: []
@@ -88,9 +90,11 @@ const LocationViewer = () => {
 
     return (
         <div>
-            <h1>Location {locationName}</h1> 
-            <FaArrowLeft className="icon" onClick={() => navigate("/location")}>Back</FaArrowLeft>
-            <FaDownload className="icon" onClick={downloadMeasurementsAsJson}>Download</FaDownload>
+            <h1>Location {locationName}</h1>
+            <section className="buttonSection">
+                <FaArrowLeft className="icon" onClick={() => navigate("/location")}>Back</FaArrowLeft>
+                <FaDownload className="icon" onClick={downloadMeasurementsAsJson}>Download</FaDownload>
+            </section>
             {parameters && <HorizontalSelector
                 values={parameters}
                 selectedValue={selectedParameter}
