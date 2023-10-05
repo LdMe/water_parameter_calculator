@@ -10,7 +10,7 @@ services:
       - ./data:/data/db
     networks:
       - proxy
-      - mongo-hydromnis
+      - mongo_hydromnis
   server:
     build: ./server
     container_name: server-color
@@ -27,13 +27,12 @@ services:
       - /usr/src/app/node_modules
     networks:
       - proxy
-      - mongo-hydromnis
+      - mongo_hydromnis
 
 networks:
   proxy:
     name: nginx-proxy
     external: true
-mongo-hydromnis:
-    name: mongo-hydromnis
+mongo_hydromnis:
+    name: mongo_hydromnis
     external: false
-    
