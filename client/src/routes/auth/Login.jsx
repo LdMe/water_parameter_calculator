@@ -2,12 +2,14 @@ import { useEffect } from 'react';
 import { API_URL } from '../../config';
 import { useNavigate } from 'react-router-dom';
 import LoggedInContext from '../../context/loggedInContext';
+import ErrorContext from '../../context/errorContext';
 import { useContext } from 'react';
 import {createDefaultParameters} from '../../utils/fetchParameter';
 import { createLocation } from '../../utils/fetchLocation';
 
 const Login = ({ isRegister = false, isLogout = false }) => {
     const { setLoggedIn } = useContext(LoggedInContext);
+    const { setError } = useContext(ErrorContext);
     const navigate = useNavigate();
     useEffect(() => {
         if (isLogout) {
@@ -17,8 +19,13 @@ const Login = ({ isRegister = false, isLogout = false }) => {
         }
     }, []);
     const handleSubmit = async (e) => {
+        
         try {
             e.preventDefault();
+            if(e.target.email.value === "" || e.target.password.value === ""){
+                setError("Please fill in all fields");
+                return;
+            }
             const data = {
                 email: e.target.email.value,
                 password: e.target.password.value
@@ -50,6 +57,7 @@ const Login = ({ isRegister = false, isLogout = false }) => {
 
         }
         catch (err) {
+            setError(err.message);
             console.log(err);
         }
 
