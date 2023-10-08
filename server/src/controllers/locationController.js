@@ -24,6 +24,16 @@ locationController.createLocation = async (req, res) => {
     }
 }
 
+locationController.createDefaultLocation = async (userId) => {
+    const locations = [
+        {
+            name: "Default",
+            user: userId
+        }
+    ];
+    await Location.insertMany(locations);
+}
+
 locationController.getLocation = async (req, res) => {
     const location = await Location.findById(req.params.id);
     res.json(location);

@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 import bcrypt from 'bcrypt';
+import parameterController from './parameterController.js';
+import locationController from './locationController.js';
 
 const authController = {};
 
@@ -35,6 +37,8 @@ authController.register = async (req, res) => {
         const hash  = await bcrypt.hash(password, 10);
         const user = new User({ email, password:hash });
         await user.save();
+        await parameterController.createDefaultParameters(user._id);
+        await locationController.createDefaultLocation(user._id);
         const token = jwt.sign({ id: user._id }, process.env.SECRET, {
             expiresIn: 86400,
         });
