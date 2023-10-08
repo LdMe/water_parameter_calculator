@@ -1,4 +1,5 @@
 import Location from "../models/locationModel.js";
+import Measurement from "../models/measurementModel.js";
 
 const locationController = {};
 
@@ -12,7 +13,7 @@ locationController.createLocation = async (req, res) => {
         const { name } = req.body;
         const oldLocation = await Location.findOne({ name, user: req.user.id });
         if (oldLocation) {
-            return res.status(400).json({ message: "Location already exists" });
+            return res.status(409).json({ message: "Location already exists" });
         }
         const location = new Location({ name, user: req.user.id });
         await location.save();
@@ -30,6 +31,7 @@ locationController.getLocation = async (req, res) => {
 
 locationController.deleteLocation = async (req, res) => {
     console.log("delete location, id: ", req.params.id);
+    await Measurement.deleteMany({ location: req.params.id });
     await Location.findByIdAndDelete(req.params.id);
     res.json({ message: 'Location deleted' });
 }

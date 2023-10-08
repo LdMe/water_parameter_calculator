@@ -1,4 +1,5 @@
 import Parameter from "../models/parameterModel.js";
+import Measurement from "../models/measurementModel.js";
 
 const parameterController = {};
 
@@ -16,7 +17,7 @@ parameterController.createParameter = async (req, res) => {
         name = name.toLowerCase();
         const oldParameter = await Parameter.findOne({ name, user: req.user.id });
         if (oldParameter) {
-            return res.status(400).json({ message: "Parameter already exists" });
+            return res.status(409).json({ message: "Parameter already exists" });
         }
         const parameter = new Parameter({ name, isColor, colors, user: req.user.id });
         await parameter.save();
@@ -44,6 +45,7 @@ parameterController.deleteParameter = async (req, res) => {
         return res.status(400).json({ message: "Parameter not found" });
     }
     console.log("parameter", parameter);
+    await Measurement.deleteMany({ parameter: parameter._id });
     const response = await Parameter.findByIdAndDelete(parameter._id);
     console.log("response", response);
     res.json({ message: 'Parameter deleted' });
