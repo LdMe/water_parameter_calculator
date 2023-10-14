@@ -108,11 +108,12 @@ function ParameterEditor() {
     
   }
   const saveParameterApi = async () => {
-    if (parameter.name === null || parameter.name === undefined) {
+    console.log("saving parameter",parameter)
+    if (parameterName === null || parameterName === undefined) {
       alert("Parameter name cannot be empty");
       return;
     }
-    const response = await saveParameter(parameter.name,parameter.getValues(),parameterHasColorScale);
+    const response = await saveParameter(parameterName,parameter.getValues(),parameterHasColorScale);
     const { data, error, code } = response;
     
     if (error !== null) {
@@ -120,7 +121,7 @@ function ParameterEditor() {
       checkAuth(code);
     }
     else {
-      alert(`Parameter '${parameter.name}' saved`);
+      alert(`Parameter '${parameterName}' saved`);
       getParameters();
       getParameterFromContext();
     }
@@ -128,10 +129,10 @@ function ParameterEditor() {
 
   const deleteParameterApi = async() => {
     /* delete parameter from API*/
-    if (!confirm(`Are you sure you want to delete '${parameter.name}'?`)) {
+    if (!confirm(`Are you sure you want to delete '${parameterName}'?`)) {
       return;
     }
-    const response = await deleteParameter(parameter.name);
+    const response = await deleteParameter(parameterName);
     const { data, error, code } = response;
     
     if (error !== null) {
@@ -139,7 +140,7 @@ function ParameterEditor() {
       checkAuth(code);
     }
     else {
-      alert(`Parameter '${parameter.name}' deleted`);
+      alert(`Parameter '${parameterName}' deleted`);
       setParameter(new Parameter("", new Color(255, 255, 255, 255), []));
       setParameterName("");
       navigate(`/parameter/`);
@@ -148,9 +149,7 @@ function ParameterEditor() {
   
 
   const changeParameterName = (e) => {
-    parameter.name = e.target.value.toLowerCase();
-    setParameter(parameter);
-    setParameterName(e.target.value);
+    setParameterName(e.target.value.toLowerCase());
     navigate(`/parameter/${e.target.value}`);
   }
   const loadParameter = (parameterName) => {
@@ -173,9 +172,10 @@ function ParameterEditor() {
             <SuggestedInput
               //suggested={parameters.filter(p => p.name.includes(parameterName)).map(p => p.name)}
               suggested={[]}
-              value={parameter.name}
+              value={parameterName}
               onChange={changeParameterName}
             />
+            
             <section className="colorScaleSection">
               <label htmlFor="hasColorScale">Has color scale</label>
               <input type="checkbox" checked={parameterHasColorScale} onChange={(e) => setParameterHasColorScale(e.target.checked)} />
@@ -183,7 +183,7 @@ function ParameterEditor() {
             <section className="buttonSection">
               <FaArrowsRotate className="icon" onClick={getParameterFromContext} />
               <FaFloppyDisk className="icon" onClick={saveParameterApi} />
-              <FaEraser className="icon" onClick={() => setParameter(new Parameter(parameter.name, parameter.white, []))} />
+              <FaEraser className="icon" onClick={() => setParameter(new Parameter(parameterName, parameter.white, []))} />
               <FaTrash className="icon" onClick={deleteParameterApi} />
             </section>
             {parameterHasColorScale &&
