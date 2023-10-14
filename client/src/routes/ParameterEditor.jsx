@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect,useContext } from 'react'
 import Parameter from '../parameter';
 import Color from '../color';
 import ColorPicker from '../ColorPicker';
@@ -7,6 +7,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import SuggestedInput from './SuggestedInput';
 import ColorPickShow from '../components/colorPickShow';
 import ColorGradient from '../components/ColorGradient';
+import ParametersContext from '../context/parametersContext';
 import '../styles/Parameters.scss'
 import { FaArrowsRotate, FaFloppyDisk, FaEraser, FaTrash } from 'react-icons/fa6';
 import HorizontalSelector from '../components/HorizontalSelector';
@@ -19,7 +20,7 @@ function ParameterEditor() {
   const [whiteColor, setWhiteColor] = useState(new Color(255, 255, 255, 255));
   const [parameter, setParameter] = useState(null);
   const [values, SetValues] = useState([]);
-  const [parameters, setParameters] = useState([]);
+  const {parameters, setParameters} = useContext(ParametersContext);
   const [parameterName, setParameterName] = useState(useParams().parameterName || "");
   const [parameterHasColorScale, setParameterHasColorScale] = useState(true);
   const [focusColor, setFocusColor] = useState(null);
@@ -58,6 +59,13 @@ function ParameterEditor() {
   const changeValue = (value, newValue) => {
     setFocusColor(value.color);
     parameter.setValue(value.color, newValue);
+    SetValues(parameter.values);
+    setParameter(parameter);
+    setCount(count + 1);
+  }
+
+  const changeColor = (value, color) => {
+    parameter.setColor(value.color,color );
     SetValues(parameter.values);
     setParameter(parameter);
     setCount(count + 1);
@@ -142,6 +150,7 @@ function ParameterEditor() {
     else {
       alert(`Parameter '${parameter.name}' saved`);
       getParameterApi();
+      getParametersApi();
     }
   }
 
@@ -225,6 +234,7 @@ function ParameterEditor() {
                   value={value}
                   key={value.color.toString() + index}
                   onValueChange={changeValue}
+                  onColorChange={changeColor}
                   onValueDelete={deleteValue}
                   autoFocus={focusColor === value.color}
                 />

@@ -74,6 +74,13 @@ class Color {
     toString() {
         return `rgba(${this.r},${this.g},${this.b},${this.a})`;
     }
+    static fromHex(hex) {
+        hex = hex.replace("#", "");
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        return new Color(r, g, b);
+    }
     toHex() {
         return `#${this.r.toString(16)}${this.g.toString(16)}${this.b.toString(16)}`;
     }

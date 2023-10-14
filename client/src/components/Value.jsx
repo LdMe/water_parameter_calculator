@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import {FaTrash} from "react-icons/fa6";
-const Value = ({ value, onValueChange, onValueDelete ,autoFocus=false}) => {
+import Color from "../color";
+import {SketchPicker} from 'react-color';
+
+const Value = ({ value, onValueChange, onColorChange,onValueDelete ,autoFocus=false}) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newValue, setNewValue] = useState(value.value);
+    const [openPicker,setOpenPicker] = useState(false);
 
     const handleValueChange = (e) => {
         let tempValue = Number(e.target.value);
@@ -10,13 +14,22 @@ const Value = ({ value, onValueChange, onValueDelete ,autoFocus=false}) => {
         setNewValue(tempValue);
         onValueChange(value, tempValue);
     }
+    const handleColorChange = (e) => {
+        console.log(e);
+        let color = Color.fromHex(e.target.value);
+        onColorChange(value, color);
+    }
+    const handleClick = (e) => {
+        e.preventDefault();
+        setOpenPicker(true)
+    }
     useEffect(() => {
     }, [value])
 
     return (
         <div className="value">
-            <span style={{ display:"inline-block",width:"1.5rem",height:"1.5rem",backgroundColor: value.color ? value.color.toString(): "white"}}></span>
             
+            <input type="color" defaultValue={value.color.toHex()} onChange={handleColorChange}/>
                 <input type="number" step="0.01" lang="en" value={newValue} onChange={handleValueChange} 
                 {...autoFocus && {autoFocus:true}}
                 />

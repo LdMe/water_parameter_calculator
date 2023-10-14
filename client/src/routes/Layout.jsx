@@ -5,18 +5,17 @@ import { Outlet, Link } from "react-router-dom";
 import LoggedInContext from "../context/loggedInContext";
 import LocationContext from "../context/locationsContext";
 import ParameterContext from "../context/parametersContext";
+import Parameter from "../parameter";
 import ErrorContext from "../context/errorContext";
-import { API_URL } from "../config";
 import {getLocations as getLocationsApi} from "../utils/fetchLocation";
 import { getParameters as getParametersApi } from "../utils/fetchParameter";
+import LogoutInfoButtons from "../components/LogoutInfoButtons";
 
-import { FaLocationDot, FaRulerCombined, FaMagnifyingGlass, FaRightFromBracket, FaRightToBracket, FaUser, FaUserPlus, FaHouse } from "react-icons/fa6";
+import { FaLocationDot, FaRulerCombined, FaMagnifyingGlass, FaRightFromBracket, FaRightToBracket, FaInfo, FaUserPlus, FaHouse } from "react-icons/fa6";
 
 import "../styles/Layout.scss";
 
-const iconStyles = {
-    color:"red",
-}
+
 const Layout = () => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [locations, setLocations] = useState([]);
@@ -30,8 +29,8 @@ const Layout = () => {
             setLoggedIn(true);
         }
         else {
-            if (webLocation.pathname !== "/login" && webLocation.pathname !== "/register") {
-                setLoggedIn(false);
+            setLoggedIn(false);
+            if (webLocation.pathname !== "/login" && webLocation.pathname !== "/register" && webLocation.pathname !== "/") { 
                 navigate('/login');
             }
 
@@ -76,7 +75,9 @@ const Layout = () => {
             console.log("error",response.error);
             return;
         }
-        setParameters(response.data);
+        const newParameters = Parameter.loadParametersFromJSON(response.data);
+        console.log("new parameters",newParameters)
+        setParameters(newParameters);
     }
 
     return (
@@ -116,15 +117,16 @@ const Layout = () => {
                             <li>
                                 <Link to="/calculate"  ><FaMagnifyingGlass className="icon" title="calculate" /></Link>
                             </li>
+                            
                             <li>
-                                <Link to="/logout"  ><FaRightFromBracket className="icon" title="logout" /></Link>
+                                <LogoutInfoButtons />
                             </li>
                         </ul>
 
                         :
                         <ul>
                             <li>
-                                <Link to="/"><FaHouse className="icon" title="Home" /></Link>
+                                <Link to="/"><FaInfo className="icon" title="Home" /></Link>
                             </li>
                             <li>
                                 <Link to="/login"><FaRightToBracket className="icon" title="login" /></Link>

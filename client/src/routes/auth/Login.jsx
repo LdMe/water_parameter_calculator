@@ -4,8 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import LoggedInContext from '../../context/loggedInContext';
 import ErrorContext from '../../context/errorContext';
 import { useContext } from 'react';
-import {createDefaultParameters} from '../../utils/fetchParameter';
-import { createLocation } from '../../utils/fetchLocation';
 
 const Login = ({ isRegister = false, isLogout = false }) => {
     const { setLoggedIn } = useContext(LoggedInContext);
@@ -46,13 +44,8 @@ const Login = ({ isRegister = false, isLogout = false }) => {
                 throw new Error(json.message);
             }
             localStorage.setItem('token', json.token);
+
             setLoggedIn(true);
-            if(isRegister){
-                setTimeout(async() => {
-                await createDefaultParameters();
-                await createLocation("My Location");
-                }, 1000);
-            }
             navigate('/');
 
         }

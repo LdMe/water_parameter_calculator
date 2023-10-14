@@ -1,5 +1,5 @@
-$base-color: #c1eef67f;
-
+$base-color: #c1eef6d3;
+$base-color-dark: rgb(28, 70, 168);
 body {
     font-size: 1.2rem;
     margin:0;
@@ -14,7 +14,7 @@ nav {
     left: 0;
     width: 100%;
     z-index: 100;
-    background-color: #c1eef67f;
+    background-color: $base-color;
     border-top: 1px solid #ddd;
 
     & ul {
@@ -61,7 +61,7 @@ main {
 .icon {
     cursor: pointer;
     font-size: 1.5rem;
-    color:rgb(28, 70, 168);
+    color:$base-color-dark;
     &.big {
         font-size: 3rem;
     }
@@ -157,4 +157,21 @@ input[type="text"], input[type="number"],input[type="password"] {
         background-color: lighten($base-color,15%);
         border: 1px solid darken($base-color, 20%);
     }
+}
+
+.logout-info-buttons__button{
+    background-color: $base-color;
+    border-radius: 50%;
+    padding: 10px;
+    margin: 5px;
+    color: $base-color-dark;
+    border: 1px solid $base-color-dark;
+}
+.logout-info-buttons__buttons{
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    position: absolute;
+    bottom:80px;
+    right: 0;
 }

@@ -53,12 +53,14 @@ class Parameter {
         * value = value of closest color + (distance to closest color / distance to second closest color) * (value of second closest color - value of closest color)
         * this formula is used to make sure that the value of the color is not too far off from the value of the closest color
         */
+       console.log("color to calculate",color)
        if(! (color instanceof Color)) { 
               color = new Color(color.color.r,color.color.g,color.color.b);
        } 
         if(correct){
             color = this.correctWhite(color);
         }
+        console.log("corrected color",color)
         const closestColor = this.getClosestColorValue(color);
         const secondClosestColor = this.getSecondClosestColorValue(color);
 
@@ -66,8 +68,15 @@ class Parameter {
         const distanceToSecondClosestColor = color.getDistance(secondClosestColor.color);
         const valueOfClosestColor = closestColor.value;
         const valueOfSecondClosestColor = secondClosestColor.value;
-
+        console.log("closest color",closestColor)
+        console.log("second closest color",secondClosestColor)
+        console.log("distance to closest color",distanceToClosestColor)
+        console.log("distance to second closest color",distanceToSecondClosestColor)
+        console.log("value of closest color",valueOfClosestColor)
+        console.log("value of second closest color",valueOfSecondClosestColor)
+        if(distanceToSecondClosestColor == 0) return valueOfClosestColor;
         const value = valueOfClosestColor + (distanceToClosestColor / distanceToSecondClosestColor) * (valueOfSecondClosestColor - valueOfClosestColor);
+        console.log("value",value)
         return value;
     }
     getName() {
@@ -81,6 +90,9 @@ class Parameter {
     }
     setValue(color, value) {
         this.getValue(color).value = value;
+    }
+    setColor(color, newColor) {
+        this.getValue(color).color = newColor;
     }
     setWhite(color) {
         this.white = color;

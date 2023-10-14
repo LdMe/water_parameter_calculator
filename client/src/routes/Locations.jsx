@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect,useContext } from "react"
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
 import '../styles/Locations.scss'
+import ErrorContext from "../context/errorContext";
 import { FaTrash, FaFloppyDisk, FaChartLine, FaPlus } from 'react-icons/fa6';
 import { getLocations, createLocation as createLocationApi,updateLocation,deleteLocation as deleteLocationApi } from "../utils/fetchLocation";
 
@@ -9,6 +10,7 @@ const Locations = () => {
     const [locations, setLocations] = useState([]);
     const [newlocationName, setNewLocationName] = useState("");
     const navigate = useNavigate();
+    const {setError} = useContext(ErrorContext);
 
     useEffect(() => {
         loadLocations();
@@ -32,12 +34,18 @@ const Locations = () => {
         }
     }
     const createLocation = async () => {
-        if (newlocationName === "") return;
-        const result = await createLocationApi(newlocationName);
+        if (newlocationName === "") {
+            setError("Please enter a location name");
+            return;
+        }        const result = await createLocationApi(newlocationName);
         const { data, error, code } = result;
         if (error) {
             if (code === 401) {
                 navigate('/login');
+            }
+            if(code === 409){
+                setError("Location already exists");
+                return;
             }
         }
         else {

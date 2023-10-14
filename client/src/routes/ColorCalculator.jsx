@@ -17,24 +17,18 @@ import { FaFloppyDisk } from 'react-icons/fa6';
 
 function ColorCalculator() {
 
-    const [count, setCount] = useState(0)
     const [isPickingWhite, setIsPickingWhite] = useState(false);
     const [whiteColor, setWhiteColor] = useState(new Color(255, 255, 255));
-    const [selectedParameter, setSelectedParameter] = useState(null);
-    const [locations, setLocations] = useState([]);
     const [selectedLocation, setSelectedLocation] = useState(null);
-    const [testParameter, setTestParameter] = useState(new Parameter("nitrate", new Color(255, 255, 255)));
     const [pickedColor, setPickedColor] = useState(new Color(0, 0, 0, 0));
     const [selectedColors, setSelectedColors] = useState(null);
     const [value, setValue] = useState(0);
-    const navigate = useNavigate();
-    const locationsCtx = useContext(locationsContext);
+    const {locations, setLocations} = useContext(locationsContext);
     const parametersCtx = useContext(parametersContext);
+    const [selectedParameter, setSelectedParameter] = useState(parametersCtx.parameters[0]);
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        loadParameters();
-        loadLocations();
-    }, []);
+    
     useEffect(() => {
         setSelectedParameter(parametersCtx.parameters[0]);
 
@@ -45,10 +39,13 @@ function ColorCalculator() {
     useEffect(() => {
         if (selectedParameter) {
             console.log("selectedParameter", selectedParameter)
-            testParameter.name = selectedParameter.name;
             if (selectedParameter.values) {
                 console.log(selectedParameter.values);
                 setSelectedColors(selectedParameter.values);
+            }
+            else if(selectedParameter.colors) {
+                console.log(selectedParameter.colors);
+                setSelectedColors(selectedParameter.colors);
             }
         }
     }, [selectedParameter]);
@@ -65,6 +62,7 @@ function ColorCalculator() {
             setIsPickingWhite(false);
             return;
         }
+        console.log(selectedParameter);
         selectedParameter.setWhite(whiteColor);
         setPickedColor(selectedParameter.correctWhite(rgb));
         const calculatedValue = selectedParameter.calculateValue(rgb);
@@ -118,6 +116,16 @@ function ColorCalculator() {
         }
 
     }
+    const handleColorChange = (e) => {
+        console.log(e.target.value);
+        const color = Color.fromHex(e.target.value);
+        setPickedColor(color);
+        console.log("color",color)
+        const calculatedValue = selectedParameter.calculateValue(color,false);
+        console.log("calculatedValue",calculatedValue)
+        console.log("Math.round(calculatedValue * 1000 + Number.EPSILON) / 1000",Math.round(calculatedValue * 1000 + Number.EPSILON) / 1000)
+        setValue(Math.round(calculatedValue * 1000 + Number.EPSILON) / 1000);
+    }
 
     return (
         <>
@@ -158,6 +166,7 @@ function ColorCalculator() {
                     </section>
                 }
                 <div className="values">
+                    <input type="color" value={pickedColor.toHex()} onChange={handleColorChange}/>
                     <input type="number" value={value} onChange={(e) => setValue(e.target.value)} />
                     <FaFloppyDisk className="icon" onClick={handleSave} />
                 </div>
