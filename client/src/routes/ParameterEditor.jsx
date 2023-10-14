@@ -185,7 +185,7 @@ function ParameterEditor() {
               <input type="checkbox" checked={parameterHasColorScale} onChange={(e) => setParameterHasColorScale(e.target.checked)} />
             </section>
             <section className="buttonSection">
-              <FaArrowsRotate className="icon" onClick={getParameterFromContext} />
+              <FaArrowsRotate className="icon" onClick={getParameters} />
               <FaFloppyDisk className="icon" onClick={saveParameterApi} />
               <FaEraser className="icon" onClick={() => setParameter(new Parameter(parameterName, parameter.white, []))} />
               <FaTrash className="icon" onClick={deleteParameterApi} />
