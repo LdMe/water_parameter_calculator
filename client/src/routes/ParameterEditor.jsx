@@ -20,7 +20,7 @@ function ParameterEditor() {
   const [isPickingWhite, setIsPickingWhite] = useState(false);
   const [whiteColor, setWhiteColor] = useState(new Color(255, 255, 255, 255));
   const [parameter, setParameter] = useState(null);
-  const [values, SetValues] = useState([]);
+  const [values, setValues] = useState([]);
   const {parameters, getParameters} = useContext(ParametersContext);
   const [parameterName, setParameterName] = useState(useParams().parameterName || "");
   const [parameterHasColorScale, setParameterHasColorScale] = useState(true);
@@ -38,7 +38,7 @@ function ParameterEditor() {
       if (parameter.isColor !== undefined) {
         setParameterHasColorScale(parameter.isColor);
         
-        SetValues(parameter.values);
+        setValues(parameter.values);
       }
     }
     else {
@@ -48,7 +48,7 @@ function ParameterEditor() {
 
   useEffect(() => {
     getParameterFromContext();
-  }, [parameterName]);
+  }, [parameterName,parameters]);
 
   const checkAuth = (code) => {
     if (code === 401) {
@@ -58,20 +58,20 @@ function ParameterEditor() {
   const changeValue = (value, newValue) => {
     setFocusColor(value.color);
     parameter.setValue(value.color, newValue);
-    SetValues(parameter.values);
+    setValues(parameter.values);
     setParameter(parameter);
     setCount(count + 1);
   }
 
   const changeColor = (value, color) => {
     parameter.setColor(value.color,color );
-    SetValues(parameter.values);
+    setValues(parameter.values);
     setParameter(parameter);
     setCount(count + 1);
   }
   const deleteValue = (value) => {
     parameter.deleteValue(value.color);
-    SetValues(parameter.values);
+    setValues(parameter.values);
     setParameter(parameter);
     setCount(count + 1);
   }
@@ -93,14 +93,18 @@ function ParameterEditor() {
  
 
   const getParameterFromContext = async (saveToState = true) => {
+    console.log("getting parameter from context",parameterName)
     if (parameterName === "") {
       setParameter(new Parameter("", new Color(255, 255, 255, 255), []));
       return null;
     }
     const selectedParam = parameters.find(p => p.name === parameterName);
+    console.log("selected param",selectedParam)
     if (selectedParam) {
       setParameter(selectedParam);
       setParameterName(selectedParam.name);
+
+      setValues(selectedParam.values);
       return selectedParam;
     }
     setParameter(new Parameter("", new Color(255, 255, 255, 255), []));
