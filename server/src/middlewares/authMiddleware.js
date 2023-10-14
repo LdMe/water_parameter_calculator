@@ -13,7 +13,6 @@ const authMiddleware = async (req, res, next) => {
         if(error.message.includes("jwt expired")) {
             return res.status(401).json({message: "Session expired"});
         }
-        console.log(error.message)
         res.status(500).json({ message: error.message });
     }
 }

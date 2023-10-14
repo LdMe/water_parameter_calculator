@@ -51,7 +51,6 @@ const Login = ({ isRegister = false, isLogout = false }) => {
         }
         catch (err) {
             setError(err.message);
-            console.log(err);
         }
 
     }

@@ -40,7 +40,6 @@ locationController.getLocation = async (req, res) => {
 }
 
 locationController.deleteLocation = async (req, res) => {
-    console.log("delete location, id: ", req.params.id);
     await Measurement.deleteMany({ location: req.params.id });
     await Location.findByIdAndDelete(req.params.id);
     res.json({ message: 'Location deleted' });

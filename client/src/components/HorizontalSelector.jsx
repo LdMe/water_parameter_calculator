@@ -5,7 +5,6 @@ const HorizontalSelector = ({ values,selectedValue,onClick, colorScale="" }) => 
         <section className="horizontalSelectorOuter">
             <section className="horizontalSelector">
               {values && values.map(value => {
-                console.log(value,selectedValue)
                 if (selectedValue === value) {
                   return <article key={value}><button className={"selected " + colorScale} onClick={() => onClick(value)}>{value}</button></article>
                 }

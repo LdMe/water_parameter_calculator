@@ -20,15 +20,15 @@ const Locations = () => {
         const response = await getLocations();
         const { data, error, code } = response;
         const locations = data;
-        console.log("response", response)
+        
         if (error !== null) {
-            console.log("error", error)
+            
             if (code === 401) {
                 navigate('/login');
             }
         }
         else {
-            console.log("locations", locations)
+            
             setLocations(locations);
             setNewLocationName("");
         }

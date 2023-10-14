@@ -59,7 +59,7 @@ const Layout = () => {
             if(response.code === 401){
                 navigate('/login');
             }
-            console.log("error",response.error);
+            
             return;
         }
         
@@ -72,11 +72,11 @@ const Layout = () => {
             if(response.code === 401){
                 navigate('/login');
             }
-            console.log("error",response.error);
+            
             return;
         }
         const newParameters = Parameter.loadParametersFromJSON(response.data);
-        console.log("new parameters",newParameters)
+        
         setParameters(newParameters);
     }
 
@@ -91,8 +91,8 @@ const Layout = () => {
                 <img className="title-image" src="/hydromnis.png" alg="logo"/><h1> HydrOmnis</h1>
                 </section>
                 <LoggedInContext.Provider value={{ loggedIn, setLoggedIn }}>
-                    <LocationContext.Provider value={{ locations, setLocations }}>
-                        <ParameterContext.Provider value={{ parameters, setParameters }}>
+                    <LocationContext.Provider value={{ locations, getLocations }}>
+                        <ParameterContext.Provider value={{ parameters, getParameters }}>
                             <ErrorContext.Provider value={{ error, setError }}>
                                 {error && <div className="error">{error}</div>}
                                 <Outlet />

@@ -28,7 +28,6 @@ measurementController.getMeasurementsByUser = async (req, res) => {
 }
 
 measurementController.getMeasurementsByParameter = async (req, res) => {
-    console.log("req.params.parameterName", req.params.parameterName);
     const parameter  = await Parameter.findOne({ name: req.params.parameterName, user: req.user.id });
     if (!parameter) {
         return res.status(400).json({ message: "Parameter not found" });
@@ -75,10 +74,7 @@ measurementController.createMeasurement = async (req, res) => {
             data.color = color;
         }
         if(locationName){
-            console.log("locationName", locationName);
-            console.log("req.user.id", req.user.id)
             const location = await Location.findOne({ name: locationName, user: req.user.id });
-            console.log("location", location)
             if (!location) {
                 return res.status(400).json({ message: "Location not found" });
             }
@@ -99,7 +95,6 @@ measurementController.getMeasurement = async (req, res) => {
 }
 
 measurementController.deleteMeasurement = async (req, res) => {
-    console.log("req.params.id", req.params.id)
     await Measurement.findByIdAndDelete(req.params.id);
     res.json({ message: 'Measurement deleted' });
 }

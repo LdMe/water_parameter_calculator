@@ -8,8 +8,6 @@ import parametersContext from '../context/parametersContext';
 import ColorPickShow from '../components/colorPickShow';
 import ColorGradient from '../components/ColorGradient';
 import HorizontalSelector from '../components/HorizontalSelector';
-import { getParameters } from '../utils/fetchParameter';
-import { getLocations } from '../utils/fetchLocation';
 import { createMeasurement } from '../utils/fetchMeasurement';
 
 import '../styles/ColorCalculator.scss'
@@ -23,12 +21,12 @@ function ColorCalculator() {
     const [pickedColor, setPickedColor] = useState(new Color(0, 0, 0, 0));
     const [selectedColors, setSelectedColors] = useState(null);
     const [value, setValue] = useState(0);
-    const {locations, setLocations} = useContext(locationsContext);
+    const { locations } = useContext(locationsContext);
     const parametersCtx = useContext(parametersContext);
     const [selectedParameter, setSelectedParameter] = useState(parametersCtx.parameters[0]);
     const navigate = useNavigate();
 
-    
+
     useEffect(() => {
         setSelectedParameter(parametersCtx.parameters[0]);
 
@@ -38,13 +36,10 @@ function ColorCalculator() {
     }, [locations]);
     useEffect(() => {
         if (selectedParameter) {
-            console.log("selectedParameter", selectedParameter)
             if (selectedParameter.values) {
-                console.log(selectedParameter.values);
                 setSelectedColors(selectedParameter.values);
             }
-            else if(selectedParameter.colors) {
-                console.log(selectedParameter.colors);
+            else if (selectedParameter.colors) {
                 setSelectedColors(selectedParameter.colors);
             }
         }
@@ -55,14 +50,14 @@ function ColorCalculator() {
             navigate('/login');
         }
     }
-    
+
     const handleClick = (rgb) => {
         if (isPickingWhite) {
             setWhiteColor(rgb);
             setIsPickingWhite(false);
             return;
         }
-        console.log(selectedParameter);
+
         selectedParameter.setWhite(whiteColor);
         setPickedColor(selectedParameter.correctWhite(rgb));
         const calculatedValue = selectedParameter.calculateValue(rgb);
@@ -74,7 +69,7 @@ function ColorCalculator() {
         const response = await createMeasurement(value, selectedParameter.name, selectedLocation.name, pickedColor);
         const { data, error, code } = response;
         if (error !== null) {
-            console.log("error", error)
+
             checkAuth(code);
         }
         else {
@@ -82,48 +77,14 @@ function ColorCalculator() {
         }
     }
 
-    const loadParameters = async () => {
-        /* load parameters from api */
-        const response = await getParameters();
-        const { data, error, code } = response;
-        if (error !== null) {
-            console.log("error", error)
-            checkAuth(code);
-        }
-        else {
-            const newParameters = Parameter.loadParametersFromJSON(data);
-            console.log("newParameters", newParameters)
-            parametersCtx.setParameters(newParameters);
-            return newParameters;
-        }
-    }
-
-    const loadLocations = async () => {
-        /* load locations from api */
-        const response = await getLocations();
-        const { data, error, code } = response;
-        console.log("respuestaaa", response)
-        if (error !== null) {
-            console.log("error", error)
-            checkAuth(code);
-            setLocations([]);
-            return [];
-        }
-        else {
-            console.log("data", data)
-            setLocations(data);
-            return data;
-        }
-
-    }
     const handleColorChange = (e) => {
-        console.log(e.target.value);
+
         const color = Color.fromHex(e.target.value);
         setPickedColor(color);
-        console.log("color",color)
-        const calculatedValue = selectedParameter.calculateValue(color,false);
-        console.log("calculatedValue",calculatedValue)
-        console.log("Math.round(calculatedValue * 1000 + Number.EPSILON) / 1000",Math.round(calculatedValue * 1000 + Number.EPSILON) / 1000)
+
+        const calculatedValue = selectedParameter.calculateValue(color, false);
+
+
         setValue(Math.round(calculatedValue * 1000 + Number.EPSILON) / 1000);
     }
 
@@ -166,7 +127,7 @@ function ColorCalculator() {
                     </section>
                 }
                 <div className="values">
-                    <input type="color" value={pickedColor.toHex()} onChange={handleColorChange}/>
+                    <input type="color" value={pickedColor.toHex()} onChange={handleColorChange} />
                     <input type="number" value={value} onChange={(e) => setValue(e.target.value)} />
                     <FaFloppyDisk className="icon" onClick={handleSave} />
                 </div>

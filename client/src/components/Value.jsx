@@ -15,7 +15,6 @@ const Value = ({ value, onValueChange, onColorChange,onValueDelete ,autoFocus=fa
         onValueChange(value, tempValue);
     }
     const handleColorChange = (e) => {
-        console.log(e);
         let color = Color.fromHex(e.target.value);
         onColorChange(value, color);
     }

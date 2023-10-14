@@ -5,7 +5,6 @@ import fetchApi from "./fetch";
 const getLocations = async () => {
     const route = 'locations';
     const url = API_URL + route;
-    console.log(url);
     const options = {
         method: 'GET',
         headers: {

@@ -6,7 +6,6 @@ import fetchApi from "./fetch";
 const getMeasurementsByLocation = async (location) => {
     const route = 'measurements/location/' + location;
     const url = API_URL + route;
-    console.log(url);
     const options = {
         method: 'GET',
         headers: {

@@ -33,22 +33,22 @@ const LocationViewer = () => {
 
         const { data, error, code } = response;
         if (error !== null) {
-            console.log("error", error)
+            
             if (code === 401) {
                 navigate('/login');
             }
         }
         else {
-            console.log("data", data)
+            
             setMeasurements(data);
         }
     }
     const downloadMeasurementsAsJson = () => {
         const element = document.createElement("a");
-        console.log("measurements", measurements)
+        
         const data = [];
         for (const parameter in measurements) {
-            console.log("parameter", parameter)
+            
             const parameterObject = {
                 name: parameter,
                 values: []
@@ -75,13 +75,13 @@ const LocationViewer = () => {
         const response = await deleteMeasurementApi(measurementId);
         const { data, error, code } = response;
         if (error !== null) {
-            console.log("error", error)
+            
             if (code === 401) {
                 navigate('/login');
             }
         }
         else {
-            console.log("data", data)
+            
             loadLocation();
         }
 

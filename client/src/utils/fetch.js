@@ -13,7 +13,6 @@ const fetchApi = async (url, options) => {
     }
     catch(e){
         error = e;
-        console.log("Error: ", error)
         return {error,code,data};
     }
 }

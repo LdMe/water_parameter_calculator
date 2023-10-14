@@ -11,7 +11,8 @@ import ParametersContext from '../context/parametersContext';
 import '../styles/Parameters.scss'
 import { FaArrowsRotate, FaFloppyDisk, FaEraser, FaTrash } from 'react-icons/fa6';
 import HorizontalSelector from '../components/HorizontalSelector';
-import { getParameters, getParameter,saveParameter,deleteParameter } from '../utils/fetchParameter';
+import {saveParameter,deleteParameter } from '../utils/fetchParameter';
+
 
 function ParameterEditor() {
 
@@ -20,7 +21,7 @@ function ParameterEditor() {
   const [whiteColor, setWhiteColor] = useState(new Color(255, 255, 255, 255));
   const [parameter, setParameter] = useState(null);
   const [values, SetValues] = useState([]);
-  const {parameters, setParameters} = useContext(ParametersContext);
+  const {parameters, getParameters} = useContext(ParametersContext);
   const [parameterName, setParameterName] = useState(useParams().parameterName || "");
   const [parameterHasColorScale, setParameterHasColorScale] = useState(true);
   const [focusColor, setFocusColor] = useState(null);
@@ -36,7 +37,7 @@ function ParameterEditor() {
     if (parameter) {
       if (parameter.isColor !== undefined) {
         setParameterHasColorScale(parameter.isColor);
-        console.log("color parameter", parameter)
+        
         SetValues(parameter.values);
       }
     }
@@ -46,9 +47,7 @@ function ParameterEditor() {
   }, [parameter]);
 
   useEffect(() => {
-
-    getParametersApi();
-    getParameterApi();
+    getParameterFromContext();
   }, [parameterName]);
 
   const checkAuth = (code) => {
@@ -91,48 +90,21 @@ function ParameterEditor() {
     setParameter(parameter);
     setCount(count + 1);
   }
+ 
 
-  
-  const getParametersApi = async () => {
-    const response = await getParameters();
-    const { data, error, code } = response;
-    const newParameters = data;
-    console.log("response", response)
-    if (error !== null) {
-      console.log("error", error)
-      checkAuth(code);
-    }
-    else {
-      console.log("newParameters", newParameters)
-      setParameters(newParameters);
-    }
-  }
-
-  
-
-  const getParameterApi = async (saveToState = true) => {
+  const getParameterFromContext = async (saveToState = true) => {
     if (parameterName === "") {
       setParameter(new Parameter("", new Color(255, 255, 255, 255), []));
       return null;
     }
-    const response = await getParameter(parameterName);
-    const { data, error, code } = response;
-    console.log("response", response)
-    if (error !== null) {
-      console.log("error", error)
-      checkAuth(code);
+    const selectedParam = parameters.find(p => p.name === parameterName);
+    if (selectedParam) {
+      setParameter(selectedParam);
+      setParameterName(selectedParam.name);
+      return selectedParam;
     }
-    else {
-      const newParameters = Parameter.loadParametersFromJSON([data]);
-      const newParameter = newParameters.find(p => p.name === parameterName);
-      if (!saveToState) {
-        return newParameter;
-      }
-      if (newParameter) {
-        setParameter(newParameter);
-      }
-      return newParameter;
-    }
+    setParameter(new Parameter("", new Color(255, 255, 255, 255), []));
+    return null;  
     
   }
   const saveParameterApi = async () => {
@@ -142,15 +114,15 @@ function ParameterEditor() {
     }
     const response = await saveParameter(parameter.name,parameter.getValues(),parameterHasColorScale);
     const { data, error, code } = response;
-    console.log("response", response)
+    
     if (error !== null) {
-      console.log("error", error)
+      
       checkAuth(code);
     }
     else {
       alert(`Parameter '${parameter.name}' saved`);
-      getParameterApi();
-      getParametersApi();
+      getParameters();
+      getParameterFromContext();
     }
   }
 
@@ -161,9 +133,9 @@ function ParameterEditor() {
     }
     const response = await deleteParameter(parameter.name);
     const { data, error, code } = response;
-    console.log("response", response)
+    
     if (error !== null) {
-      console.log("error", error)
+      
       checkAuth(code);
     }
     else {
@@ -209,7 +181,7 @@ function ParameterEditor() {
               <input type="checkbox" checked={parameterHasColorScale} onChange={(e) => setParameterHasColorScale(e.target.checked)} />
             </section>
             <section className="buttonSection">
-              <FaArrowsRotate className="icon" onClick={getParameterApi} />
+              <FaArrowsRotate className="icon" onClick={getParameterFromContext} />
               <FaFloppyDisk className="icon" onClick={saveParameterApi} />
               <FaEraser className="icon" onClick={() => setParameter(new Parameter(parameter.name, parameter.white, []))} />
               <FaTrash className="icon" onClick={deleteParameterApi} />

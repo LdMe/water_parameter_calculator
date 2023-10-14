@@ -5,7 +5,6 @@ import fetchApi from "./fetch";
 const getParameters = async () => {
     const route = 'parameters';
     const url = API_URL + route;
-    console.log(url);
     const options = {
         method: 'GET',
         headers: {
@@ -114,7 +113,6 @@ const createDefaultParameters = async () => {
 const getParameter = async (parameterName) => {
     const route = 'parameters/' + parameterName;
     const url = API_URL + route;
-    console.log(url);
     const options = {
         method: 'GET',
         headers: {
