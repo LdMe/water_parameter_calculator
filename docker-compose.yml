@@ -37,6 +37,7 @@ services:
       - LETSENCRYPT_EMAIL=admin@lafuentedanel.com
     volumes:
       - ./client/dist:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
         - proxy
 
