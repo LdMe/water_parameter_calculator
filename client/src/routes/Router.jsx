@@ -28,6 +28,10 @@ const BrowserRouter = createBrowserRouter([
         element: <ParameterEditor />
       },
       {
+        path: "/parameter/:name",
+        element: <ParameterEditor />
+      },
+      {
         path: "location/",
         element: <Locations />
       },

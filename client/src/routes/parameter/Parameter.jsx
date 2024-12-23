@@ -39,10 +39,11 @@ function Parameter() {
             {parameters.map((parameter) => (
                 <div key={parameter._id}>
                     <h2>{parameter.name}</h2>
+                    <Link to={`/parameter/${parameter.name}`}>Editar</Link>
                     <button onClick={() => handleDeleteParameter(parameter.name)}>Eliminar</button>
                     <section className="parameter-color-values">
                         {parameter.colors.map((value) => (
-                            <div key={value._id}>
+                            <div key={value.color.r + value.color.g + value.color.b} className="parameter-color-value">
                                 <p>{value.value}</p>
                                 <ColorCircle color={value.color} />
                             </div>

@@ -66,7 +66,7 @@ const createDefaultParameters = async () => {
             hasColor: true
         },
         {
-            name: "nitrite",
+            name: "nitritos",
             colors: [
                 {
                     color: { r: 255, g: 255, b: 255 },

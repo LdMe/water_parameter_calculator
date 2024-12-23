@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+
+import { redirect, useNavigate, useParams } from 'react-router-dom';
 import ParameterTypeChooser from './ParameterTypeChooser';
 import ParameterNameChooser from './ParameterNameChooser';
 import ParameterColorEditor from './ParameterColorEditor';
@@ -15,6 +16,32 @@ function ParameterEditor() {
         values: [],
         hasColor: true
     });
+    const params = useParams();
+    
+    useEffect(() => {
+        if (params.name !== undefined) {
+            async function loadParameter() {
+                const parameter = await getParameter(params.name);
+                console.log(parameter);
+                if (parameter.error !== null) {
+                    alert(parameter.error);
+                    return;
+                }
+                if(parameter.data === null) {
+                   return  navigate('/parameter/new');
+                }
+                const newParameter = {
+                    name: parameter.data.name,
+                    values: parameter.data.colors,
+                    hasColor: parameter.data.hasColor
+                }
+                setParameter(newParameter);
+                setStep(3);
+            }
+            loadParameter();
+        }
+
+    }, [params.name]);
     const navigate = useNavigate();
     function handleSelectHasColor(value) {
         setParameter({
