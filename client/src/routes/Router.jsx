@@ -1,12 +1,13 @@
 
 import {createBrowserRouter,} from "react-router-dom";
 import Layout from './Layout'
-import ParameterEditor from './ParameterEditor'
+import ParameterEditor from './parameter/ParameterEditor'
+import Parameter from "./parameter/Parameter";
 import ColorCalculator from './ColorCalculator'
 import Login from './auth/Login';
 import Locations from "./Locations";
 import LocationViewer from "./LocationViewer";
-import Home from "./Home";
+import Home from "./home/Home";
 
 const BrowserRouter = createBrowserRouter([
   {
@@ -20,10 +21,10 @@ const BrowserRouter = createBrowserRouter([
 
       {
         path: "/parameter/",
-        element: <ParameterEditor />
+        element: <Parameter />
       },
       {
-        path: "/parameter/:parameterName",
+        path: "/parameter/new",
         element: <ParameterEditor />
       },
       {

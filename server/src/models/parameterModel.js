@@ -3,7 +3,7 @@ import connection from '../db/mongoose.js';
 const parameterSchema = new connection.Schema(
     {
         name: { type: String, required: true, },
-        isColor: { type: Boolean, required: true, default: false },
+        hasColor: { type: Boolean, required: true, default: false },
         colors :{ type: Array, required: false, default: [] },
         user: { type: connection.Schema.Types.ObjectId, ref: 'User', required: true },
     }

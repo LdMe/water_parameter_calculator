@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useContext } from 'react'
 import Parameter from '../parameter';
-import Color from '../color';
+import Color from '../utils/color';
 import ColorPicker from '../ColorPicker';
 import { useNavigate } from 'react-router-dom';
 import locationsContext from '../context/locationsContext';
@@ -65,7 +65,7 @@ function ColorCalculator() {
     }
 
     const handleSave = async (e) => {
-        const color = selectedParameter && selectedParameter.isColor ? pickedColor : null;
+        const color = selectedParameter && selectedParameter.hasColor ? pickedColor : null;
         const response = await createMeasurement(value, selectedParameter.name, selectedLocation.name, pickedColor);
         const { data, error, code } = response;
         if (error !== null) {
@@ -112,7 +112,7 @@ function ColorCalculator() {
                     }
 
                 </section>
-                {selectedParameter && selectedParameter.isColor &&
+                {selectedParameter && selectedParameter.hasColor &&
                     <section className="colorPicker">
                         <ColorPicker onClick={handleClick} isPicking={true} />
                         <ColorPickShow

@@ -35,8 +35,8 @@ function ParameterEditor() {
 
   useEffect(() => {
     if (parameter) {
-      if (parameter.isColor !== undefined) {
-        setParameterHasColorScale(parameter.isColor);
+      if (parameter.hasColor !== undefined) {
+        setParameterHasColorScale(parameter.hasColor);
         
         setValues(parameter.values);
       }

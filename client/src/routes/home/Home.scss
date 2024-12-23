@@ -1,0 +1,117 @@
+
+.home__page {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+    & main{
+        width: 100%;
+    }
+}
+
+
+.sections__list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.section__card {
+    width:80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    transition: 0.3s box-shadow;
+
+    &:hover {
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19);
+    }
+}
+
+.section__title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    & h3 {
+        font-size: 1.5rem;
+    }
+}
+.section__icon {
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    
+}
+
+.sections__list article:nth-child(1) .section__icon {
+    background-color: rgb(179, 222, 179);
+    color: #42911d;
+}
+.sections__list article:nth-child(2) .section__icon {
+    background-color: rgb(161, 217, 243);
+    color: #284cc0;
+}
+.sections__list article:nth-child(3) .section__icon {
+    background-color: rgb(216, 179, 222);
+    color: #7c0787;
+}
+.sections__list article:nth-child(4) .section__icon {
+    background-color: rgb(204, 180, 234);
+    color: #6f0a75;
+}
+
+
+.register-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 50%;
+    margin: 45px auto;
+    & a    {
+        width: 100%;
+        & button {
+
+            cursor: pointer;
+            font-size: 1.5rem;
+            width: 100%;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        &:nth-child(1) button {
+            background-color: rgb(13, 96, 240);
+            color: #ffffff;
+            &:hover {
+                background-color: #ffffff;
+                color: rgb(13, 96, 240);
+            }
+        }
+        &:nth-child(2) button {
+            background-color: rgb(255, 255, 255);
+            color: #284cc0;
+            border-color:#284cc0;
+            &:hover {
+                background-color: #284cc0;
+                color: #ffffff;
+            }
+        }
+    }
+}

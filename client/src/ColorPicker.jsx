@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import Color from './color';
+import Color from './utils/color';
 import './styles/ColorPicker.scss';
 import { FaImage } from 'react-icons/fa6';
 /* 

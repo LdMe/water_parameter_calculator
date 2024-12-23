@@ -63,7 +63,7 @@ const createDefaultParameters = async () => {
                     value: 9
                 }
             ],
-            isColor: true
+            hasColor: true
         },
         {
             name: "nitrite",
@@ -93,11 +93,11 @@ const createDefaultParameters = async () => {
                     value: 8
                 }
             ],
-            isColor: true
+            hasColor: true
         },
         {
             name: "dkh",
-            isColor: false
+            hasColor: false
         }
     ];
 
@@ -105,7 +105,7 @@ const createDefaultParameters = async () => {
     const url = API_URL + route;
     parameters.forEach(async (parameter) => {
         await createParameter(parameter.name);
-        await saveParameter(parameter.name, parameter.colors, parameter.isColor,true);
+        await saveParameter(parameter.name, parameter.colors, parameter.hasColor,true);
     });
 
 }
@@ -123,15 +123,14 @@ const getParameter = async (parameterName) => {
     return await fetchApi(url, options);
 }
 
-const saveParameter = async (parameterName, values, hasColorScale,force=false) => {
-    const oldParameter = await getParameter(parameterName);
+const saveParameter = async (parameterName, values, hasColorScale,oldParameter = null) => {
 
     let route = 'parameters/' + parameterName;
 
     const data = {
         name: parameterName,
         colors: values,
-        isColor: hasColorScale
+        hasColor: hasColorScale
     }
     const options = {
         method: 'PUT',
@@ -141,13 +140,9 @@ const saveParameter = async (parameterName, values, hasColorScale,force=false) =
         },
         body: JSON.stringify(data)
     };
-    if (oldParameter.data === null) {
+    if (!oldParameter ||oldParameter.data === null) {
         options.method = 'POST';
         route = 'parameters';
-    } else {
-        if (!force && !confirm(`A parameter with the name '${parameterName}' already exists, do you want to overwrite it?`)) {
-            return { error: "Update cancelled", code: 400, data: null }
-        };
     }
     const url = API_URL + route;
     return await fetchApi(url, options);

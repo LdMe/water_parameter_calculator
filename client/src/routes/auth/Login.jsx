@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { API_URL } from '../../config';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import LoggedInContext from '../../context/loggedInContext';
 import ErrorContext from '../../context/errorContext';
 import { useContext } from 'react';
 
+import './Login.scss';
 const Login = ({ isRegister = false, isLogout = false }) => {
     const { setLoggedIn } = useContext(LoggedInContext);
     const { setError } = useContext(ErrorContext);
@@ -17,11 +18,11 @@ const Login = ({ isRegister = false, isLogout = false }) => {
         }
     }, []);
     const handleSubmit = async (e) => {
-        
+
         try {
             e.preventDefault();
-            if(e.target.email.value === "" || e.target.password.value === ""){
-                setError("Please fill in all fields");
+            if (e.target.email.value === "" || e.target.password.value === "") {
+                setError("Rellena todos los campos");
                 return;
             }
             const data = {
@@ -58,19 +59,28 @@ const Login = ({ isRegister = false, isLogout = false }) => {
         return <div>Logging out...</div>
     }
     return (
-        <div id="login-form">
-            <h2>{isRegister ? "Register" : "Login"}</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
+        <div className="login__form">
+            <h2>{isRegister ? "Registro" : "Login"}</h2>
+            <form  className="login__form__form" onSubmit={handleSubmit}>
+                <div className="login__form__input">
                     <label htmlFor='email'>Email:</label>
-                    <input type="text" name="email" id="email" />
+                    <input type="text" name="email" id="email" placeholder='tu.correo@email.com' />
                 </div>
-                <div>
-                    <label htmlFor='password'>Password:</label>
-                        <input type="password" name="password" id="password"/>
+                <div className="login__form__input">
+                    <label htmlFor='password'>Contraseña:</label>
+                    <input type="password" name="password" id="password" placeholder='•••••••' />
                 </div>
-                    <input type="submit" value="Submit" />
+                {isRegister && (
+                    <div className="login__form__input">
+                        <label htmlFor='passwordConfirm'>Confirmar contraseña:</label>
+                        <input type="password" name="passwordConfirm" id="passwordConfirm" placeholder='•••••••' />
+                    </div>
+                )}
+                <div className="login__form__input">
+                    <input className="login__form__submit" type="submit" value={isRegister ? "Crear Cuenta" : "Iniciar Sesión"} />
+                </div>
             </form>
+            <Link to={isRegister ? "/login" : "/register"}>{isRegister ? "¿Ya tienes cuenta? Inicia sesión" : "¿No tienes cuenta? Regístrate"}</Link>
         </div>
     )
 }

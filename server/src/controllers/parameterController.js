@@ -10,8 +10,8 @@ parameterController.getParameters = async (req, res) => {
 
 parameterController.createParameter = async (req, res) => {
     try{
-        let { name, isColor, colors } = req.body;
-        if (!isColor) {
+        let { name, hasColor, colors } = req.body;
+        if (!hasColor) {
             colors = [];
         }
         name = name.toLowerCase();
@@ -19,11 +19,12 @@ parameterController.createParameter = async (req, res) => {
         if (oldParameter) {
             return res.status(409).json({ message: "Parameter already exists" });
         }
-        const parameter = new Parameter({ name, isColor, colors, user: req.user.id });
+        const parameter = new Parameter({ name, hasColor, colors, user: req.user.id });
         await parameter.save();
         res.json({ message: 'Parameter saved' });
     }
     catch (error) {
+        
         res.status(500).json({ message: error.message });
     }
 }
@@ -63,7 +64,7 @@ parameterController.createDefaultParameters = async (userId) => {
                     value: 9
                 }
             ],
-            isColor: true
+            hasColor: true
         },
         {
             name: "nitrite",
@@ -93,11 +94,11 @@ parameterController.createDefaultParameters = async (userId) => {
                     value: 8
                 }
             ],
-            isColor: true
+            hasColor: true
         },
         {
             name: "dkh",
-            isColor: false
+            hasColor: false
         }
     ];
     parameters.forEach(async (parameter) => {
@@ -123,8 +124,8 @@ parameterController.deleteParameter = async (req, res) => {
 }
 
 parameterController.updateParameter = async (req, res) => {
-    const { name, isColor, colors } = req.body;
-    await Parameter.findOneAndUpdate({ user: req.user.id, name }, { isColor, colors });
+    const { name, hasColor, colors } = req.body;
+    await Parameter.findOneAndUpdate({ user: req.user.id, name }, { hasColor, colors });
     res.json({ message: 'Parameter updated' });
 }
 

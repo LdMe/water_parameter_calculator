@@ -38,6 +38,15 @@ class Color {
         }
         return 0;
     }
+    correctWhite(white=null ) {
+        if(white == null || (white.r == 255 && white.g == 255 && white.b == 255)) {
+            return this;
+        }
+        const originalWhite = new Color(255,255,255,255);
+        const whiteDifference = originalWhite.subtract(white);
+        console.log("differecnce",whiteDifference)
+        return this.add(whiteDifference);
+      }
     add(color2) {
         return new Color(this.r + color2.r, this.g + color2.g, this.b + color2.b, this.a + color2.a);
     }

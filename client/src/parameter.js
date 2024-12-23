@@ -1,11 +1,11 @@
-import Color from './color.js';
+import Color from './utils/color.js';
 
 class Parameter {
     constructor(name,white = new Color(255,255,255,255),values = []) {
         this.name = name;
         this.white = white;
         this.values = values;
-        this.isColor = true;
+        this.hasColor = true;
     }
     addValue(color, value,correct=true) {
         if(correct){
@@ -105,7 +105,7 @@ class Parameter {
                 values.push(new Value(new Color(value.color.r,value.color.g,value.color.b), value.value));
             }
             const newParameter = new Parameter(parameter.name);
-            newParameter.isColor = parameter.isColor;
+            newParameter.hasColor = parameter.hasColor;
             newParameter.addValues(values);
             parameters.push(newParameter);
         }

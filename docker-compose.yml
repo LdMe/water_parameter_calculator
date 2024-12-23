@@ -12,6 +12,8 @@ services:
     build: ./server
     container_name: server-color
     restart: always
+    ports:
+      - "3011:3000"
     depends_on:
       - mongo
     environment:
