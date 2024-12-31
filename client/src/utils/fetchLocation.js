@@ -14,6 +14,18 @@ const getLocations = async () => {
     };
     return await fetchApi(url, options);
 }
+const getLocation = async (id) => {
+    const route = 'locations/' + id;
+    const url = API_URL + route;
+    const options = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+    };
+    return await fetchApi(url, options);
+}
 const createLocation = async (name) => {
     const route = 'locations';
     const url = API_URL + route;
@@ -59,6 +71,7 @@ const deleteLocation = async (id) => {
     
 export { 
     getLocations,
+    getLocation,
     createLocation,
     updateLocation,
     deleteLocation,

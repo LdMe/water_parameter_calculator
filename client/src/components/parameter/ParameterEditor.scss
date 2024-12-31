@@ -79,3 +79,12 @@
     margin-bottom: 2rem;
     align-items: center;
 }
+
+.ColorCalculator label {
+    display:flex;
+    gap:1rem;
+    justify-content: center;
+    & span {
+        margin: auto 0;
+    }
+}

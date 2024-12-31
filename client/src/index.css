@@ -1,0 +1,8 @@
+* {
+    box-sizing: border-box;
+}
+
+.primary {
+    background-color: rgb(13, 96, 240);
+    color: #ffffff;
+}

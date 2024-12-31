@@ -5,7 +5,7 @@ import ParameterTypeChooser from './ParameterTypeChooser';
 import ParameterNameChooser from './ParameterNameChooser';
 import ParameterColorEditor from './ParameterColorEditor';
 
-import { saveParameter,getParameter } from '../../utils/fetchParameter';
+import { saveParameter, getParameter,updateParameter } from '../../utils/fetchParameter';
 import './ParameterEditor.scss';
 import { Link } from 'react-router-dom';
 
@@ -17,7 +17,7 @@ function ParameterEditor() {
         hasColor: true
     });
     const params = useParams();
-    
+
     useEffect(() => {
         if (params.name !== undefined) {
             async function loadParameter() {
@@ -27,13 +27,14 @@ function ParameterEditor() {
                     alert(parameter.error);
                     return;
                 }
-                if(parameter.data === null) {
-                   return  navigate('/parameter/new');
+                if (parameter.data === null) {
+                    return navigate('/parameter/new');
                 }
                 const newParameter = {
                     name: parameter.data.name,
                     values: parameter.data.colors,
-                    hasColor: parameter.data.hasColor
+                    hasColor: parameter.data.hasColor,
+                    _id: parameter.data._id
                 }
                 setParameter(newParameter);
                 setStep(3);
@@ -62,11 +63,29 @@ function ParameterEditor() {
         })
     }
     async function handleSaveParameter() {
-        const oldParameter = await getParameter(parameter.name);
-        if(oldParameter.data !== null && !confirm(`Ya existe un parámetro de nombre '${parameter.name}', ¿quieres sobreescribirlo?`)) {
+        console.log("saving parameter", parameter)
+        const oldParameter = await getParameter(parameter._id || parameter.name);
+        if (oldParameter.data !== null) {
+            if (!confirm(`Ya existe un parámetro de nombre '${parameter.name}', ¿quieres sobreescribirlo?`)) {
+                return;
+            }
+            const parameterData ={
+                name: parameter.name,
+                colors: parameter.values,
+                hasColor: parameter.hasColor,
+                _id: parameter._id
+            }
+            const result = await updateParameter(parameterData);
+            if (result.error !== null) {
+                alert(result.error);
+                return;
+            }
+            alert(`Parámetro '${parameter.name}' guardado`);
+            navigate('/parameter');
             return;
+
         }
-        const result = await saveParameter(parameter.name, parameter.values, parameter.hasColor,oldParameter.data);
+        const result = await saveParameter(parameter.name, parameter.values, parameter.hasColor, oldParameter.data);
         if (result.error !== null) {
             alert(result.error);
             return;
@@ -85,7 +104,7 @@ function ParameterEditor() {
                     />
                     <section className="parameter-editor__buttons">
                         <Link to="/parameter">
-                        <button >Cancelar</button>
+                            <button >Cancelar</button>
 
                         </Link>
                         <button onClick={() => setStep(2)}>Siguiente</button>
@@ -116,7 +135,7 @@ function ParameterEditor() {
                     />
                     <section className="parameter-editor__buttons">
                         <button onClick={() => setStep(2)}>Anterior</button>
-                        <button onClick={handleSaveParameter}>Guardar</button>
+                        <button className="primary" onClick={handleSaveParameter}>Guardar</button>
                     </section>
                 </div>
             )

@@ -29,7 +29,7 @@ function ColorCalculator({ onClick, isPicking = false }) {
   return (
     <div className="ColorCalculator">
       <label htmlFor="imageInput">
-        selecciona una imagen <FaImage className="icon big" />
+        <span>selecciona una imagen</span> <FaImage className="icon big" />
       </label>
       
       <input 

@@ -148,6 +148,20 @@ const saveParameter = async (parameterName, values, hasColorScale,oldParameter =
     return await fetchApi(url, options);
 }
 
+const updateParameter = async (parameter) => {
+    const route = 'parameters/' + parameter.name;
+    const url = API_URL + route;
+    const options = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
+        body: JSON.stringify(parameter)
+    };
+    return await fetchApi(url, options);
+}
+
 const deleteParameter = async (parameterName) => {
     const route = 'parameters/' + parameterName;
     const url = API_URL + route;
@@ -165,6 +179,7 @@ export {
     getParameters,
     createParameter,
     getParameter,
+    updateParameter,
     saveParameter,
     deleteParameter,
     createDefaultParameters

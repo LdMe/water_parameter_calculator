@@ -1,0 +1,161 @@
+// Variables
+$sidebar-width: 300px;
+$transition-time: 0.3s;
+$primary-color: #2563eb;
+$hover-color: #1d4ed8;
+$border-radius: 8px;
+$card-spacing: 1rem;
+$shadow-color: rgba(0, 0, 0, 0.1);
+
+.location-selector {
+  position: relative;
+}
+
+.locations__list {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: $sidebar-width;
+  background-color: #ffffff;
+  box-shadow: 2px 0 10px $shadow-color;
+  padding: 1.5rem;
+  transform: translateX(0);
+  transition: transform $transition-time ease-in-out;
+  overflow-y: auto;
+  z-index: 1000;
+
+  // Cuando está cerrado
+  &.closed {
+    transform: translateX(-$sidebar-width);
+  }
+
+  // Scrollbar personalizado
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+}
+
+.toggle-button {
+  position: fixed;
+  left: $sidebar-width;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-left: none;
+  border-radius: 0 $border-radius $border-radius 0;
+  width: 24px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all $transition-time ease-in-out;
+  box-shadow: 2px 0 5px $shadow-color;
+
+  &:hover {
+    background-color: #f8fafc;
+  }
+
+  &.closed {
+    left: 0;
+    
+    svg {
+      transform: rotate(180deg);
+    }
+  }
+
+  svg {
+    transition: transform $transition-time ease-in-out;
+  }
+}
+
+.location__card {
+  background-color: #f8fafc;
+  border-radius: $border-radius;
+  padding: 1rem;
+  margin-bottom: $card-spacing;
+  transition: all $transition-time ease;
+  border: 1px solid #e2e8f0;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px $shadow-color;
+  }
+
+  &.selected {
+    border-color: $primary-color;
+    background-color: #eff6ff;
+
+    h3 {
+      color: $primary-color;
+    }
+  }
+
+  h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+    color: #1e293b;
+  }
+
+  p {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin: 0 0 1rem;
+  }
+}
+
+.location__button {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background-color: $primary-color;
+  color: white;
+  border: none;
+  border-radius: $border-radius;
+  cursor: pointer;
+  transition: background-color $transition-time ease;
+
+  &:hover {
+    background-color: $hover-color;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba($primary-color, 0.3);
+  }
+}
+
+// Media query para dispositivos móviles
+@media (max-width: 768px) {
+  .locations__list {
+    width: 100%;
+    
+    &.closed {
+      transform: translateX(-100%);
+    }
+  }
+
+  .toggle-button {
+    top: 1rem;
+    transform: none;
+    height: 32px;
+    width: 32px;
+    border-radius: $border-radius;
+    border-left: 1px solid #e2e8f0;
+    
+    &.closed {
+      left: 1rem;
+    }
+  }
+}

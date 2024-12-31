@@ -1,7 +1,7 @@
 // ParameterColorEditor.js
 import React from 'react';
-import ColorCalculator from './ColorCalculator';
-import ColorCircle from '../../components/color/ColorCircle';
+import ColorCalculator from '../color/ColorCalculator';
+import ColorCircle from '../color/ColorCircle';
 import { useParameterColor } from '../../hooks/useParameterColor';
 
 function ParameterColorEditor({ defaultValues, onUpdateColorValues }) {
