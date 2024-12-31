@@ -5,7 +5,7 @@ const router = Router();
 
 router.get('/:parameterName', measurementController.getMeasurementsByParameter);
 
-router.get('/location/:locationName', measurementController.getMeasurementsByLocation);
+router.get('/location/:location', measurementController.getMeasurementsByLocation);
 
 router.get('/', measurementController.getMeasurementsByUser);
 

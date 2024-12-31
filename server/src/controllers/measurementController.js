@@ -1,4 +1,4 @@
-import { ObjectId } from "mongoose";
+
 import Measurement from "../models/measurementModel.js";
 import Parameter from "../models/parameterModel.js";
 import Location from "../models/locationModel.js";
@@ -38,7 +38,7 @@ measurementController.getMeasurementsByParameter = async (req, res) => {
 }
 
 measurementController.getMeasurementsByLocation = async (req, res) => {
-    const location = await Location.findOne({ name: req.params.locationName, user: req.user.id });
+    const location = await Location.findOne({ _id: req.params.location, user: req.user.id });
     if (!location) {
         return res.status(400).json({ message: "Location not found" });
     }
@@ -55,7 +55,31 @@ measurementController.getMeasurementsByLocation = async (req, res) => {
         }
         measurementsByParameter[parameter.name].push(measurement);
     }
-    res.json(measurementsByParameter);
+    const measurementsByDate = {};
+    for (const measurement of measurements) {
+        const date = new Date(measurement.date).toISOString().split('T')[0]; // measurement.date;
+        measurementsByDate[date] = measurementsByDate[date] || [];
+        const parameter = parameters.find(p => p._id == measurement.parameter.toString());
+        const newMeasurement = {...measurement._doc,parameter: parameter.name,hasColor: parameter.hasColor};
+        measurementsByDate[date].push(newMeasurement);
+    }
+    const measurementsByParameterArray = [];
+    for (const parameter in measurementsByParameter) {
+        measurementsByParameterArray.push({
+            parameter,
+            hasColor: parameters.find(p => p.name == parameter).hasColor,
+            measurements: measurementsByParameter[parameter]
+        });
+    }
+    const measurementsByDateArray = [];
+    for (const date in measurementsByDate) {
+        measurementsByDateArray.push({
+            date,
+            measurements: measurementsByDate[date]
+        });
+    }
+    const totalMeasurements = measurements.length;
+    res.json({byParameter: measurementsByParameterArray, byDate: measurementsByDateArray, totalMeasurements});
 }
 
 measurementController.createMeasurement = async (req, res) => {

@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Location from "../models/locationModel.js";
 import Measurement from "../models/measurementModel.js";
 
@@ -35,6 +36,11 @@ locationController.createDefaultLocation = async (userId) => {
 }
 
 locationController.getLocation = async (req, res) => {
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)){
+        const location = await Location.findOne({ name: req.params.id , user: req.user.id });
+        res.json(location);
+        return;
+    }
     const location = await Location.findById(req.params.id);
     res.json(location);
 }

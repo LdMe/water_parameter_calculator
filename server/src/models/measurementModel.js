@@ -10,7 +10,7 @@ const measurementSchema = new connection.Schema(
         location : { type: connection.Schema.Types.ObjectId, ref: 'Location' },
     }
 );
-measurementSchema.index({ date: 1, user: 1 });
+measurementSchema.index({ date: -1, user: 1 });
 measurementSchema.index({ parameter: 1, user: 1 });
 
 const Measurement = connection.model('Measurement', measurementSchema);

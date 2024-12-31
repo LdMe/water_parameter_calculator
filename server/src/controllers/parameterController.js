@@ -1,5 +1,6 @@
 import Parameter from "../models/parameterModel.js";
 import Measurement from "../models/measurementModel.js";
+import mongoose from "mongoose";
 
 const parameterController = {};
 
@@ -109,6 +110,11 @@ parameterController.createDefaultParameters = async (userId) => {
 
 parameterController.getParameter = async (req, res) => {
     const  {parameterName} = req.params;
+    if(mongoose.Types.ObjectId.isValid(parameterName)){
+        const parameter = await Parameter.findById(parameterName);
+        res.json(parameter);
+        return;
+    }
     const parameter = await Parameter.findOne({user:req.user.id, name: parameterName.toLowerCase()});
     res.json(parameter);
 }
@@ -124,7 +130,11 @@ parameterController.deleteParameter = async (req, res) => {
 }
 
 parameterController.updateParameter = async (req, res) => {
-    const { name, hasColor, colors } = req.body;
+    const {_id, name, hasColor, colors } = req.body;
+    if(_id){
+        const parameter = await Parameter.findOneAndUpdate({ user: req.user.id, _id }, { name, hasColor, colors });
+        return res.json({ message: 'Parameter updated' });
+    }
     await Parameter.findOneAndUpdate({ user: req.user.id, name }, { hasColor, colors });
     res.json({ message: 'Parameter updated' });
 }
