@@ -1,8 +1,9 @@
 // ParameterColorEditor.js
 import React from 'react';
-import ColorCalculator from '../color/ColorCalculator';
+import ColorPicker from '../color/ColorPicker';
 import ColorCircle from '../color/ColorCircle';
 import { useParameterColor } from '../../hooks/useParameterColor';
+import ColorCalculator from '../color/ColorCalculator';
 
 function ParameterColorEditor({ defaultValues, onUpdateColorValues }) {
     const [
@@ -30,20 +31,7 @@ function ParameterColorEditor({ defaultValues, onUpdateColorValues }) {
         <section className="parameter-color-editor">
             
 
-            <ColorCalculator onClick={handleSelectColor} isPicking={true} />
-
-            <section className="whiteColorPicker">
-                <ColorCircle
-                    color={selectedWhite}
-                    className="parameter-color-white"
-                />
-                <button onClick={handleToggleWhiteSelection}>
-                    {selectingWhite ? "Seleccionando" : "Selecciona un punto blanco"}
-                </button>
-                <button onClick={handleResetWhite}>
-                    Limpiar
-                </button>
-            </section>
+            <ColorCalculator onSelectColor={handleSelectColor} />
 
             <section className="parameter-color-results">
                 <ColorCircle
@@ -68,7 +56,7 @@ function ParameterColorEditor({ defaultValues, onUpdateColorValues }) {
 
             <section className="parameter-color-values">
                 {values.map((value) => (
-                    <div className="parameter-color-value" key={value.value + value.color.toString()}>
+                    <div className="parameter-color-value" key={value.value + JSON.stringify(value.color)}>
                         <button onClick={() => handleDeleteColorValue(value)}>
                             Eliminar
                         </button>

@@ -25,11 +25,14 @@ async function loadLocation(locationName) {
     if (error !== null) {
         console.log("error",error)
         if (code === 401) {
-            redirect('/login');
+            return redirect('/login');
         }
-        return null;
+        return redirect('/location');
     }
     else {
+        if(location === null){
+            return redirect('/location');
+        }
         return location;
     }
 }

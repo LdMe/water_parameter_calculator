@@ -1,59 +1,72 @@
-import { useRef, useEffect } from 'react';
-import { FaImage } from 'react-icons/fa6';
-import { useCanvasImage } from '../../hooks/useCanvasImage';
+import { useReducer } from "react";
+import Color from "../../utils/color";
+import ColorCircle from "./ColorCircle";
+import ColorPicker from "./ColorPicker";
+import colorPickerReducer from "../../reducers/colorPicker/colorPickerReducer";
 
-function ColorCalculator({ onClick, isPicking = false }) {
-  const canvas = useRef(null);
-  const fileInput = useRef(null);
-  
-  const {
-    imageSet,
-    handleImageLoad,
-    handleImageClick
-  } = useCanvasImage(canvas);
+function ColorCalculator({onSelectColor}) {
+    const [state, dispatch] = useReducer(colorPickerReducer, {
+        selectedColor: null,
+        selectedWhite: { r: 255, g: 255, b: 255, a: 255 },
+        selectingWhite: false,
+        selectedValue: 0,
+    });
 
-  useEffect(() => {
-    if (canvas.current) {
-      canvas.current.width = 500;
-      canvas.current.height = 500;
-    }
-  }, []);
+    const {
+        selectedColor,
+        selectedWhite,
+        selectingWhite,
+        selectedValue,
+    } = state;
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      handleImageLoad(file);
-    }
-  };
+    const handleSelectColor = (color) => {
+        console.log("color",color)
+        if(selectingWhite) {
+            dispatch({ type: "SET_WHITE", payload: color });
+            return;
+        }
+        const correctedColor = new Color(
+            color.r,
+            color.g,
+            color.b,
+            color.a
+        ).correctWhite(selectedWhite);
+        dispatch({ type: "SET_COLOR", payload: correctedColor });
+        onSelectColor(correctedColor);
+    };
 
-  return (
-    <div className="ColorCalculator">
-      <label htmlFor="imageInput">
-        <span>selecciona una imagen</span> <FaImage className="icon big" />
-      </label>
-      
-      <input 
-        style={{ display: "none" }}
-        ref={fileInput}
-        id="imageInput"
-        type="file"
-        accept="image/*"
-        onChange={handleFileChange}
-      />
+    const handleToggleWhiteSelection = () => {
+        dispatch({ type: "TOGGLE_WHITE_SELECTION" });
+    };
 
-      <section className="canvas-section">
-        <canvas
-          ref={canvas}
-          style={{ 
-            width: '500px',
-            height: '500px',
-            display: 'block'
-          }}
-          onClick={(e) => handleImageClick(e, isPicking, onClick)}
-        />
-      </section>
-    </div>
-  );
+    const handleResetWhite = () => {
+        dispatch({ type: "RESET_WHITE" });
+    };
+
+    const handleSetValue = (value) => {
+        dispatch({ type: "SET_VALUE", payload: value });
+    };
+
+    return (
+        <section className="color-editor">
+            <ColorPicker onClick={handleSelectColor} isPicking={true} />
+
+            <section className="whiteColorPicker">
+                <ColorCircle
+                    color={selectedWhite}
+                    className="parameter-color-white"
+                />
+                <button onClick={handleToggleWhiteSelection}>
+                    {selectingWhite ? "Seleccionando" : "Selecciona un punto blanco"}
+                </button>
+                <button onClick={handleResetWhite}>
+                    Limpiar
+                </button>
+            </section>
+
+            
+        </section>
+    )
 }
 
-export default ColorCalculator;
+export default ColorCalculator

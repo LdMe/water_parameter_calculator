@@ -21,13 +21,12 @@ import './LocationSelector.scss'
 export default LocationSelector */
 
 import { useState } from 'react';
-import { FaChevronLeft as ChevronLeft } from 'react-icons/fa6'; 
+import { FaChevronLeft as ChevronLeft } from 'react-icons/fa6';
 import { NavLink } from 'react-router-dom';
 
-function LocationSelector({ locations, selectedLocation, onSelect }) {
+function LocationSelector({ locations }) {
   const [isOpen, setIsOpen] = useState(true);
-  function handleSelect(location) {
-    onSelect(location);
+  function handleSelect() {
     setIsOpen(false);
   }
   return (
@@ -35,23 +34,26 @@ function LocationSelector({ locations, selectedLocation, onSelect }) {
       <aside className={`locations__list ${!isOpen ? 'closed' : ''}`}>
         <h2>Ubicaciones</h2>
         {locations.map((location) => (
-          <article 
-            className={`location__card ${location._id === selectedLocation?._id ? 'selected' : ''}`} 
-            key={location._id}
+          <NavLink 
+          key={location._id} 
+          to={`/location/${location.name}`} 
+          className={({ isActive }) => {
+            return isActive ? 'selected' : '';
+          }}
+          onClick={() => handleSelect()}
           >
-            <h3>{location.name}</h3>
-            <p>{location.description}</p>
-            <NavLink to={`/location/${location.name}`}>Ver mediciones</NavLink>
-            <button 
-              className="location__button" 
-              onClick={() => handleSelect(location)}
+            <article
+              className={`location__card `}
             >
-              Ver mediciones
-            </button>
-          </article>
+              <h3>{location.name}</h3>
+              <p>{location.description}</p>
+
+
+            </article>
+          </NavLink>
         ))}
       </aside>
-      <button 
+      <button
         className={`toggle-button ${!isOpen ? 'closed' : ''}`}
         onClick={() => setIsOpen(!isOpen)}
         aria-label={isOpen ? 'Ocultar panel' : 'Mostrar panel'}
