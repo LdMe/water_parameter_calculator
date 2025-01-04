@@ -1,6 +1,8 @@
 import { useRef, useEffect } from 'react';
-import { FaImage } from 'react-icons/fa6';
+import { FaCamera, FaImage } from 'react-icons/fa6';
 import { useCanvasImage } from '../../hooks/useCanvasImage';
+
+import './ColorPicker.scss';
 
 function ColorPicker({ onClick, isPicking = false }) {
   const canvas = useRef(null);
@@ -27,9 +29,9 @@ function ColorPicker({ onClick, isPicking = false }) {
   };
 
   return (
-    <div className="ColorPicker">
+    <div className="color-picker">
       <label htmlFor="imageInput">
-        <span>selecciona una imagen</span> <FaImage className="icon big" />
+        <span>selecciona una imagen</span> <FaCamera className="icon big" />
       </label>
       
       <input 
@@ -44,11 +46,6 @@ function ColorPicker({ onClick, isPicking = false }) {
       <section className="canvas-section">
         <canvas
           ref={canvas}
-          style={{ 
-            width: '500px',
-            height: '500px',
-            display: 'block'
-          }}
           onClick={(e) => handleImageClick(e, isPicking, onClick)}
         />
       </section>

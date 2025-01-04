@@ -8,6 +8,7 @@ import { FaGear, FaPlus } from "react-icons/fa6";
 
 function LocationComponent() {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [reload, setReload] = useState(false);
     const location = useLoaderData();
     const navigate = useNavigate();
     const { onUpdateLocation } = useOutletContext();
@@ -18,7 +19,10 @@ function LocationComponent() {
         navigate(`/location/${location.name}`);
 
     }
-
+    function handleSaveMeasurement() {
+        setReload(!reload);
+        setIsModalOpen(false);
+    }
     return (
         <section className="location">
             <Modal
@@ -35,9 +39,9 @@ function LocationComponent() {
                 onOpen={() => setIsModalOpen(true)}
                 isOpen={isModalOpen}
             >
-                <MeasurementCreator location={location} onSave={() => setIsModalOpen(false)} />
+                <MeasurementCreator location={location} onSave={handleSaveMeasurement} />
             </Modal>
-            <Measurements location={location} />
+            <Measurements location={location} key={reload} />
         </section>
     )
 }

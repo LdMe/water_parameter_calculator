@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
 import Color from './utils/color';
-import './styles/ColorPicker.scss';
 import { FaImage } from 'react-icons/fa6';
 /* 
 * ColorCalculator that takes a picture and displays it on the screen, then it shows the mean rgb value of the area clicked

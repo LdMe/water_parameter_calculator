@@ -1,7 +1,8 @@
+import { FaTrash } from "react-icons/fa6";
 import ColorCircle from "../color/ColorCircle";
 
 
-function MeasurementCard({ measurement, groupBy }) {
+function MeasurementCard({ measurement, groupBy,onDelete }) {
     return (
         <article className="measurement__card" >
             <h3>{groupBy === 'byDate' ? new Date(measurement.date).toLocaleDateString("es-ES") : measurement.parameter}</h3>
@@ -14,6 +15,7 @@ function MeasurementCard({ measurement, groupBy }) {
                             <section className="measurement__value__container">
                                 {(singleMeasurement.hasColor || measurement.hasColor) && < ColorCircle color={singleMeasurement.color} />}
                                 <p className="measurement__value">{singleMeasurement.value}</p>
+                                <button className="measurement__delete" onClick={() => onDelete(singleMeasurement)}><FaTrash /></button>
                             </section>
                         </article>
                     )

@@ -1,6 +1,6 @@
 import {useState,useEffect} from "react";
 
-import { getMeasurementsByLocation } from "../../utils/fetchMeasurement";
+import { getMeasurementsByLocation, deleteMeasurement } from "../../utils/fetchMeasurement";
 import MeasurementCard from "./MeasurementCard";
 
 import './Measurement.scss';
@@ -28,6 +28,13 @@ function Measurement({location}) {
     function toggleGroupBy() {
         setGroupBy(groupBy === 'byParameter' ? 'byDate' : 'byParameter');
     }
+    async function handleDeleteMeasurement(measurement) {
+        console.log("delete measurement", measurement);
+        await deleteMeasurement(measurement._id);
+        getMeasurementsByLocation(location._id).then((data) => {
+            setMeasurements(data.data);
+        });
+    }
 
     return (
         <div className="measurement">
@@ -38,7 +45,12 @@ function Measurement({location}) {
                     <h3>Total de mediciones: {measurements[groupBy].length}</h3>
                     {measurements[groupBy].map((measurement) => {
                         return (
-                            <MeasurementCard key={measurement.parameter || measurement.date} measurement={measurement} groupBy={groupBy} />
+                            <MeasurementCard 
+                            key={measurement.parameter || measurement.date} 
+                            measurement={measurement} 
+                            groupBy={groupBy} 
+                            onDelete={handleDeleteMeasurement}
+                            />
                         )
                     })}
                 </section>

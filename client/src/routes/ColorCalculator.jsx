@@ -10,7 +10,6 @@ import ColorGradient from '../components/ColorGradient';
 import HorizontalSelector from '../components/HorizontalSelector';
 import { createMeasurement } from '../utils/fetchMeasurement';
 
-import '../styles/ColorCalculator.scss'
 import { FaFloppyDisk } from 'react-icons/fa6';
 
 function ColorCalculator() {

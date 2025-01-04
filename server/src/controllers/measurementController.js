@@ -43,7 +43,7 @@ measurementController.getMeasurementsByLocation = async (req, res) => {
         return res.status(400).json({ message: "Location not found" });
     }
     const parameters = await Parameter.find({ user: req.user.id });
-    const measurements = await Measurement.find({ location: location._id, user: req.user.id });
+    const measurements = await Measurement.find({ location: location._id, user: req.user.id }).sort({date: -1});
     const measurementsByParameter = {};
     for (const parameter of parameters) {
         measurementsByParameter[parameter.name] = [];
