@@ -49,6 +49,23 @@ $primary-color: #2563eb;
 
 }
 
+.measurement-creator__value {
+  display: flex;
+  flex-direction: column;
+  border-radius: 15px;
+  padding: 0.5rem;
+  width: 100%;
+  margin: auto;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  & .measurement-creator__value__title {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+  }
+}
 .measurement-creator__button {
   cursor: pointer;
   width: 50%;
@@ -58,6 +75,16 @@ $primary-color: #2563eb;
   border: 1px solid #ddd;
   font-size: 1.2rem;
 }
+.measurement-creator__actions {
+  margin-top:1rem;
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-top: 1px solid #e5e7eb;
+  background-color: #fff; /* Asegura que los botones tengan fondo blanco */
+  width: 100%;
+}
+
 
 /* Responsive grid */
 @media (min-width: 640px) {

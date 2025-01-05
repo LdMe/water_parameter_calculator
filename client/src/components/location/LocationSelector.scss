@@ -1,11 +1,5 @@
 // Variables
-$sidebar-width: 300px;
-$transition-time: 0.3s;
-$primary-color: #2563eb;
-$hover-color: #1d4ed8;
-$border-radius: 8px;
-$card-spacing: 1rem;
-$shadow-color: rgba(0, 0, 0, 0.1);
+@import '../../styles/variables';
 
 .location-selector {
   position: relative;
@@ -116,25 +110,7 @@ $shadow-color: rgba(0, 0, 0, 0.1);
   }
 }
 
-.location__button {
-  width: 100%;
-  padding: 0.5rem 1rem;
-  background-color: $primary-color;
-  color: white;
-  border: none;
-  border-radius: $border-radius;
-  cursor: pointer;
-  transition: background-color $transition-time ease;
 
-  &:hover {
-    background-color: $hover-color;
-  }
-
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba($primary-color, 0.3);
-  }
-}
 
 // Media query para dispositivos móviles
 @media (max-width: 768px) {

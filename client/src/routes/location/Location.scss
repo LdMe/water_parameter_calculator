@@ -1,4 +1,38 @@
+@import "../../styles/variables.scss";
 
 
 
+.location__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    h2 {
+        margin: 0;
+    }
+       
+    & .modal__button {
+        width: 100%;
+        padding: 1rem;
+        background-color: $primary-color;
+        display: flex;
+        align-items: center;
+        gap:0.5rem;
+        color: white;
+        border: none;
+        border-radius: $border-radius;
+        cursor: pointer;
+        transition: background-color $transition-time ease;
+      
+        &:hover {
+          background-color: $hover-color;
+        }
+      
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 2px rgba($primary-color, 0.3);
+        }
+    }
 
+}

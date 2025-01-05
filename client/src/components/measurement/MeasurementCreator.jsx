@@ -5,7 +5,8 @@ import ColorCalculator from "../color/ColorCalculator";
 import ColorCircle from "../color/ColorCircle";
 import MeasurementCalculator from "./MeasurementCalculator";
 import Parameter from "../../parameter";
-function MeasurementCreator({ location, onSave }) {
+import TextWithInfo from "../text/TextWithInfo";
+function MeasurementCreator({ location, onSave, onCancel }) {
     const [step, setStep] = useState(1);
     const [parameters, setParameters] = useState([]);
     const [measurement, setMeasurement] = useState({
@@ -41,7 +42,7 @@ function MeasurementCreator({ location, onSave }) {
         setStep(3);
     }
     function handleSave(measurement) {
-        createMeasurement(measurement.value,measurement.parameter.name,location.name,measurement.color).then((data) => {
+        createMeasurement(measurement.value, measurement.parameter.name, location.name, measurement.color).then((data) => {
             onSave(data.data);
         });
     }
@@ -68,13 +69,40 @@ function MeasurementCreator({ location, onSave }) {
             )}
             {measurement.parameter && (
                 <section className="measurement-creator__value">
-                    {measurement.parameter.hasColor && <ColorCircle color={measurement.color} />}
+                    <div className="measurement-creator__value__title">
+                        <h3>Resultado</h3>
+                        <TextWithInfo
+                            autoCloseTime={3000}
+                        >
+                            {measurement.parameter.hasColor ? (
+                                <>
+                                    <p>Haz click en un punto de la imágen para calcular el color y el valor asociado.</p>
+                                    <p>El valor se puede modificar a mano en caso de que no sea suficientemente preciso.</p>
+                                    <p>Recuerda corregir el color en caso de que sea necesario.</p>
+                                </>
+                            ) : (
+
+                                <p>Intruduce el valor del parámetro en la unidad adecuada.</p>
+
+                            )
+                            }
+                        </TextWithInfo>
+                    </div>
                     <p>{measurement.parameter.name}: </p>
+                    {measurement.parameter.hasColor &&
+                        <section className="measurement-creator__color">
+                            <ColorCircle color={measurement.color} />
+                        </section>
+                    }
                     <input type="number" step="0.001" value={measurement.value} onChange={(e) => setMeasurement(measurement => { return { ...measurement, value: e.target.value } })} />
                 </section>
 
             )}
-            <button className="measurement-creator__button" disabled={!isReadyToSave()} onClick={() => { handleSave(measurement) }}>Guardar</button>
+            <section className="measurement-creator__actions">
+                <button className="measurement-creator__button" onClick={onCancel}>Cancelar</button>
+                <button className="measurement-creator__button" disabled={!isReadyToSave()} onClick={() => { handleSave(measurement) }}>Guardar</button>
+            </section>
+
 
         </div>
     )

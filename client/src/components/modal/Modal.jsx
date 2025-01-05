@@ -1,31 +1,29 @@
-import {useState} from 'react';
+import { useState } from 'react';
 
 import './Modal.scss'
-function Modal({children,trigger,isOpen,onClose,onOpen}) {
-    const [showModal, setShowModal] = useState(isOpen);
+function Modal({ children, trigger, isOpen, onClose, onOpen }) {
     function handleBackgroundClick(e) {
         if (e.target === e.currentTarget) {
-            setShowModal(false);
+            onClose();
         }
     }
-    function handleTogggleModal(isOpen= true) {
+    function handleTogggleModal(isOpen = true) {
         if (isOpen) {
-            setShowModal(true);
             onOpen && onOpen();
         } else {
-            setShowModal(false);
             onClose && onClose();
         }
     }
     return (
-        <div>
-            <div className="modal__trigger"  onClick={() => handleTogggleModal(true)}>
-            {trigger || <button>Open Modal</button>}
+        <div className="modal-container">
+            <div className="modal-trigger" onClick={() => handleTogggleModal(true)}>
+                {trigger || <button>Open Modal</button>}
             </div>
-            {showModal && <div className="modal"  onClick={handleBackgroundClick}>
-                <div className="modal__content" >
-                    {children}
-                    <button onClick={() => handleTogggleModal(false)}>Close</button>
+            {isOpen && <div className="modal" onClick={handleBackgroundClick}>
+                <div className="modal-body">
+                    <div className="modal-content" >
+                        {children}
+                    </div>
                 </div>
             </div>}
         </div>
