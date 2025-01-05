@@ -119,14 +119,13 @@ table {
         text-align: center;
     }
 }
-input[type="text"], input[type="number"],input[type="password"] {
-    padding: 5px;
-    border: 1.5px solid darken($base-color,10%);
-    box-shadow: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    margin-top: 15px;
-}
+// input[type="text"], input[type="number"],input[type="password"] {
+//     padding: 5px;
+//     border: 1.5px solid darken($base-color,10%);
+//     box-shadow: none;
+//     border-radius: 5px;
+//     font-size: 1rem;
+// }
 
 .colorSpan {
     margin-right: 5px;

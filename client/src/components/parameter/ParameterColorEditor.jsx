@@ -9,18 +9,14 @@ function ParameterColorEditor({ defaultValues, onUpdateColorValues }) {
     const [
         {
             selectedColor,
-            selectedWhite,
-            selectingWhite,
             selectedValue,
             values
         },
         {
             handleSelectColor,
-            handleToggleWhiteSelection,
             handleSetValue,
             handleAddColorValue,
             handleDeleteColorValue,
-            handleResetWhite
         }
     ] = useParameterColor(defaultValues);
     function handleAddValue() {
@@ -38,7 +34,6 @@ function ParameterColorEditor({ defaultValues, onUpdateColorValues }) {
                     color={selectedColor}
                     className="parameter-color-editor__color"
                 />
-                <label htmlFor="value">Valor</label>
                 <input
                     type="number"
                     step="0.01"

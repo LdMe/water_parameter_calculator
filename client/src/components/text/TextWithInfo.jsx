@@ -18,7 +18,7 @@ const InfoIcon = () => (
   </svg>
 );
 
-const TextWithInfo = ({ text, children, autoCloseTime = 3000 }) => {
+const TextWithInfo = ({ text, children, autoCloseTime = 5000 }) => {
   const [showPopup, setShowPopup] = useState(false);
   
   const handleClose = useCallback(() => {

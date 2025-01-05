@@ -1,49 +1,20 @@
 import { useState, useEffect } from 'react';
 
-import { redirect, useNavigate, useParams } from 'react-router-dom';
 import ParameterTypeChooser from './ParameterTypeChooser';
 import ParameterNameChooser from './ParameterNameChooser';
 import ParameterColorEditor from './ParameterColorEditor';
 
-import { saveParameter, getParameter,updateParameter } from '../../utils/fetchParameter';
+import { saveParameter, getParameter, updateParameter } from '../../utils/fetchParameter';
 import './ParameterEditor.scss';
-import { Link } from 'react-router-dom';
 
-function ParameterEditor() {
-    const [step, setStep] = useState(1);
-    const [parameter, setParameter] = useState({
-        name: "",
-        values: [],
-        hasColor: true
-    });
-    const params = useParams();
+const defaultParameter = {
+    name: "",
+    colors: [],
+    hasColor: true
+}
+function ParameterEditor({ defaultValues, onSave, onCancel }) {
+    const [parameter, setParameter] = useState(defaultValues || defaultParameter);
 
-    useEffect(() => {
-        if (params.name !== undefined) {
-            async function loadParameter() {
-                const parameter = await getParameter(params.name);
-                console.log(parameter);
-                if (parameter.error !== null) {
-                    alert(parameter.error);
-                    return;
-                }
-                if (parameter.data === null) {
-                    return navigate('/parameter/new');
-                }
-                const newParameter = {
-                    name: parameter.data.name,
-                    values: parameter.data.colors,
-                    hasColor: parameter.data.hasColor,
-                    _id: parameter.data._id
-                }
-                setParameter(newParameter);
-                setStep(3);
-            }
-            loadParameter();
-        }
-
-    }, [params.name]);
-    const navigate = useNavigate();
     function handleSelectHasColor(value) {
         setParameter({
             ...parameter,
@@ -69,9 +40,9 @@ function ParameterEditor() {
             if (!confirm(`Ya existe un parámetro de nombre '${parameter.name}', ¿quieres sobreescribirlo?`)) {
                 return;
             }
-            const parameterData ={
+            const parameterData = {
                 name: parameter.name,
-                colors: parameter.values,
+                colors: parameter.colors,
                 hasColor: parameter.hasColor,
                 _id: parameter._id
             }
@@ -81,70 +52,56 @@ function ParameterEditor() {
                 return;
             }
             alert(`Parámetro '${parameter.name}' guardado`);
-            navigate('/parameter');
+            onSave && onSave(parameter);
             return;
 
         }
-        const result = await saveParameter(parameter.name, parameter.values, parameter.hasColor, oldParameter.data);
+        const result = await saveParameter(parameter.name, parameter.colors, parameter.hasColor, oldParameter.data);
         if (result.error !== null) {
             alert(result.error);
             return;
         }
         alert(`Parámetro '${parameter.name}' guardado`);
-        navigate('/parameter');
+        onSave && onSave(parameter);
     }
-    switch (step) {
-        case 1:
-            return (
-                <div className="parameter-editor">
-                    <h1>Crear nuevo parámetro</h1>
-                    <ParameterTypeChooser
-                        selectedIndex={parameter.hasColor ? 0 : 1}
-                        onClick={handleSelectHasColor}
-                    />
-                    <section className="parameter-editor__buttons">
-                        <Link to="/parameter">
-                            <button >Cancelar</button>
-
-                        </Link>
-                        <button onClick={() => setStep(2)}>Siguiente</button>
-                    </section>
-                </div>
-            )
-        case 2:
-            return (
-                <div className="parameter-editor">
-                    <h1>Nombre</h1>
-                    <ParameterNameChooser
-                        value={parameter.name}
-                        onChange={handleChangeName}
-                    />
-                    <section className="parameter-editor__buttons">
-                        <button onClick={() => setStep(1)}>Anterior</button>
-                        <button disabled={!parameter.name} onClick={() => setStep(3)}>Siguiente</button>
-                    </section>
-                </div>
-            )
-        case 3:
-            return (
-                <div className="parameter-editor">
-                    <h1>Valores</h1>
-                    <ParameterColorEditor
-                        defaultValues={parameter.values}
-                        onUpdateColorValues={handleUpdateValues}
-                    />
-                    <section className="parameter-editor__buttons">
-                        <button onClick={() => setStep(2)}>Anterior</button>
-                        <button className="primary" onClick={handleSaveParameter}>Guardar</button>
-                    </section>
-                </div>
-            )
-    }
+    if (!parameter) return null;
     return (
         <div className="parameter-editor">
-            <h1>Parameter editor</h1>
+            <h1>
+                {parameter._id ? "Editar parámetro" : "Crear parámetro"}
+            </h1>
+            <section className="parameter-name">
+                <h2>Nombre</h2>
+                <ParameterNameChooser
+                    value={parameter.name}
+                    onChange={handleChangeName}
+                />
+            </section>
+            <section className="parameter-type">
+
+                <ParameterTypeChooser
+                    selectedIndex={parameter.hasColor ? 0 : 1}
+                    onClick={handleSelectHasColor}
+                />
+            </section>
+            {parameter.hasColor && (
+                <section className="parameter-value">
+                    <h2>Valores</h2>
+                    <ParameterColorEditor
+                        defaultValues={parameter.colors}
+                        onUpdateColorValues={handleUpdateValues}
+                    />
+                </section>
+
+            )}
+            <section className="parameter-editor__buttons">
+                <button onClick={onCancel}>Cancelar</button>
+                <button className="primary" onClick={handleSaveParameter}>Guardar</button>
+            </section>
+
         </div>
     )
+
 }
 
 export default ParameterEditor

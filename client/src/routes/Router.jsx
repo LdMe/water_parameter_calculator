@@ -7,7 +7,6 @@ import ColorCalculator from './ColorCalculator'
 import Login from './auth/Login';
 import Locations from "./location/Locations";
 import LocationComponent from "./location/Location";
-import LocationViewer from "./LocationViewer";
 import Home from "./home/Home";
 import  { loadLocations,loadLocation } from "../loaders/locationLoader";
 
@@ -24,14 +23,6 @@ const BrowserRouter = createBrowserRouter([
       {
         path: "/parameter/",
         element: <Parameter />
-      },
-      {
-        path: "/parameter/new",
-        element: <ParameterEditor />
-      },
-      {
-        path: "/parameter/:name",
-        element: <ParameterEditor />
       },
       {
         path: "location/",

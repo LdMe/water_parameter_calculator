@@ -1,7 +1,7 @@
 
-export default function ColorCircle({ color, onClick=() => {}, className = "" }) {
+export default function ColorCircle({ color, children, onClick = () => { }, className = "" }) {
   const rgbaToString = (rgba) => `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a || 255})`;
-  
+
   const style = {
     width: '2rem',
     height: '2rem',
@@ -12,10 +12,12 @@ export default function ColorCircle({ color, onClick=() => {}, className = "" })
   };
 
   return (
-    <div 
-      className={`color-circle ${className}`} 
-      style={style} 
-      onClick={onClick} 
-    />
+    <div
+      className={`color-circle ${className}`}
+      style={style}
+      onClick={onClick}
+    >
+      {children}
+    </div>
   );
 }
