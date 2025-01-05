@@ -23,6 +23,7 @@ export default LocationSelector */
 import { useState } from 'react';
 import { FaChevronLeft as ChevronLeft } from 'react-icons/fa6';
 import { NavLink } from 'react-router-dom';
+import TextWithInfo from '../text/TextWithInfo';
 
 function LocationSelector({ locations }) {
   const [isOpen, setIsOpen] = useState(true);
@@ -32,15 +33,25 @@ function LocationSelector({ locations }) {
   return (
     <div className="location-selector">
       <aside className={`locations__list ${!isOpen ? 'closed' : ''}`}>
-        <h2>Ubicaciones</h2>
+        <section className="locations__header">
+          <h2>Ubicaciones</h2>
+          <TextWithInfo>
+            <p>
+              Aquí puedes ver las ubicaciones donde se han realizado mediciones.
+            </p>
+            <p>
+              Haz click en una ubicación para ver sus mediciones.
+            </p>
+          </TextWithInfo>
+        </section>
         {locations.map((location) => (
-          <NavLink 
-          key={location._id} 
-          to={`/location/${location.name}`} 
-          className={({ isActive }) => {
-            return isActive ? 'selected' : '';
-          }}
-          onClick={() => handleSelect()}
+          <NavLink
+            key={location._id}
+            to={`/location/${location.name}`}
+            className={({ isActive }) => {
+              return isActive ? 'selected' : '';
+            }}
+            onClick={() => handleSelect()}
           >
             <article
               className={`location__card `}
