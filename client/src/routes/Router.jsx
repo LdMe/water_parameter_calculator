@@ -30,6 +30,10 @@ const BrowserRouter = createBrowserRouter([
         loader: loadLocations,
         children: [
           {
+            path: "",
+            element:<p>Selecciona una ubicación</p>
+          },
+          {
             path: ":locationName",
             element: <LocationComponent />,
             loader: (req)=>loadLocation(req.params.locationName)

@@ -27,10 +27,10 @@ function ParameterEditor({ defaultValues, onSave, onCancel }) {
             name: value
         })
     }
-    function handleUpdateValues(values) {
+    function handleUpdateValues(colors) {
         setParameter({
             ...parameter,
-            values
+            colors
         })
     }
     async function handleSaveParameter() {
@@ -96,7 +96,7 @@ function ParameterEditor({ defaultValues, onSave, onCancel }) {
             )}
             <section className="parameter-editor__buttons">
                 <button onClick={onCancel}>Cancelar</button>
-                <button className="primary" onClick={handleSaveParameter}>Guardar</button>
+                <button disabled={parameter.name === "" || parameter.hasColor && parameter.colors.length === 0} className="primary" onClick={handleSaveParameter}>Guardar</button>
             </section>
 
         </div>

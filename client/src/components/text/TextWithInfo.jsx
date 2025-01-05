@@ -1,5 +1,5 @@
 import  { useState, useEffect, useCallback } from 'react';
-
+import { createPortal } from 'react-dom';
 import './TextWithInfo.scss';
 const InfoIcon = () => (
   <svg 
@@ -50,7 +50,8 @@ const TextWithInfo = ({ text, children, autoCloseTime = 5000 }) => {
         <InfoIcon />
       </button>
       
-      {showPopup && (
+      {showPopup && createPortal(
+        (
         <div className="text-with-info__popup-overlay" onClick={handleClose}>
           <div 
             className="text-with-info__popup"
@@ -65,6 +66,8 @@ const TextWithInfo = ({ text, children, autoCloseTime = 5000 }) => {
             </button>
           </div>
         </div>
+        ),
+        document.body
       )}
     </div>
   );

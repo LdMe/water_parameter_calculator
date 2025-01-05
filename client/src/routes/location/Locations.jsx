@@ -1,4 +1,4 @@
-import { updateLocation } from "../../utils/fetchLocation";
+import { updateLocation, deleteLocation } from "../../utils/fetchLocation";
 import { Outlet, useLoaderData, useRevalidator } from "react-router-dom";
 import LocationSelector from "../../components/location/LocationSelector";
 
@@ -12,14 +12,22 @@ function Locations() {
         // Forzar la recarga del loader para obtener los datos actualizados
         revalidator.revalidate();
     };
+    const handleDeleteLocation = async (locationId) => {
+        await deleteLocation(locationId);
+        // Forzar la recarga del loader para obtener los datos actualizados
+        revalidator.revalidate();
+    }
+    const refresh = () => {
+        revalidator.revalidate();
+    };
     if (!locations) {
         return null;
     }
     return (
         <section className="locations">
-            <LocationSelector locations={locations}  />
+            <LocationSelector locations={locations} onCreateLocation={refresh} />
             <main className="location__measurements">
-                <Outlet  context={{ onUpdateLocation: handleLocationUpdate }}/>
+                <Outlet  context={{ onUpdateLocation: handleLocationUpdate, onDeleteLocation: handleDeleteLocation}}/>
             </main>
         </section>
     )

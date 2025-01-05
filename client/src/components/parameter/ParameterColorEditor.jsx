@@ -1,11 +1,11 @@
 // ParameterColorEditor.js
-import React from 'react';
-import ColorPicker from '../color/ColorPicker';
+import {useRef} from 'react';
 import ColorCircle from '../color/ColorCircle';
 import { useParameterColor } from '../../hooks/useParameterColor';
 import ColorCalculator from '../color/ColorCalculator';
 
 function ParameterColorEditor({ defaultValues, onUpdateColorValues }) {
+    const inputRef = useRef(null);
     const [
         {
             selectedColor,
@@ -19,7 +19,13 @@ function ParameterColorEditor({ defaultValues, onUpdateColorValues }) {
             handleDeleteColorValue,
         }
     ] = useParameterColor(defaultValues);
-    function handleAddValue() {
+
+    function handleColor(color) {
+        handleSelectColor(color);
+        inputRef.current.focus();
+    }
+    function handleAddValue(e) {
+        e.preventDefault();
         handleAddColorValue();
         onUpdateColorValues([...values, { color: selectedColor, value: selectedValue }].sort((a, b) => a.value - b.value));
     }
@@ -27,26 +33,28 @@ function ParameterColorEditor({ defaultValues, onUpdateColorValues }) {
         <section className="parameter-color-editor">
             
 
-            <ColorCalculator onSelectColor={handleSelectColor} />
+            <ColorCalculator onSelectColor={handleColor} />
 
             <section className="parameter-color-results">
                 <ColorCircle
                     color={selectedColor}
                     className="parameter-color-editor__color"
                 />
+                <form onSubmit={handleAddValue} >
                 <input
                     type="number"
+                    ref={inputRef}
                     step="0.01"
                     lang="en"
                     value={selectedValue}
                     onChange={(e) => handleSetValue(e.target.value)}
                 />
                 <button
-                    onClick={handleAddValue}
                     disabled={!selectedColor}
                 >
                     Agregar
                 </button>
+                </form>
             </section>
 
             <section className="parameter-color-values">

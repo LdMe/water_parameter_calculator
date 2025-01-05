@@ -54,6 +54,7 @@ function Parameter() {
             return [...oldParameters.slice(0, parameterIndex), parameter, ...oldParameters.slice(parameterIndex + 1)];
 
         })
+        setIsModalOpen(false);
     }
     return (
         <div>

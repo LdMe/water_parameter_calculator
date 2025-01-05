@@ -4,12 +4,12 @@ import mongoose from "mongoose";
 
 const parameterController = {};
 
-parameterController.getParameters = async (req, res) => {
+const getParameters = async (req, res) => {
     const parameters = await Parameter.find({ user: req.user.id });
     res.json(parameters);
 }
 
-parameterController.createParameter = async (req, res) => {
+const createParameter = async (req, res) => {
     try{
         let { name, hasColor, colors } = req.body;
         if (!hasColor) {
@@ -30,7 +30,7 @@ parameterController.createParameter = async (req, res) => {
     }
 }
 
-parameterController.createDefaultParameters = async (userId) => {
+const createDefaultParameters = async (userId) => {
     const parameters = [
 
         {
@@ -108,7 +108,7 @@ parameterController.createDefaultParameters = async (userId) => {
     });
 }
 
-parameterController.getParameter = async (req, res) => {
+const getParameter = async (req, res) => {
     const  {parameterName} = req.params;
     if(mongoose.Types.ObjectId.isValid(parameterName)){
         const parameter = await Parameter.findById(parameterName);
@@ -119,7 +119,7 @@ parameterController.getParameter = async (req, res) => {
     res.json(parameter);
 }
 
-parameterController.deleteParameter = async (req, res) => {
+const deleteParameter = async (req, res) => {
     const parameter = await Parameter.findOne({ user: req.user.id, name: req.params.parameterName });
     if (!parameter) {
         return res.status(400).json({ message: "Parameter not found" });
@@ -129,7 +129,7 @@ parameterController.deleteParameter = async (req, res) => {
     res.json({ message: 'Parameter deleted' });
 }
 
-parameterController.updateParameter = async (req, res) => {
+const updateParameter = async (req, res) => {
     const {_id, name, hasColor, colors } = req.body;
     if(_id){
         const parameter = await Parameter.findOneAndUpdate({ user: req.user.id, _id }, { name, hasColor, colors });
@@ -139,4 +139,11 @@ parameterController.updateParameter = async (req, res) => {
     res.json({ message: 'Parameter updated' });
 }
 
-export default parameterController;
+export default {
+    getParameters,
+    createParameter,
+    getParameter,
+    deleteParameter,
+    updateParameter,
+    createDefaultParameters
+};

@@ -1,31 +1,11 @@
-import './LocationSelector.scss'
-
-/* function LocationSelector({ locations, selectedLocation, onSelect }) {
-
-    return (
-        
-        <aside className="locations__list">
-            {locations.map((location) => {
-                return (
-                    <article className={location._id === selectedLocation?._id ? "selected" : "" +" location__card"} key={location._id}>
-                        <h3>{location.name}</h3>
-                        <p>{location.description}</p>
-                        <button className="location__button" onClick={() => onSelect(location)}>Ver mediciones</button>
-                    </article>
-                )
-            })}
-        </aside>
-    )
-}
-
-export default LocationSelector */
-
 import { useState } from 'react';
 import { FaChevronLeft as ChevronLeft } from 'react-icons/fa6';
 import { NavLink } from 'react-router-dom';
 import TextWithInfo from '../text/TextWithInfo';
+import NewLocation from './NewLocation';
+import './LocationSelector.scss'
 
-function LocationSelector({ locations }) {
+function LocationSelector({ locations,onCreateLocation }) {
   const [isOpen, setIsOpen] = useState(true);
   function handleSelect() {
     setIsOpen(false);
@@ -35,7 +15,9 @@ function LocationSelector({ locations }) {
       <aside className={`locations__list ${!isOpen ? 'closed' : ''}`}>
         <section className="locations__header">
           <h2>Ubicaciones</h2>
-          <TextWithInfo>
+          <TextWithInfo
+          autoCloseTime={false}
+          >
             <p>
               Aquí puedes ver las ubicaciones donde se han realizado mediciones.
             </p>
@@ -44,6 +26,7 @@ function LocationSelector({ locations }) {
             </p>
           </TextWithInfo>
         </section>
+        <NewLocation onCreate={onCreateLocation} />
         {locations.map((location) => (
           <NavLink
             key={location._id}

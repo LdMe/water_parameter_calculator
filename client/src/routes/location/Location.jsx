@@ -13,7 +13,7 @@ function LocationComponent() {
     const [reload, setReload] = useState(false);
     const location = useLoaderData();
     const navigate = useNavigate();
-    const { onUpdateLocation } = useOutletContext();
+    const { onUpdateLocation,onDeleteLocation } = useOutletContext();
 
     async function handleLocationUpdate(location) {
         console.log("location", location)
@@ -21,6 +21,9 @@ function LocationComponent() {
         navigate(`/location/${location.name}`);
         setIsModalOpen(false);
 
+    }
+    async function handleDeleteLocation(locationId) {
+       onDeleteLocation(locationId);
     }
     function handleSaveMeasurement() {
         setReload(!reload);
@@ -43,6 +46,7 @@ function LocationComponent() {
                     <LocationOptions
                         location={location}
                         onSubmit={handleLocationUpdate}
+                        onDelete={handleDeleteLocation}
                     />
                 </Modal>
             </div>
