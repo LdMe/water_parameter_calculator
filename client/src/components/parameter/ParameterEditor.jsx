@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 
 import ParameterTypeChooser from './ParameterTypeChooser';
 import ParameterNameChooser from './ParameterNameChooser';
 import ParameterColorEditor from './ParameterColorEditor';
 
-import { saveParameter, getParameter, updateParameter } from '../../utils/fetchParameter';
+import MessageContext from '../../context/messageContext';
+
+import { saveParameter, getParameter, updateParameter, getParameterByName } from '../../utils/fetchParameter';
 import './ParameterEditor.scss';
 
 const defaultParameter = {
@@ -14,6 +16,7 @@ const defaultParameter = {
 }
 function ParameterEditor({ defaultValues, onSave, onCancel }) {
     const [parameter, setParameter] = useState(defaultValues || defaultParameter);
+    const { setMessage, setError } = useContext(MessageContext);
 
     function handleSelectHasColor(value) {
         setParameter({
@@ -21,7 +24,7 @@ function ParameterEditor({ defaultValues, onSave, onCancel }) {
             hasColor: value
         })
     }
-    function handleChangeName(value) {
+    async function handleChangeName(value) {
         setParameter({
             ...parameter,
             name: value
@@ -35,34 +38,22 @@ function ParameterEditor({ defaultValues, onSave, onCancel }) {
     }
     async function handleSaveParameter() {
         console.log("saving parameter", parameter)
-        const oldParameter = await getParameter(parameter._id || parameter.name);
-        if (oldParameter.data !== null) {
-            if (!confirm(`Ya existe un parámetro de nombre '${parameter.name}', ¿quieres sobreescribirlo?`)) {
-                return;
-            }
-            const parameterData = {
-                name: parameter.name,
-                colors: parameter.colors,
-                hasColor: parameter.hasColor,
-                _id: parameter._id
-            }
-            const result = await updateParameter(parameterData);
-            if (result.error !== null) {
-                alert(result.error);
-                return;
-            }
-            alert(`Parámetro '${parameter.name}' guardado`);
-            onSave && onSave(parameter);
+        const oldParameter = await getParameterByName(parameter.name);
+        console.log("oldParameter", oldParameter)
+        if (oldParameter.data !== null && oldParameter.data._id !== parameter._id) {
+            setError(`Ya existe un parámetro de nombre '${parameter.name}'. Por favor elige otro nombre.`);
             return;
+        }
+        const result = await saveParameter(parameter);
 
-        }
-        const result = await saveParameter(parameter.name, parameter.colors, parameter.hasColor, oldParameter.data);
         if (result.error !== null) {
-            alert(result.error);
+            setError(result.error);
             return;
         }
-        alert(`Parámetro '${parameter.name}' guardado`);
-        onSave && onSave(parameter);
+        const newParameter = result.data;
+        console.log("newParameter", newParameter)
+        setMessage(`Parámetro '${newParameter.name}' guardado`);
+        onSave && onSave(newParameter);
     }
     if (!parameter) return null;
     return (

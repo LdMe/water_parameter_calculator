@@ -6,8 +6,10 @@ const router = Router();
 
 router.get('/', parameterController.getParameters);
 router.post('/', parameterController.createParameter);
-router.get('/:parameterName', parameterController.getParameter);
-router.delete('/:parameterName', parameterController.deleteParameter);
-router.put('/:parameterName', parameterController.updateParameter);
+router.get('/byname/:parameterName', parameterController.getParameterByName);
+router.get('/:parameterId', parameterController.getParameter);
+
+router.delete('/:parameterId', parameterController.deleteParameter);
+router.put('/:parameterId', parameterController.updateParameter);
 
 export default router;

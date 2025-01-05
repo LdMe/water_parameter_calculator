@@ -5,12 +5,17 @@ import mongoose from "mongoose";
 const parameterController = {};
 
 const getParameters = async (req, res) => {
-    const parameters = await Parameter.find({ user: req.user.id });
-    res.json(parameters);
+    try {
+        const parameters = await Parameter.find({ user: req.user.id });
+        res.json(parameters);
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: error.message });
+    }
 }
 
 const createParameter = async (req, res) => {
-    try{
+    try {
         let { name, hasColor, colors } = req.body;
         if (!hasColor) {
             colors = [];
@@ -22,10 +27,10 @@ const createParameter = async (req, res) => {
         }
         const parameter = new Parameter({ name, hasColor, colors, user: req.user.id });
         await parameter.save();
-        res.json({ message: 'Parameter saved' });
+        res.json(parameter);
     }
     catch (error) {
-        
+        console.error(error)
         res.status(500).json({ message: error.message });
     }
 }
@@ -109,40 +114,69 @@ const createDefaultParameters = async (userId) => {
 }
 
 const getParameter = async (req, res) => {
-    const  {parameterName} = req.params;
-    if(mongoose.Types.ObjectId.isValid(parameterName)){
-        const parameter = await Parameter.findById(parameterName);
+    try {
+        const { parameterId } = req.params;
+        const parameter = await Parameter.findById(parameterId);
         res.json(parameter);
-        return;
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: error.message });
     }
-    const parameter = await Parameter.findOne({user:req.user.id, name: parameterName.toLowerCase()});
-    res.json(parameter);
+
+}
+const getParameterByName = async (req, res) => {
+    try {
+        console.log("getting parameter by name")
+        const { parameterName } = req.params;
+        const parameter = await Parameter.findOne({ user: req.user.id, name: parameterName.toLowerCase() });
+        res.json(parameter);
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: error.message });
+    }
 }
 
 const deleteParameter = async (req, res) => {
-    const parameter = await Parameter.findOne({ user: req.user.id, name: req.params.parameterName });
-    if (!parameter) {
-        return res.status(400).json({ message: "Parameter not found" });
+    try {
+        const { parameterId } = req.params;
+        const parameter = await Parameter.findById(parameterId);
+        if (!parameter) {
+            return res.status(400).json({ message: "Parameter not found" });
+        }
+        await Measurement.deleteMany({ parameter: parameter._id });
+        const response = await Parameter.findByIdAndDelete(parameter._id);
+        res.json({ message: 'Parameter deleted' });
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: error.message });
     }
-    await Measurement.deleteMany({ parameter: parameter._id });
-    const response = await Parameter.findByIdAndDelete(parameter._id);
-    res.json({ message: 'Parameter deleted' });
 }
 
 const updateParameter = async (req, res) => {
-    const {_id, name, hasColor, colors } = req.body;
-    if(_id){
-        const parameter = await Parameter.findOneAndUpdate({ user: req.user.id, _id }, { name, hasColor, colors });
-        return res.json({ message: 'Parameter updated' });
+    try{
+        const { parameterId } = req.params;
+        const { name, hasColor, colors } = req.body;
+        const parameter = await Parameter.findOne({ user: req.user.id, _id: parameterId });
+        if (!parameter) {
+            return res.status(400).json({ message: "Parametro no encontrado" });
+        }
+        parameter.name = name;
+        parameter.hasColor = hasColor;
+        parameter.colors = colors;
+        await parameter.save();
+        return res.json(parameter);
+    }catch(error){
+        console.error(error)
+        res.status(500).json({ message: error.message });
     }
-    await Parameter.findOneAndUpdate({ user: req.user.id, name }, { hasColor, colors });
-    res.json({ message: 'Parameter updated' });
 }
+
 
 export default {
     getParameters,
     createParameter,
     getParameter,
+    getParameterByName,
     deleteParameter,
     updateParameter,
     createDefaultParameters

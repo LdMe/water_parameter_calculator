@@ -2,13 +2,13 @@ import { useEffect } from 'react';
 import { API_URL } from '../../config';
 import { Link, useNavigate } from 'react-router-dom';
 import LoggedInContext from '../../context/loggedInContext';
-import ErrorContext from '../../context/errorContext';
+import MessageContext from '../../context/messageContext';
 import { useContext } from 'react';
 
 import './Login.scss';
 const Login = ({ isRegister = false, isLogout = false }) => {
     const { setLoggedIn } = useContext(LoggedInContext);
-    const { setError } = useContext(ErrorContext);
+    const { setError } = useContext(MessageContext);
     const navigate = useNavigate();
     useEffect(() => {
         if (isLogout) {

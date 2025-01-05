@@ -1,9 +1,7 @@
 
 import {createBrowserRouter,} from "react-router-dom";
 import Layout from './Layout'
-import ParameterEditor from '../components/parameter/ParameterEditor'
 import Parameter from "./parameter/Parameter";
-import ColorCalculator from './ColorCalculator'
 import Login from './auth/Login';
 import Locations from "./location/Locations";
 import LocationComponent from "./location/Location";
@@ -39,11 +37,6 @@ const BrowserRouter = createBrowserRouter([
             loader: (req)=>loadLocation(req.params.locationName)
           }
         ]
-      },
-      {
-        path: "/calculate",
-        element: <ColorCalculator />
-        
       },
       {
         path: "/login",

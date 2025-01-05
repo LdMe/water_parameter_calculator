@@ -1,18 +1,18 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect,useContext } from "react";
 import { getParameters, deleteParameter } from "../../utils/fetchParameter";
-import { Link } from "react-router-dom";
+import MessageContext from "../../context/messageContext";
 import ColorCircle from "../../components/color/ColorCircle";
 import Modal from "../../components/modal/Modal";
 import ParameterEditor from "../../components/parameter/ParameterEditor";
 import TextWithInfo from "../../components/text/TextWithInfo";
+
 
 import './Parameter.scss'
 function Parameter() {
     const [parameters, setParameters] = useState([]);
     const [selectedParameter, setSelectedParameter] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const navigate = useNavigate();
+    const {setMessage,setError} = useContext(MessageContext);
     useEffect(() => {
         const fetchParameters = async () => {
             const parameters = await getParameters();
@@ -21,18 +21,22 @@ function Parameter() {
         };
         fetchParameters();
     }, []);
-    async function handleDeleteParameter(parameterName) {
-        if (!confirm(`Are you sure you want to delete '${parameterName}'?`)) {
+    async function handleDeleteParameter(parameter) {
+        console.log("delete parameter", parameter)
+        if (!confirm(`Seguro que quieres eliminar el parámetro '${parameter.name}'?`)) {
             return;
         }
-        const response = await deleteParameter(parameterName);
+        const response = await deleteParameter(parameter._id);
+        console.log("response", response)
         const { data, error, code } = response;
         if (error !== null) {
-            // checkAuth(code);
+            setError(error.message);
+            return;
+
         }
         else {
-            alert(`Parameter '${parameterName}' deleted`);
-            setParameters(parameters.filter(parameter => parameter.name !== parameterName));
+            setMessage(`Parametro '${parameter.name}' eliminado`);
+            setParameters(parameters.filter(p => p._id !== parameter._id));
         }
     }
     function handleEditParameter(parameter) {
@@ -44,6 +48,7 @@ function Parameter() {
         setIsModalOpen(true);
     }
     function handleSaveParameter(parameter) {
+        console.log("saving parameter22", parameter)
         setParameters(oldParameters => {
             const parameterIndex = oldParameters.findIndex(p => p._id === parameter._id);
             console.log("parameterIndex", parameterIndex)
@@ -82,7 +87,7 @@ function Parameter() {
                     <div key={parameter._id}>
                         <h2>{parameter.name}</h2>
                         <button onClick={() => handleEditParameter(parameter)}>Editar</button>
-                        <button onClick={() => handleDeleteParameter(parameter.name)}>Eliminar</button>
+                        <button onClick={() => handleDeleteParameter(parameter)}>Eliminar</button>
                         <section className="parameter-color-values">
                             {parameter.colors.map((value) => (
                                 <div key={value.color.r + value.color.g + value.color.b} className="parameter-color-value">

@@ -1,15 +1,17 @@
-import  { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
+import PopUp from '../popUp/PopUp';
 import './TextWithInfo.scss';
+
 const InfoIcon = () => (
-  <svg 
-    viewBox="0 0 24 24" 
-    width="20" 
-    height="20" 
-    stroke="currentColor" 
-    fill="none" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
+  <svg
+    viewBox="0 0 24 24"
+    width="20"
+    height="20"
+    stroke="currentColor"
+    fill="none"
+    strokeWidth="2"
+    strokeLinecap="round"
     strokeLinejoin="round"
   >
     <circle cx="12" cy="12" r="10" />
@@ -20,55 +22,28 @@ const InfoIcon = () => (
 
 const TextWithInfo = ({ text, children, autoCloseTime = 5000 }) => {
   const [showPopup, setShowPopup] = useState(false);
-  
+
   const handleClose = useCallback(() => {
     setShowPopup(false);
   }, []);
-  
-  useEffect(() => {
-    let timeoutId;
-    if (showPopup && autoCloseTime) {
-      timeoutId = setTimeout(() => {
-        handleClose();
-      }, autoCloseTime);
-    }
-    return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-    };
-  }, [showPopup, autoCloseTime, handleClose]);
+
 
   return (
     <div className="text-with-info">
       <span className="text-with-info__text">{text}</span>
-      <button 
+      <button
         className="text-with-info__icon"
         onClick={() => setShowPopup(true)}
         aria-label="Mostrar información adicional"
       >
         <InfoIcon />
       </button>
-      
-      {showPopup && createPortal(
-        (
-        <div className="text-with-info__popup-overlay" onClick={handleClose}>
-          <div 
-            className="text-with-info__popup"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {children}
-            <button 
-              className="text-with-info__close"
-              onClick={handleClose}
-            >
-              Cerrar
-            </button>
-          </div>
-        </div>
-        ),
-        document.body
-      )}
+
+      {showPopup && <PopUp onClose={handleClose} >
+        {children}
+      </PopUp>
+      }
+
     </div>
   );
 };

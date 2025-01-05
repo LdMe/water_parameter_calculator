@@ -122,25 +122,31 @@ const getParameter = async (parameterName) => {
     };
     return await fetchApi(url, options);
 }
+const getParameterByName = async (parameterName) => {
+    const route = 'parameters/byname/' + parameterName;
+    const url = API_URL + route;
+    const options = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+    };
+    return await fetchApi(url, options);
+}
 
-const saveParameter = async (parameterName, values, hasColorScale,oldParameter = null) => {
+const saveParameter = async (parameter) => {
 
-    let route = 'parameters/' + parameterName;
-
-    const data = {
-        name: parameterName,
-        colors: values,
-        hasColor: hasColorScale
-    }
+    let route = 'parameters/' + parameter._id;
     const options = {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + localStorage.getItem('token')
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(parameter)
     };
-    if (!oldParameter ||oldParameter.data === null) {
+    if (!parameter._id) {
         options.method = 'POST';
         route = 'parameters';
     }
@@ -149,7 +155,7 @@ const saveParameter = async (parameterName, values, hasColorScale,oldParameter =
 }
 
 const updateParameter = async (parameter) => {
-    const route = 'parameters/' + parameter.name;
+    const route = 'parameters/' + parameter._id;
     const url = API_URL + route;
     const options = {
         method: 'PUT',
@@ -162,8 +168,8 @@ const updateParameter = async (parameter) => {
     return await fetchApi(url, options);
 }
 
-const deleteParameter = async (parameterName) => {
-    const route = 'parameters/' + parameterName;
+const deleteParameter = async (parameterId) => {
+    const route = 'parameters/' + parameterId;
     const url = API_URL + route;
     const options = {
         method: 'DELETE',
@@ -179,6 +185,7 @@ export {
     getParameters,
     createParameter,
     getParameter,
+    getParameterByName,
     updateParameter,
     saveParameter,
     deleteParameter,
