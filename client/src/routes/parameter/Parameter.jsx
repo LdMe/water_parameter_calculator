@@ -2,9 +2,9 @@ import { useState, useEffect,useContext } from "react";
 import { getParameters, deleteParameter } from "../../utils/fetchParameter";
 import MessageContext from "../../context/messageContext";
 import ColorCircle from "../../components/color/ColorCircle";
-import Modal from "../../components/modal/Modal";
+import Modal from "../../components/generic/modal/Modal";
 import ParameterEditor from "../../components/parameter/ParameterEditor";
-import TextWithInfo from "../../components/text/TextWithInfo";
+import TextWithInfo from "../../components/generic/text/TextWithInfo";
 
 
 import './Parameter.scss'

@@ -27,7 +27,7 @@ function Locations() {
         <section className="locations">
             <LocationSelector locations={locations} onCreateLocation={refresh} />
             <main className="location__measurements">
-                <Outlet  context={{ onUpdateLocation: handleLocationUpdate, onDeleteLocation: handleDeleteLocation}}/>
+                <Outlet  context={{ locations,onUpdateLocation: handleLocationUpdate, onDeleteLocation: handleDeleteLocation}}/>
             </main>
         </section>
     )

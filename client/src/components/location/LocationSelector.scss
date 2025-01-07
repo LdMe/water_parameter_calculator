@@ -17,7 +17,7 @@
   transform: translateX(0);
   transition: transform $transition-time ease-in-out;
   overflow-y: auto;
-  z-index: 1000;
+  z-index: 100;
 
   // Cuando está cerrado
   &.closed {
@@ -60,7 +60,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 1000;
+  z-index: 100;
   transition: all $transition-time ease-in-out;
   box-shadow: 2px 0 5px $shadow-color;
 
@@ -81,40 +81,7 @@
   }
 }
 
-.location__card {
-  background-color: #f8fafc;
-  border-radius: $border-radius;
-  padding: 1rem;
-  margin-bottom: $card-spacing;
-  transition: all $transition-time ease;
-  border: 1px solid #e2e8f0;
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px $shadow-color;
-  }
-
-  .selected & {
-    border-color: $primary-color;
-    background-color: #eff6ff;
-
-    h3 {
-      color: $primary-color;
-    }
-  }
-
-  h3 {
-    margin: 0 0 0.5rem;
-    font-size: 1.1rem;
-    color: #1e293b;
-  }
-
-  p {
-    color: #64748b;
-    font-size: 0.9rem;
-    margin: 0 0 1rem;
-  }
-}
 
 
 

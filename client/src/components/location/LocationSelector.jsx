@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FaChevronLeft as ChevronLeft } from 'react-icons/fa6';
 import { NavLink } from 'react-router-dom';
-import TextWithInfo from '../text/TextWithInfo';
+import TextWithInfo from '../generic/text/TextWithInfo';
 import NewLocation from './NewLocation';
 import './LocationSelector.scss'
 

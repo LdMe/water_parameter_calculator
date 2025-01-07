@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import './Modal.scss'
-function Modal({ children, trigger, isOpen, onClose, onOpen }) {
+function Modal({ children, trigger, isOpen, onClose, onOpen, size="lg" }) {
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden';
@@ -24,11 +24,11 @@ function Modal({ children, trigger, isOpen, onClose, onOpen }) {
     return (
         <div className="modal-container">
             <div className="modal-trigger" onClick={() => handleTogggleModal(true)}>
-                {trigger || <button>Open Modal</button>}
+                {trigger}
             </div>
             {isOpen && createPortal(
                 (<div className="modal" onClick={handleBackgroundClick} >
-                    <div className="modal-body">
+                    <div className={"modal-body "+size}>
                         <div className="modal-content" >
                             {children}
                         </div>

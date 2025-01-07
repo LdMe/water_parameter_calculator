@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import Parameter from "../../parameter";
+import Parameter from "../../utils/classes/parameter";
 import ColorCircle from "../color/ColorCircle";
 
 function MeasurementCalculator({parameter,color}){

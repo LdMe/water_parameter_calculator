@@ -5,16 +5,16 @@ import { Outlet, Link } from "react-router-dom";
 import LoggedInContext from "../context/loggedInContext";
 import LocationContext from "../context/locationsContext";
 import ParameterContext from "../context/parametersContext";
-import Parameter from "../parameter";
-import MessageContext,{defaultMessage} from "../context/messageContext";
-import {getLocations as getLocationsApi} from "../utils/fetchLocation";
+import Parameter from "../utils/classes/parameter";
+import MessageContext, { defaultMessage } from "../context/messageContext";
+import { getLocations as getLocationsApi } from "../utils/fetchLocation";
 import { getParameters as getParametersApi } from "../utils/fetchParameter";
 import LogoutInfoButtons from "../components/LogoutInfoButtons";
-
+import Navbar from "../components/navbar/Navbar";
 import { FaLocationDot, FaRulerCombined, FaMagnifyingGlass, FaRightFromBracket, FaRightToBracket, FaInfo, FaUserPlus, FaHouse } from "react-icons/fa6";
 
 import "../styles/Layout.scss";
-import PopUp from "../components/popUp/PopUp";
+import PopUp from "../components/generic/popUp/PopUp";
 
 
 const Layout = () => {
@@ -31,7 +31,7 @@ const Layout = () => {
         }
         else {
             setLoggedIn(false);
-            if (webLocation.pathname !== "/login" && webLocation.pathname !== "/register" && webLocation.pathname !== "/") { 
+            if (webLocation.pathname !== "/login" && webLocation.pathname !== "/register" && webLocation.pathname !== "/") {
                 navigate('/login');
             }
 
@@ -51,28 +51,28 @@ const Layout = () => {
 
     const getLocations = async () => {
         const response = await getLocationsApi();
-        if(response.error){
-            if(response.code === 401){
+        if (response.error) {
+            if (response.code === 401) {
                 navigate('/login');
             }
-            
+
             return;
         }
-        
+
         setLocations(response.data);
     }
 
     const getParameters = async () => {
         const response = await getParametersApi();
-        if(response.error){
-            if(response.code === 401){
+        if (response.error) {
+            if (response.code === 401) {
                 navigate('/login');
             }
-            
+
             return;
         }
         const newParameters = Parameter.loadParametersFromJSON(response.data);
-        
+
         setParameters(newParameters);
     }
 
@@ -94,10 +94,10 @@ const Layout = () => {
 
     return (
         <div>
-            
+            <LoggedInContext.Provider value={{ loggedIn, setLoggedIn }}>
 
-            <main>
-                <LoggedInContext.Provider value={{ loggedIn, setLoggedIn }}>
+                <main>
+
                     <LocationContext.Provider value={{ locations, getLocations }}>
                         <ParameterContext.Provider value={{ parameters, getParameters }}>
                             <MessageContext.Provider value={{ message, setMessage: handleSetMessage, setError: handleSetError }}>
@@ -106,10 +106,10 @@ const Layout = () => {
                             </MessageContext.Provider>
                         </ParameterContext.Provider>
                     </LocationContext.Provider>
-                </LoggedInContext.Provider>
-            </main>
-            <footer>
-                <nav>
+                </main>
+                <footer>
+                    <Navbar isLoggedIn={loggedIn} />
+                    {/* <nav>
 
 
                     {loggedIn ?
@@ -140,8 +140,9 @@ const Layout = () => {
                         </ul>
                     }
 
-                </nav>
-            </footer>
+                </nav> */}
+                </footer>
+            </LoggedInContext.Provider>
         </div>
     )
 }

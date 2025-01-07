@@ -1,7 +1,7 @@
 import { useLoaderData, useNavigate, useOutletContext } from "react-router-dom";
 import { useState } from "react";
 import Measurements from "../../components/measurement/Measurement";
-import Modal from "../../components/modal/Modal";
+import Modal from "../../components/generic/modal/Modal";
 import LocationOptions from "../../components/location/LocationOptions";
 import { FaGear, FaPlus } from "react-icons/fa6";
 import NewMeasurementModal from "../../components/measurement/NewMeasurementModal";
@@ -13,7 +13,7 @@ function LocationComponent() {
     const [reload, setReload] = useState(false);
     const location = useLoaderData();
     const navigate = useNavigate();
-    const { onUpdateLocation,onDeleteLocation } = useOutletContext();
+    const {locations, onUpdateLocation,onDeleteLocation } = useOutletContext();
 
     async function handleLocationUpdate(location) {
         console.log("location", location)

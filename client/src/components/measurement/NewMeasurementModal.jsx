@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Modal from "../modal/Modal";
+import Modal from "../generic/modal/Modal";
 import MeasurementCreator from "./MeasurementCreator";
 import { FaPlus } from "react-icons/fa6";
 

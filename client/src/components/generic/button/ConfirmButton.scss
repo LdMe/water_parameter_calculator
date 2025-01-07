@@ -1,0 +1,45 @@
+@import '../../../styles/variables';
+
+.confirm-button {
+    
+    color: $danger-color;
+    border: none;
+    border-radius: $border-radius;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1.2rem;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    &:hover {
+        background-color: $danger-hover-color;
+    }
+}
+
+.confirm-modal__buttons--confirm {
+    background-color: $danger-color;
+    color: #fff;
+    border: none;
+    border-radius: $border-radius;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.confirm-modal__buttons--cancel {
+    background-color: #ccc;
+    color: #333;
+    border: none;
+    border-radius: $border-radius;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1.2rem;
+    font-weight: 500;
+}

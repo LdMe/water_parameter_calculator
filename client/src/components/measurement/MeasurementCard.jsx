@@ -1,6 +1,6 @@
 import { FaTrash } from "react-icons/fa6";
 import ColorCircle from "../color/ColorCircle";
-
+import ConfirmButton from "../generic/button/ConfirmButton";
 
 function MeasurementCard({ measurement, groupBy,onDelete }) {
     return (
@@ -15,7 +15,8 @@ function MeasurementCard({ measurement, groupBy,onDelete }) {
                             <section className="measurement__value__container">
                                 {(singleMeasurement.hasColor || measurement.hasColor) && < ColorCircle color={singleMeasurement.color} />}
                                 <p className="measurement__value">{singleMeasurement.value}</p>
-                                <button className="measurement__delete" onClick={() => onDelete(singleMeasurement)}><FaTrash /></button>
+                                <ConfirmButton text={<FaTrash />} onConfirm={() => onDelete(singleMeasurement)}>¿Estás seguro de que quieres borrar esta medición?</ConfirmButton>
+                                
                             </section>
                         </article>
                     )

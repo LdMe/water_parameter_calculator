@@ -16,9 +16,20 @@
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   width: 90%;
-  height: 90%;
   overflow-y: hidden;
   padding: 20px 0;
+  &.lg {
+    height: 90%;
+  }
+  &.md {
+    height: 60%;
+  }
+  &.sm {
+    height: 30%;
+  }
+  &.auto {
+    height: auto;
+  }
 }
 
 .modal-content {

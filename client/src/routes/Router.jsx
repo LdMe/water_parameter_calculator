@@ -5,7 +5,9 @@ import Parameter from "./parameter/Parameter";
 import Login from './auth/Login';
 import Locations from "./location/Locations";
 import LocationComponent from "./location/Location";
+import LocationRoutes from "./location/LocationRoutes";
 import Home from "./home/Home";
+import OnboardingGuide from "./onboarding/Onboarding";
 import  { loadLocations,loadLocation } from "../loaders/locationLoader";
 
 const BrowserRouter = createBrowserRouter([
@@ -16,6 +18,10 @@ const BrowserRouter = createBrowserRouter([
       {
         path: "/",
         element: <Home />
+      },
+      {
+        path: "/onboard",
+        element: <OnboardingGuide />
       },
 
       {
@@ -29,7 +35,7 @@ const BrowserRouter = createBrowserRouter([
         children: [
           {
             path: "",
-            element:<p>Selecciona una ubicación</p>
+            element:<LocationRoutes/>
           },
           {
             path: ":locationName",

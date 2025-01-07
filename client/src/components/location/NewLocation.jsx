@@ -1,5 +1,5 @@
 import {useState} from "react";
-import Modal from "../modal/Modal";
+import Modal from "../generic/modal/Modal";
 import {FaPlus} from "react-icons/fa6";
 import { createLocation } from "../../utils/fetchLocation";
 

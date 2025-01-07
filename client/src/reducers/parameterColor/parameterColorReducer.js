@@ -1,6 +1,6 @@
 // parameterColorReducer.js
 import { ACTIONS } from './parameterColorActions';
-import Color from '../../utils/color';
+import Color from '../../utils/classes/color';
 
 export const initialState = {
   selectedColor: null,

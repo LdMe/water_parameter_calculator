@@ -1,10 +1,10 @@
 import { useReducer } from "react";
-import Color from "../../utils/color";
+import Color from "../../utils/classes/color";
 import ColorCircle from "./ColorCircle";
-import ColorPicker from "./ColorPicker";
 import colorPickerReducer from "../../reducers/colorPicker/colorPickerReducer";
 import { FaArrowRotateRight, FaEyeDropper } from "react-icons/fa6";
-import TextWithInfo from "../text/TextWithInfo";
+import TextWithInfo from "../generic/text/TextWithInfo";
+import ColorPickerWithZoom from "./ColorPickerWithZoom";
 
 function ColorCalculator({ onSelectColor }) {
     const [state, dispatch] = useReducer(colorPickerReducer, {
@@ -51,8 +51,8 @@ function ColorCalculator({ onSelectColor }) {
 
     return (
         <section className="color-editor">
-            <ColorPicker onClick={handleSelectColor} isPicking={true} />
-
+            {/* <ColorPicker onClick={handleSelectColor} isPicking={true} /> */}
+            <ColorPickerWithZoom onClick={handleSelectColor} isPicking={true} />
             <section className="white-color-picker">
                 <TextWithInfo
                     text="Selecciona un punto blanco"
