@@ -6,7 +6,7 @@ import NewLocation from './NewLocation';
 import './LocationSelector.scss'
 
 function LocationSelector({ locations,onCreateLocation }) {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   function handleSelect() {
     setIsOpen(false);
   }

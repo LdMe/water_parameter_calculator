@@ -6,6 +6,7 @@ import { FaArrowRotateRight, FaEyeDropper } from "react-icons/fa6";
 import TextWithInfo from "../generic/text/TextWithInfo";
 import ColorPickerWithZoom from "./ColorPickerWithZoom";
 
+import './ColorCalculator.scss'
 function ColorCalculator({ onSelectColor }) {
     const [state, dispatch] = useReducer(colorPickerReducer, {
         selectedColor: null,

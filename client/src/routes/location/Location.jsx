@@ -13,30 +13,26 @@ function LocationComponent() {
     const [reload, setReload] = useState(false);
     const location = useLoaderData();
     const navigate = useNavigate();
-    const {locations, onUpdateLocation,onDeleteLocation } = useOutletContext();
+    const {  onUpdateLocation, onDeleteLocation } = useOutletContext();
 
     async function handleLocationUpdate(location) {
-        console.log("location", location)
         await onUpdateLocation(location._id, location.name);
         navigate(`/location/${location.name}`);
         setIsModalOpen(false);
+    }
 
-    }
     async function handleDeleteLocation(locationId) {
-       onDeleteLocation(locationId);
+        onDeleteLocation(locationId);
     }
+
     function handleSaveMeasurement() {
         setReload(!reload);
         setIsModalOpen(false);
     }
+
     return (
         <section className="location">
             <div className="location__header">
-
-                <NewMeasurementModal
-                    location={location}
-                    onSave={handleSaveMeasurement}
-                />
                 <Modal
                     trigger={<button className="modal__button"><FaGear />Opciones</button>}
                     onClose={() => setIsModalOpen(false)}
@@ -47,10 +43,20 @@ function LocationComponent() {
                         location={location}
                         onSubmit={handleLocationUpdate}
                         onDelete={handleDeleteLocation}
+                        onCancel={() => setIsModalOpen(false)}
                     />
                 </Modal>
             </div>
+            
             <Measurements location={location} key={reload} />
+            
+            {/* Botón flotante de nueva medición */}
+            <div className="new-measurement-button">
+                <NewMeasurementModal
+                    location={location}
+                    onSave={handleSaveMeasurement}
+                />
+            </div>
         </section>
     )
 }

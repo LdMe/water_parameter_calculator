@@ -1,17 +1,4 @@
-// Variables
-$nav-height: 4rem;
-$mobile-nav-height: 3.5rem;
-$primary-color: #2563eb;
-$primary-hover: #1d4ed8;
-$background-color: #ffffff;
-$text-color: #1f2937;
-$text-secondary: #6b7280;
-$border-color: #e5e7eb;
-$transition-time: 0.3s;
-$border-radius: 0.5rem;
-$shadow-light: 0 -1px 3px rgba(0, 0, 0, 0.1);
-$shadow-medium: 0 4px 6px rgba(0, 0, 0, 0.1);
-
+@import '../../styles/variables';
 // Mixins
 @mixin flex-center {
   display: flex;
@@ -131,7 +118,7 @@ $shadow-medium: 0 4px 6px rgba(0, 0, 0, 0.1);
     bottom: 0;
     left: 0;
     width: 100%;
-    height: calc(100vh - 4rem);
+    height: 100%;
     background-color: $background-color;
     transform: translateY(100%);
     transition: transform $transition-time ease;

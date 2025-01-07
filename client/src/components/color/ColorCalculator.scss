@@ -1,0 +1,21 @@
+.white-color-picker__selector {
+    display: flex;
+    gap: 1rem;
+    & button {
+        padding: 0.5rem 1rem;
+        background-color: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        
+        &:hover {
+            background-color: #f9fafb;
+        }
+        &.selected {
+            background-color: #c5c5c7;
+        }
+    }
+    
+}

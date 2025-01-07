@@ -1,10 +1,10 @@
-import {useState} from "react";
+import { useState } from "react";
 import Modal from "../generic/modal/Modal";
-import {FaPlus} from "react-icons/fa6";
+import { FaPlus } from "react-icons/fa6";
 import { createLocation } from "../../utils/fetchLocation";
 
 
-function NewLocation({onCreate}){
+function NewLocation({ onCreate }) {
     const [isOpen, setIsOpen] = useState(false);
     const [name, setName] = useState("");
 
@@ -29,7 +29,10 @@ function NewLocation({onCreate}){
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
-                <button onClick={handleCreateLocation}>Crear</button>
+                <section className="new-location__buttons">
+                    <button className="cancel-button" onClick={() => setIsOpen(false)}>Cancelar</button>
+                    <button onClick={handleCreateLocation}>Crear</button>
+                </section>
             </div>
         </Modal>
     )

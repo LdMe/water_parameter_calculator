@@ -1,106 +1,104 @@
-@import "../../styles/variables.scss";
+// Import variables if needed
+@import '../../styles/variables';
 
-
-
-.location__header {
+.location {
+  padding: 2rem;
+  padding-bottom: calc($nav-height + 2rem); // Espacio para el botón flotante y la barra de navegación
+  max-width: 1200px;
+  margin: 0 auto;
+  
+  &__header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-    h2 {
-        margin: 0;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
+    // Options button (secondary)
+    .modal__button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      background-color: #f3f4f6;
+      color: #374151;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      
+      &:hover {
+        background-color: #e5e7eb;
+      }
+
+      svg {
+        font-size: 1.25rem;
+      }
     }
-       
-    & .modal__button {
+  }
+}
+
+// Botón flotante de nueva medición
+.new-measurement-button {
+  position: fixed;
+  bottom: calc($nav-height + 1rem); // Espacio por encima de la barra de navegación
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99; // Por debajo de la barra de navegación
+
+  .modal__button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: $primary-color;
+    color: white;
+    border: none;
+    border-radius: 9999px; // Botón circular
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    
+    &:hover {
+      background-color: darken($primary-color, 10%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    svg {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+// Responsive styles
+@media (max-width: 768px) {
+  .location {
+    padding: 1rem;
+    padding-bottom: calc($nav-height + 2rem);
+
+    &__header {
+      padding: 0.75rem;
+
+      .modal__button {
         width: 100%;
-        padding: 1rem;
-        background-color: $primary-color;
-        display: flex;
-        align-items: center;
-        gap:0.5rem;
-        color: white;
-        border: none;
-        border-radius: $border-radius;
-        cursor: pointer;
-        transition: background-color $transition-time ease;
-      
-        &:hover {
-          background-color: $hover-color;
-        }
-      
-        &:focus {
-          outline: none;
-          box-shadow: 0 0 0 2px rgba($primary-color, 0.3);
-        }
-    }
-
-}
-
-.location-routes {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    &__container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
-    }
-    & .location-routes__list {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-    & li {
-        list-style: none;
-        display: flex;
         justify-content: center;
-        align-items: center;
-        gap: 1rem;
-        padding: 1rem;
-        border: 1px solid #ccc;
-        border-radius: $border-radius;
-        cursor: pointer;
-        transition: background-color $transition-time ease;
-        &:hover {
-            background-color: #f9f9f9;
-        }
-    }
-}
-
-.location__card {
-  background-color: #f8fafc;
-  border-radius: $border-radius;
-  padding: 1rem;
-  margin-bottom: $card-spacing;
-  transition: all $transition-time ease;
-  border: 1px solid #e2e8f0;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px $shadow-color;
-  }
-
-  .selected & {
-    border-color: $primary-color;
-    background-color: #eff6ff;
-
-    h3 {
-      color: $primary-color;
+      }
     }
   }
 
-  h3 {
-    margin: 0 0 0.5rem;
-    font-size: 1.1rem;
-    color: #1e293b;
-  }
-
-  p {
-    color: #64748b;
-    font-size: 0.9rem;
-    margin: 0 0 1rem;
+  .new-measurement-button {
+    bottom: calc($mobile-nav-height + 1rem); // Ajuste para la barra de navegación móvil
+    
+    .modal__button {
+      padding: 0.75rem 1.25rem;
+    }
   }
 }
